@@ -11,8 +11,6 @@ const MAX_RETRIES = 2;
 const PROJECT_ROOT = path.resolve(path.join(__dirname, '..'));
 console.log(`🚀 PROJECT_ROOT: ${PROJECT_ROOT}`);
 
-// Load environment variables locally
-// Only require and load dotenv when running locally
 if (process.env.NODE_ENV !== 'production') {
     try {
         const dotenv = require('dotenv');
@@ -47,23 +45,19 @@ app.use(cors({
 
 app.use(express.json({ limit: '1mb' }));
 
-// Log paths for debugging
 console.log(`📁 __dirname: ${__dirname}`);
 console.log(`📁 PROJECT_ROOT: ${PROJECT_ROOT}`);
 console.log(`📁 NODE_ENV: ${process.env.NODE_ENV || 'production'}`);
-console.log(`📁 style.css exists: ${fs.existsSync(path.join(PROJECT_ROOT, 'style.css'))}`);
-console.log(`📁 Ahadi/Ahadi.html exists: ${fs.existsSync(path.join(PROJECT_ROOT, 'Ahadi', 'Ahadi.html'))}`);
 console.log(`📁 index.html exists: ${fs.existsSync(path.join(PROJECT_ROOT, 'index.html'))}`);
 
-// Serve static files from the project root
+// Serve static files from the project root (rest of the UWAZI site)
 app.use(express.static(PROJECT_ROOT));
 
 const PORT = process.env.PORT || 3000;
 const CALLBACK_URL = process.env.CALLBACK_URL || 'https://coping-jockey-portly.ngrok-free.dev/api/callback';
 
-// Set Safaricom Base URL (sandbox vs production)
-const SAFARICOM_BASE_URL = process.env.MPESA_ENV === 'production' 
-    ? 'https://api.safaricom.co.ke' 
+const SAFARICOM_BASE_URL = process.env.MPESA_ENV === 'production'
+    ? 'https://api.safaricom.co.ke'
     : 'https://sandbox.safaricom.co.ke';
 
 function sleep(ms) {
@@ -79,7 +73,7 @@ function normalizePhone(phone) {
     if (normalized.startsWith('+')) normalized = normalized.slice(1);
     if (normalized.startsWith('0')) normalized = `254${normalized.slice(1)}`;
 
-    if (!/^254[1706]\d{8}$/.test(normalized)) return null;
+    if (!/^254(7|1)\d{8}$/.test(normalized)) return null;
     return normalized;
 }
 
@@ -126,12 +120,54 @@ function normalizeResultCode(value) {
     return String(value).trim().replace(/[^0-9]/g, '');
 }
 
+// ---------------------------------------------------------------------------
+// SHARED STORAGE (Upstash Redis) — required on Vercel. Every request can
+// land on a different, isolated serverless instance, so in-memory state
+// never survives between requests. Redis is the shared source of truth.
+// Falls back to an in-memory Map only for local `node api/index.js` testing.
+// ---------------------------------------------------------------------------
+let redis = null;
+try {
+    const { Redis } = require('@upstash/redis');
+    const url = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
+    const token = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
+    if (url && token) {
+        redis = new Redis({ url, token });
+        console.log('[storage] Using Upstash Redis for shared state.');
+    } else {
+        console.warn('[storage] KV_REST_API_URL / KV_REST_API_TOKEN not set — using in-memory store. This WILL NOT WORK correctly on Vercel.');
+    }
+} catch (e) {
+    console.warn('[storage] @upstash/redis not installed — using in-memory store. Run `npm install @upstash/redis` before relying on this in production.');
+}
+
+const memoryStore = new Map();
+
+async function setTransaction(checkoutRequestId, data) {
+    if (!checkoutRequestId) return;
+    const record = { ...data, updatedAt: Date.now() };
+    if (redis) {
+        await redis.set(`txn:${checkoutRequestId}`, JSON.stringify(record), { ex: 3600 });
+    } else {
+        memoryStore.set(checkoutRequestId, record);
+    }
+}
+
+async function getTransaction(checkoutRequestId) {
+    if (redis) {
+        const raw = await redis.get(`txn:${checkoutRequestId}`);
+        if (!raw) return null;
+        return typeof raw === 'string' ? JSON.parse(raw) : raw;
+    }
+    return memoryStore.get(checkoutRequestId) || null;
+}
+
 function classifyStkStatus(queryResult) {
     const resultCode = normalizeResultCode(queryResult.ResultCode || queryResult.ResponseCode);
     const resultDesc = String(queryResult.ResultDesc || queryResult.ResponseDescription || '').toLowerCase();
 
     const isSuccess = resultCode === '0' || resultDesc.includes('success') || resultDesc.includes('processed') || resultDesc.includes('accepted') || resultDesc.includes('completed') || resultDesc.includes('paid') || resultDesc.includes('received');
-    const isCancelled = resultCode === '1032' || resultDesc.includes('cancel') || resultDesc.includes('user cancelled') || resultDesc.includes('user canceled') || (resultDesc.includes('pin') && resultDesc.includes('incorrect')) || resultDesc.includes('incorrect pin') || resultDesc.includes('wrong pin');
+    const isCancelled = resultDesc.includes('cancel') || (resultDesc.includes('pin') && resultDesc.includes('incorrect')) || resultDesc.includes('incorrect pin') || resultDesc.includes('wrong pin');
     const isBusy = resultDesc.includes('system is busy') || resultDesc.includes('busy') || resultDesc.includes('try again in few minutes') || resultDesc.includes('try again later');
     const isPending = !isSuccess && !isCancelled && (
         resultCode === '1032' ||
@@ -139,6 +175,7 @@ function classifyStkStatus(queryResult) {
         resultCode === '1001' ||
         resultDesc.includes('pending') ||
         resultDesc.includes('processing') ||
+        resultDesc.includes('being processed') ||
         resultDesc.includes('timeout') ||
         resultDesc.includes('timed out') ||
         resultDesc.includes('mmi') ||
@@ -155,33 +192,37 @@ function classifyStkStatus(queryResult) {
             status: 'success',
             message: 'Donation received. Thank you!',
             userMessage: queryResult.ResultDesc || 'Donation received. Thank you!',
-            receiptNumber: receiptNumber,
-            amount: amount
+            receiptNumber,
+            amount
         };
     }
 
     if (isCancelled) {
         console.log(`❌ PAYMENT CANCELLED by user: ${resultDesc}`);
-        return {
-            status: 'failed',
-            message: getFriendlyErrorMessage(queryResult.ResultDesc || 'Payment was cancelled.')
-        };
+        const msg = getFriendlyErrorMessage(queryResult.ResultDesc || 'Payment was cancelled.');
+        return { status: 'failed', message: msg, userMessage: msg };
     }
 
     if (isPending) {
         return {
             status: 'pending',
             message: 'Payment is still being processed. Please wait.',
-            userMessage: 'Payment is still being processed. Please wait a moment.'
+            userMessage: 'Waiting for you to complete the payment on your phone.'
         };
     }
 
     console.log(`❌ PAYMENT FAILED: ${resultDesc}`);
-    return {
-        status: 'failed',
-        message: getFriendlyErrorMessage(queryResult.ResultDesc || 'Payment failed.')
-    };
+    const msg = getFriendlyErrorMessage(queryResult.ResultDesc || 'Payment failed.');
+    return { status: 'failed', message: msg, userMessage: msg };
 }
+
+// ---------------------------------------------------------------------------
+// ACCESS TOKEN — cached in Redis. A plain module-level variable resets on
+// every cold start on Vercel, which meant a fresh token (and a step closer
+// to Safaricom's rate limit / 403) on almost every request.
+// ---------------------------------------------------------------------------
+let cachedToken = null;
+let tokenExpiresAt = 0;
 
 async function getAccessToken() {
     const requiredEnv = ['MPESA_CONSUMER_KEY', 'MPESA_CONSUMER_SECRET'];
@@ -189,6 +230,13 @@ async function getAccessToken() {
 
     if (missingEnv.length) {
         throw new Error(`Missing MPesa environment variables: ${missingEnv.join(', ')}`);
+    }
+
+    if (redis) {
+        const cached = await redis.get('mpesa:access_token');
+        if (cached) return cached;
+    } else if (cachedToken && Date.now() < tokenExpiresAt) {
+        return cachedToken;
     }
 
     const secret = process.env.MPESA_CONSUMER_KEY + ":" + process.env.MPESA_CONSUMER_SECRET;
@@ -199,7 +247,17 @@ async function getAccessToken() {
         { headers: { Authorization: `Basic ${auth}` } }
     );
 
-    return response.data.access_token;
+    const token = response.data.access_token;
+    const expiresInSec = Number(response.data.expires_in) || 3599;
+
+    if (redis) {
+        await redis.set('mpesa:access_token', token, { ex: expiresInSec - 60 });
+    } else {
+        cachedToken = token;
+        tokenExpiresAt = Date.now() + (expiresInSec - 60) * 1000;
+    }
+
+    return token;
 }
 
 async function queryStkStatus(checkoutRequestId, accessToken) {
@@ -245,11 +303,10 @@ async function initiateStkPush(stkPayload, token) {
         } catch (error) {
             const message = String(error?.response?.data?.errorMessage || error?.response?.data?.error || error?.message || '');
             const statusCode = error?.response?.status;
-            
-            // Only retry on specific errors: network issues, timeouts, or actual busy responses
+
             const shouldRetry = attempt < MAX_RETRIES && (
-                !error.response || // Network error
-                statusCode === 502 || statusCode === 503 || statusCode === 504 || // Service unavailable
+                !error.response ||
+                statusCode === 502 || statusCode === 503 || statusCode === 504 ||
                 message.toLowerCase().includes('busy') ||
                 message.toLowerCase().includes('timeout') ||
                 message.toLowerCase().includes('temporarily') ||
@@ -260,12 +317,10 @@ async function initiateStkPush(stkPayload, token) {
                 console.error(`❌ STK Push failed on attempt ${attempt + 1}. Not retrying:`, message);
                 throw error;
             }
-            
-            if (attempt < MAX_RETRIES) {
-                const delayMs = RETRY_DELAY_MS * Math.pow(2, attempt); // Exponential backoff
-                console.warn(`⚠️ STK Push attempt ${attempt + 1} failed: ${message}. Retrying in ${delayMs}ms...`);
-                await sleep(delayMs);
-            }
+
+            const delayMs = RETRY_DELAY_MS * Math.pow(2, attempt);
+            console.warn(`⚠️ STK Push attempt ${attempt + 1} failed: ${message}. Retrying in ${delayMs}ms...`);
+            await sleep(delayMs);
         }
     }
 }
@@ -278,7 +333,7 @@ async function generateToken(req, res, next) {
     } catch (error) {
         console.error("Token Generation Error:", error.response ? error.response.data : error.message);
         const isConfigError = error.message.includes('Missing MPesa environment variables');
-        
+
         if (isConfigError) {
             return res.status(500).json({
                 error: "Server configuration error",
@@ -286,7 +341,7 @@ async function generateToken(req, res, next) {
                 message: error.message
             });
         }
-        
+
         res.status(500).json({
             error: "Failed to generate access token",
             details: error.response ? error.response.data : error.message
@@ -294,8 +349,21 @@ async function generateToken(req, res, next) {
     }
 }
 
+// --- DEBUG ENDPOINT --- (remove before fully going live)
+app.get('/api/debug/:checkoutRequestId', async (req, res) => {
+    const record = await getTransaction(req.params.checkoutRequestId);
+    res.json({
+        checkoutRequestId: req.params.checkoutRequestId,
+        found: Boolean(record),
+        record: record || null,
+        storageBackend: redis ? 'redis' : 'in-memory (local-dev fallback)'
+    });
+});
+
 // --- INITIATE STK PUSH ENDPOINT ---
 app.post('/api/donate', generateToken, async (req, res) => {
+    console.log(`[donate] Incoming request: phone=${req.body?.phone}, amount=${req.body?.amount}`);
+
     const validation = validateDonationPayload(req.body);
     if (!validation.ok) {
         return res.status(400).json({ success: false, error: validation.error, code: 'INVALID_REQUEST' });
@@ -333,6 +401,11 @@ app.post('/api/donate', generateToken, async (req, res) => {
         const response = await initiateStkPush(stkPayload, req.token);
         const checkoutRequestId = response.data.CheckoutRequestID;
 
+        await setTransaction(checkoutRequestId, {
+            status: 'pending',
+            userMessage: 'Waiting for you to enter your M-Pesa PIN.'
+        });
+
         console.log(`📱 STK Push initiated: ${checkoutRequestId} for phone ${phone}, amount ${amount}`);
 
         res.status(200).json({
@@ -357,56 +430,97 @@ app.post('/api/donate', generateToken, async (req, res) => {
 // --- PAYMENT STATUS CHECKER ---
 app.get('/api/payment-status/:checkoutRequestId', async (req, res) => {
     const { checkoutRequestId } = req.params;
+    const stored = await getTransaction(checkoutRequestId);
+
+    if (stored && (stored.status === 'success' || stored.status === 'failed')) {
+        console.log(`[status] ${checkoutRequestId} resolved from callback store: ${stored.status}`);
+        return res.json(stored);
+    }
+
+    console.log(`[status] ${checkoutRequestId} — no terminal callback yet, falling back to Safaricom query...`);
 
     try {
         const accessToken = await getAccessToken();
         const queryResult = await queryStkStatus(checkoutRequestId, accessToken);
+        console.log(`[status] ${checkoutRequestId} — raw Safaricom query result:`, JSON.stringify(queryResult));
+
         const outcome = classifyStkStatus(queryResult);
+        console.log(`[status] ${checkoutRequestId} — classified as: ${outcome.status}`);
+
+        if (outcome.status !== 'pending') {
+            await setTransaction(checkoutRequestId, outcome);
+        }
 
         return res.json(outcome);
     } catch (error) {
-        console.error('Payment query error:', error.response ? error.response.data : error.message);
-        return res.status(500).json({ status: 'unknown', message: 'Unable to verify payment status' });
+        const data = error.response ? error.response.data : null;
+        const errorCode = data?.errorCode || '';
+        const errorMessage = String(data?.errorMessage || error.message || '');
+        console.log(`[status] ${checkoutRequestId} — query threw. errorCode=${errorCode} message=${errorMessage}`);
+
+        if (errorCode === '500.001.1001' || /processed|pending/i.test(errorMessage)) {
+            return res.json({ status: 'pending', userMessage: 'Waiting for you to complete the payment on your phone.' });
+        }
+
+        console.error('[status] Payment query error (not a recognized "still pending" case):', data || error.message);
+        return res.json(stored || { status: 'pending', userMessage: 'Still checking...' });
     }
 });
 
 // --- HEALTH CHECK ---
 app.get('/health', (req, res) => {
-    res.status(200).json({ status: 'ok' });
-});
-
-// --- ROOT/HOME ROUTE ---
-app.get('/', (req, res) => {
-    res.status(200).json({ 
-        status: 'ok',
-        message: 'UWAZI Backend Server is running',
-        environment: process.env.NODE_ENV || 'development'
-    });
+    res.status(200).json({ status: 'ok', storageBackend: redis ? 'redis' : 'in-memory (local-dev fallback)' });
 });
 
 // --- CALLBACK WEBHOOK ROUTER ---
-app.post('/api/callback', (req, res) => {
+app.post('/api/callback', async (req, res) => {
     const callbackData = req.body;
     console.log("=== Incoming M-Pesa Transaction Webhook Callback ===");
     console.log(JSON.stringify(callbackData, null, 2));
+
+    try {
+        const stkCallback = callbackData?.Body?.stkCallback;
+        if (!stkCallback) {
+            console.warn('[callback] POST to /api/callback did not contain Body.stkCallback — nothing stored.');
+        } else {
+            const checkoutRequestId = stkCallback.CheckoutRequestID;
+            const resultCode = Number(stkCallback.ResultCode);
+            console.log(`[callback] checkoutRequestId=${checkoutRequestId} resultCode=${resultCode} resultDesc=${stkCallback.ResultDesc}`);
+
+            if (resultCode === 0) {
+                const items = stkCallback.CallbackMetadata?.Item || [];
+                await setTransaction(checkoutRequestId, {
+                    status: 'success',
+                    message: 'Donation received. Thank you!',
+                    userMessage: 'Donation received. Thank you!',
+                    receiptNumber: items.find((i) => i.Name === 'MpesaReceiptNumber')?.Value,
+                    amount: items.find((i) => i.Name === 'Amount')?.Value
+                });
+                console.log(`[callback] Stored SUCCESS for ${checkoutRequestId}`);
+            } else {
+                const msg = getFriendlyErrorMessage(stkCallback.ResultDesc);
+                await setTransaction(checkoutRequestId, { status: 'failed', message: msg, userMessage: msg });
+                console.log(`[callback] Stored FAILED for ${checkoutRequestId}`);
+            }
+        }
+    } catch (e) {
+        console.error('[callback] Parse error:', e);
+    }
 
     res.status(200).json({ ResultCode: 0, ResultDesc: "Accepted" });
 });
 
 // --- SPA FALLBACK: SERVE INDEX.HTML FOR CLIENT-SIDE ROUTING ---
 app.use((req, res, next) => {
-    // Skip API routes
     if (req.path.startsWith('/api')) {
         return next();
     }
-    
-    // Skip static files: if the request path has a file extension, don't fall back to index.html
+
     const lastSegment = req.path.split('/').pop();
     if (lastSegment && lastSegment.includes('.')) {
-        return next(); // Will result in 404 if file doesn't exist
+        return next();
     }
-    
-    // For routes without extensions (SPA routes), serve index.html from the project root
+
     const indexPath = path.join(PROJECT_ROOT, 'index.html');
     console.log(`📄 Serving SPA fallback for: ${req.path}`);
     res.sendFile(indexPath, (err) => {
@@ -424,9 +538,9 @@ app.use((req, res) => {
     console.log(`❌ 404: ${req.method} ${req.path}`);
     console.log(`   Looking in: ${filePath}`);
     console.log(`   File exists: ${fileExists}`);
-    
-    res.status(404).json({ 
-        error: 'Not found', 
+
+    res.status(404).json({
+        error: 'Not found',
         path: req.path,
         method: req.method
     });
