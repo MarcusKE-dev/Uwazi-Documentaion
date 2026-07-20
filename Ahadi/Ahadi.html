@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AHADI: Kenya Public Accountability Platform</title>
+<meta name="description" content="AHADI: a national platform tracking political promises made by Kenyan leaders, from the President to Members of County Assembly, with journalist-verified evidence and public timelines.">
+<style>
+/* ========================================================================
+   AHADI — Design tokens (shared palette with the UWAZI reference document)
+   ======================================================================== */
+:root{
+  --navy-950:#081120;
+  --navy-900:#0b1a2e;
+  --navy-850:#0e2138;
+  --navy-800:#13294a;
+  --navy-700:#1c3a63;
+  --navy-600:#28527f;
+  --gold-300:#ffd479;
+  --gold-400:#f7c25c;
+  --gold-500:#f5b041;
+  --gold-600:#c98f2e;
+  --gold-900:#5c4011;
+  --paper:#f8f6f1;
+  --paper-dim:#f1eee6;
+  --card:#ffffff;
+  --ink:#1a2233;
+  --ink-soft:#4d5566;
+  --ink-faint:#7a8194;
+  --line:#e1ddd3;
+  --line-soft:#ece8de;
+  --danger:#a8341f;
+  --danger-bg:#fbeae6;
+  --success:#1f6b46;
+  --success-bg:#e9f4ee;
+  --warn-bg:#fdf3e2;
+  --info:#2450a8;
+  --info-bg:#e8eefb;
+  --shadow-1:0 1px 2px rgba(11,26,46,.06), 0 1px 1px rgba(11,26,46,.04);
+  --shadow-2:0 6px 20px rgba(11,26,46,.10), 0 2px 6px rgba(11,26,46,.06);
+  --radius:10px;
+  --sidebar-w:300px;
+  --font-display:"Segoe UI", "Roboto", "Helvetica Neue", system-ui, -apple-system, sans-serif;
+  --font-body:"Segoe UI", "Roboto", "Helvetica Neue", system-ui, -apple-system, sans-serif;
+  --font-mono:"Cascadia Mono", "SF Mono", "Consolas", ui-monospace, monospace;
+}
+
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  font-family:var(--font-body);
+  background:var(--paper);
+  color:var(--ink);
+  line-height:1.6;
+  font-size:16px;
+  -webkit-font-smoothing:antialiased;
+}
+img{max-width:100%;}
+a{color:var(--navy-700);text-decoration:none;}
+a:hover{text-decoration:underline;}
+h1,h2,h3,h4{font-family:var(--font-display);color:var(--navy-900);line-height:1.25;letter-spacing:-0.01em;}
+p{margin:0 0 14px;}
+ul,ol{margin:0 0 14px;padding-left:22px;}
+li{margin-bottom:6px;}
+table{border-collapse:collapse;width:100%;}
+:focus-visible{outline:3px solid var(--gold-500);outline-offset:2px;}
+
+.skip-link{
+  position:absolute;left:-999px;top:0;background:var(--gold-500);color:var(--navy-950);
+  padding:10px 16px;z-index:999;border-radius:0 0 8px 0;font-weight:700;
+}
+.skip-link:focus{left:0;}
+
+.topbar{
+  display:none;
+  position:sticky;top:0;z-index:60;
+  background:var(--navy-900);
+  color:#fff;
+  align-items:center;
+  justify-content:space-between;
+  padding:12px 16px;
+  box-shadow:var(--shadow-2);
+}
+.topbar-brand{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-weight:800;letter-spacing:.04em;}
+.topbar-brand .mark{color:var(--gold-500);}
+.hamburger{
+  width:42px;height:42px;border-radius:8px;border:1px solid rgba(255,255,255,.25);
+  background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;
+  cursor:pointer;flex-direction:column;gap:4px;
+}
+.hamburger span{display:block;width:20px;height:2px;background:var(--gold-400);border-radius:2px;transition:transform .25s ease, opacity .25s ease;}
+.hamburger.open span:nth-child(1){transform:translateY(6px) rotate(45deg);}
+.hamburger.open span:nth-child(2){opacity:0;}
+.hamburger.open span:nth-child(3){transform:translateY(-6px) rotate(-45deg);}
+
+.shell{display:flex;min-height:100vh;}
+
+.sidebar{
+  width:var(--sidebar-w);
+  flex-shrink:0;
+  background:linear-gradient(180deg, var(--navy-950) 0%, var(--navy-900) 55%, var(--navy-850) 100%);
+  color:#cfd8e6;
+  position:sticky;
+  top:0;
+  height:100vh;
+  overflow-y:auto;
+  padding:26px 0 30px;
+  border-right:1px solid rgba(245,176,65,.15);
+}
+.sidebar::-webkit-scrollbar{width:8px;}
+.sidebar::-webkit-scrollbar-thumb{background:rgba(245,176,65,.25);border-radius:4px;}
+
+.brand{
+  padding:0 24px 20px;
+  border-bottom:1px solid rgba(245,176,65,.18);
+  margin-bottom:14px;
+}
+.brand .wordmark{
+  font-family:var(--font-display);font-weight:800;font-size:1.7rem;color:#fff;letter-spacing:.06em;
+  display:flex;align-items:baseline;gap:8px;
+}
+.brand .wordmark .dot{color:var(--gold-500);}
+.brand .tagline{font-size:.82rem;color:#9fb0c8;margin-top:6px;line-height:1.45;}
+.brand .swahili{font-size:.74rem;color:var(--gold-400);margin-top:8px;font-style:italic;}
+
+.nav-section-label{
+  font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-400);
+  padding:14px 24px 8px;font-weight:700;
+}
+nav.toc{padding:0 12px;}
+nav.toc a{
+  display:flex;gap:10px;align-items:flex-start;
+  padding:9px 12px;border-radius:8px;color:#c4cee0;font-size:.88rem;
+  text-decoration:none;transition:background .15s ease, color .15s ease;
+  border-left:3px solid transparent;
+}
+nav.toc a:hover{background:rgba(245,176,65,.08);color:#fff;}
+nav.toc a.active{
+  background:rgba(245,176,65,.14);
+  color:#fff;
+  border-left:3px solid var(--gold-500);
+  font-weight:600;
+}
+nav.toc a .num{
+  font-family:var(--font-mono);font-size:.74rem;color:var(--gold-500);min-width:22px;font-weight:700;
+}
+.sidebar-footer{
+  padding:18px 24px 0;margin-top:10px;border-top:1px solid rgba(245,176,65,.15);
+}
+.sidebar-footer .btn-print{
+  display:inline-flex;align-items:center;gap:8px;width:100%;justify-content:center;
+  background:var(--gold-500);color:var(--navy-950);font-weight:700;border:none;
+  padding:11px 14px;border-radius:8px;cursor:pointer;font-size:.85rem;font-family:var(--font-display);
+}
+.sidebar-footer .btn-print:hover{background:var(--gold-400);}
+.sidebar-footer .meta{font-size:.72rem;color:#7c8aa3;margin-top:14px;line-height:1.6;}
+
+.sidebar-overlay{
+  display:none;position:fixed;inset:0;background:rgba(8,17,32,.6);z-index:45;
+}
+.sidebar-overlay.show{display:block;}
+
+main{flex:1;min-width:0;background:var(--paper);}
+.content-wrap{max-width:920px;margin:0 auto;padding:0 36px 80px;}
+
+.hero{
+  background:linear-gradient(165deg, var(--navy-950), var(--navy-900) 55%, var(--navy-800));
+  color:#fff;
+  padding:64px 36px 56px;
+  position:relative;
+}
+.hero-inner{max-width:920px;margin:0 auto;position:relative;z-index:2;}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:.72rem;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--gold-400);
+  border:1px solid rgba(245,176,65,.35);padding:5px 12px;border-radius:20px;margin-bottom:18px;
+}
+.hero h1{
+  font-size:3rem;color:#fff;margin:0 0 6px;font-weight:800;letter-spacing:-0.01em;
+}
+.hero h1 .mark{color:var(--gold-500);}
+.hero .subtitle{font-size:1.22rem;color:#d7deea;font-weight:400;margin:0 0 18px;max-width:640px;}
+.hero .lede{color:#aebcd2;max-width:680px;font-size:1.02rem;margin-bottom:8px;}
+.hero .swahili-line{color:var(--gold-300);font-style:italic;font-size:.96rem;margin-top:6px;}
+
+.hero-stats{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+  margin-top:34px;background:rgba(245,176,65,.18);border-radius:12px;overflow:hidden;
+  border:1px solid rgba(245,176,65,.25);
+}
+.hero-stat{background:rgba(8,17,32,.55);padding:18px 16px;}
+.hero-stat .v{font-family:var(--font-mono);font-size:1.5rem;font-weight:700;color:var(--gold-400);letter-spacing:-0.02em;}
+.hero-stat .l{font-size:.72rem;color:#a9b6cb;margin-top:4px;line-height:1.4;}
+
+.about-notice{
+  background:var(--navy-850);border:1px solid rgba(245,176,65,.3);border-radius:10px;
+  padding:16px 20px;margin-top:28px;display:flex;gap:14px;align-items:flex-start;
+}
+.about-notice .seal{
+  flex-shrink:0;width:40px;height:40px;border-radius:50%;border:2px solid var(--gold-500);
+  display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);
+  font-size:.62rem;color:var(--gold-400);font-weight:800;text-align:center;line-height:1.1;
+}
+.about-notice p{color:#b9c4d8;font-size:.83rem;margin:0;line-height:1.55;}
+.about-notice strong{color:#fff;}
+
+.part{padding:64px 0 12px;border-bottom:1px solid var(--line);scroll-margin-top:20px;}
+.part:last-of-type{border-bottom:none;}
+.part-header{margin-bottom:30px;}
+.part-tag{
+  display:inline-flex;align-items:center;gap:10px;font-family:var(--font-mono);
+  font-size:.72rem;letter-spacing:.14em;color:var(--gold-600);font-weight:800;text-transform:uppercase;
+  margin-bottom:10px;
+}
+.part-tag .line{width:34px;height:2px;background:var(--gold-500);display:inline-block;}
+.part h2{font-size:2rem;margin:0 0 8px;}
+.part .part-sub{color:var(--ink-soft);font-size:1.06rem;max-width:680px;}
+
+h3{font-size:1.3rem;margin:34px 0 12px;color:var(--navy-850);}
+h3.with-rule{border-bottom:2px solid var(--line);padding-bottom:10px;}
+h4{font-size:1.05rem;margin:22px 0 10px;color:var(--navy-700);}
+
+.lead-quote{
+  font-family:var(--font-display);font-size:1.18rem;color:var(--navy-900);font-style:italic;
+  border-left:4px solid var(--gold-500);padding:6px 0 6px 20px;margin:24px 0;line-height:1.5;
+}
+
+.callout{
+  border-left:4px solid var(--navy-700);background:var(--card);border:1px solid var(--line);
+  border-left-width:4px;border-radius:8px;padding:16px 20px;margin:18px 0;box-shadow:var(--shadow-1);
+}
+.callout.gold{border-left-color:var(--gold-500);background:var(--warn-bg);}
+.callout.danger{border-left-color:var(--danger);background:var(--danger-bg);}
+.callout.success{border-left-color:var(--success);background:var(--success-bg);}
+.callout.info{border-left-color:var(--info);background:var(--info-bg);}
+.callout.navy{border-left-color:var(--navy-700);}
+.callout .callout-label{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;font-weight:800;color:var(--ink-faint);margin-bottom:6px;display:block;}
+.callout p:last-child{margin-bottom:0;}
+
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:18px 0;}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:18px 0;}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:18px 0;}
+.card{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 20px;box-shadow:var(--shadow-1);
+}
+.card h4{margin-top:0;color:var(--navy-900);}
+.card .card-eyebrow{font-family:var(--font-mono);font-size:.68rem;color:var(--gold-600);letter-spacing:.08em;text-transform:uppercase;font-weight:800;margin-bottom:6px;display:block;}
+
+.table-wrap{overflow-x:auto;margin:18px 0;border-radius:var(--radius);border:1px solid var(--line);box-shadow:var(--shadow-1);}
+table.ahadi-table{font-size:.91rem;background:var(--card);}
+table.ahadi-table caption{text-align:left;font-size:.78rem;color:var(--ink-faint);padding:8px 14px 0;}
+table.ahadi-table th{
+  background:var(--navy-900);color:#fff;text-align:left;padding:11px 14px;font-weight:600;
+  font-size:.78rem;letter-spacing:.03em;text-transform:uppercase;white-space:nowrap;
+}
+table.ahadi-table td{padding:10px 14px;border-bottom:1px solid var(--line-soft);vertical-align:top;}
+table.ahadi-table tbody tr:nth-child(even){background:var(--paper-dim);}
+table.ahadi-table tbody tr:hover{background:#fbf2de;}
+table.ahadi-table td.num,table.ahadi-table th.num{font-family:var(--font-mono);text-align:right;white-space:nowrap;}
+table.ahadi-table .tag{
+  display:inline-block;font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:12px;white-space:nowrap;
+}
+.tag-promised{background:var(--line-soft);color:var(--ink-soft);}
+.tag-progress{background:var(--info-bg);color:var(--info);}
+.tag-delayed{background:var(--warn-bg);color:var(--gold-900);}
+.tag-stalled{background:var(--danger-bg);color:var(--danger);}
+.tag-completed{background:var(--success-bg);color:var(--success);}
+.tag-abandoned{background:#f3ded4;color:#7c2d12;}
+
+.stat-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:22px 0;}
+.stat-box{
+  background:var(--navy-900);color:#fff;border-radius:var(--radius);padding:18px 16px;
+  text-align:left;position:relative;overflow:hidden;
+}
+.stat-box .v{font-family:var(--font-mono);font-size:1.5rem;font-weight:700;color:var(--gold-400);}
+.stat-box .l{font-size:.74rem;color:#aebcd2;margin-top:4px;}
+
+.flow{
+  display:flex;flex-direction:column;gap:0;margin:24px 0;border:1px solid var(--line);
+  border-radius:var(--radius);overflow:hidden;background:var(--card);
+}
+.flow-step{
+  display:grid;grid-template-columns:54px 1fr;gap:16px;padding:16px 20px;border-bottom:1px solid var(--line-soft);
+  align-items:center;
+}
+.flow-step:last-child{border-bottom:none;}
+.flow-num{
+  width:38px;height:38px;border-radius:50%;background:var(--navy-900);color:var(--gold-400);
+  font-family:var(--font-mono);font-weight:800;display:flex;align-items:center;justify-content:center;font-size:.9rem;
+}
+.flow-step b{display:block;color:var(--navy-900);font-size:.97rem;}
+.flow-step span.detail{color:var(--ink-soft);font-size:.86rem;}
+
+.arch-stack{display:flex;flex-direction:column;gap:6px;margin:22px 0;}
+.arch-layer{
+  border-radius:8px;padding:13px 18px;color:#fff;font-size:.88rem;
+  display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;
+}
+.arch-layer .name{font-weight:700;font-family:var(--font-display);}
+.arch-layer .detail{font-size:.8rem;opacity:.88;font-weight:400;text-align:right;}
+.arch-layer.l1{background:var(--navy-600);}
+.arch-layer.l2{background:var(--navy-700);}
+.arch-layer.l3{background:var(--navy-800);}
+.arch-layer.l4{background:#5a3a17;}
+.arch-layer.l5{background:var(--navy-850);}
+.arch-layer.l6{background:var(--navy-950);border:1px solid rgba(245,176,65,.3);}
+
+.status-pill{
+  display:inline-block;font-family:var(--font-mono);font-size:.68rem;font-weight:800;
+  padding:3px 9px;border-radius:6px;letter-spacing:.03em;
+}
+.status-live{background:#dcebe2;color:var(--success);}
+.status-pending{background:var(--warn-bg);color:var(--gold-900);}
+.status-planned{background:#e6e9f5;color:#36408a;}
+
+.score-bars{display:flex;flex-direction:column;gap:10px;margin:20px 0;}
+.score-row{display:grid;grid-template-columns:180px 1fr;gap:14px;align-items:center;font-size:.88rem;}
+.score-track{height:12px;background:var(--line-soft);border-radius:6px;overflow:hidden;}
+.score-fill{height:100%;background:linear-gradient(90deg,var(--gold-600),var(--gold-400));}
+
+.faq-item{border:1px solid var(--line);border-radius:var(--radius);padding:16px 20px;margin:12px 0;background:var(--card);}
+.faq-item h4{margin:0 0 8px;color:var(--navy-900);}
+.faq-item p{margin-bottom:0;color:var(--ink-soft);}
+
+footer.site-footer{
+  background:var(--navy-950);color:#9fb0c8;padding:48px 36px 36px;margin-top:0;
+}
+.footer-inner{max-width:920px;margin:0 auto;}
+.footer-inner .swahili{color:var(--gold-400);font-style:italic;font-size:1.02rem;margin-bottom:18px;}
+.footer-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:30px;border-top:1px solid rgba(245,176,65,.18);padding-top:24px;}
+.footer-grid h5{color:#fff;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;margin:0 0 10px;}
+.footer-grid p, .footer-grid a{color:#9fb0c8;font-size:.85rem;}
+.footer-grid a{display:block;margin-bottom:4px;}
+.footer-bottom{margin-top:28px;font-size:.74rem;color:#6c7c98;line-height:1.6;border-top:1px solid rgba(255,255,255,.06);padding-top:18px;}
+
+.back-to-top{
+  position:fixed;bottom:24px;right:24px;width:46px;height:46px;border-radius:50%;
+  background:var(--navy-900);color:var(--gold-400);border:1px solid rgba(245,176,65,.4);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:var(--shadow-2);
+  opacity:0;transform:translateY(10px);transition:opacity .25s, transform .25s;z-index:40;font-size:1.1rem;
+}
+.back-to-top.show{opacity:1;transform:translateY(0);}
+
+/* ========================================================================
+   Responsive
+   ======================================================================== */
+@media (max-width: 980px){
+  .grid-2{grid-template-columns:1fr;}
+  .grid-3{grid-template-columns:1fr;}
+  .grid-4{grid-template-columns:1fr 1fr;}
+  .hero-stats{grid-template-columns:repeat(2,1fr);}
+}
+@media (max-width: 880px){
+  .topbar{display:flex;}
+  .sidebar{
+    position:fixed;left:0;top:0;height:100%;z-index:50;
+    transform:translateX(-100%);transition:transform .28s ease;
+    box-shadow:var(--shadow-2);
+  }
+  .sidebar.open{transform:translateX(0);}
+  .content-wrap{padding:0 20px 60px;}
+  .hero{padding:36px 20px 40px;}
+  .hero h1{font-size:2.1rem;}
+  .hero .subtitle{font-size:1.05rem;}
+  .part{padding:42px 0 8px;}
+  .part h2{font-size:1.55rem;}
+  footer.site-footer{padding:36px 20px 28px;}
+  .footer-grid{grid-template-columns:1fr;}
+  .grid-4{grid-template-columns:1fr;}
+  .score-row{grid-template-columns:120px 1fr;font-size:.8rem;}
+}
+@media (max-width: 600px){
+  .hero-stats{grid-template-columns:1fr 1fr;}
+  .stat-strip{grid-template-columns:1fr 1fr;}
+  table.ahadi-table{font-size:.82rem;}
+}
+
+/* ========================================================================
+   Print
+   ======================================================================== */
+@media print{
+  .topbar,.sidebar,.sidebar-overlay,.back-to-top,.skip-link,.sidebar-footer{display:none !important;}
+  .shell{display:block;}
+  main{width:100%;}
+  .content-wrap{max-width:100%;padding:0 8mm;}
+  body{background:#fff;font-size:11pt;}
+  .hero{background:#0b1a2e !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;padding:24px 8mm;}
+  .part{padding:18px 0 4px;break-inside:avoid-page;}
+  .card,.callout,.table-wrap,.flow,.arch-stack,.faq-item{break-inside:avoid;}
+  table.ahadi-table th{background:#0b1a2e !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;color:#fff !important;}
+  a{color:#0b1a2e;text-decoration:underline;}
+  footer.site-footer{background:#0b1a2e !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .hero-stat,.stat-box{background:#13294a !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+}
+</style>
+</head>
+<body>
+<a href="#main-content" class="skip-link">Skip to content</a>
+
+<div class="topbar">
+  <div class="topbar-brand"><span class="mark">&#9670;</span> AHADI</div>
+  <button class="hamburger" id="hamburgerBtn" aria-label="Open navigation menu" aria-expanded="false" aria-controls="sidebar">
+    <span></span><span></span><span></span>
+  </button>
+</div>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<div class="shell">
+  <aside class="sidebar" id="sidebar" aria-label="Document navigation">
+    <div class="brand">
+      <div class="wordmark">AHADI<span class="dot">.</span></div>
+      <div class="tagline">Kenya Public Accountability Platform</div>
+      <div class="swahili">"Ahadi ni deni." (A promise is a debt.)</div>
+    </div>
+
+    <div class="nav-section-label">Guide: 12 Parts</div>
+    <nav class="toc" id="tocNav" aria-label="Table of contents">
+      <a href="#reader-guide"><span class="num">00</span><span>How to Use This Guide</span></a>
+      <a href="#what-is-ahadi"><span class="num">01</span><span>What Is Ahadi</span></a>
+      <a href="#why-it-matters"><span class="num">02</span><span>Why This Matters</span></a>
+      <a href="#how-it-works"><span class="num">03</span><span>How Ahadi Works</span></a>
+      <a href="#promise-record"><span class="num">04</span><span>Anatomy of a Promise</span></a>
+      <a href="#coverage"><span class="num">05</span><span>National Coverage</span></a>
+      <a href="#scoring"><span class="num">06</span><span>Scores &amp; Comparison</span></a>
+      <a href="#newsroom"><span class="num">07</span><span>The Newsroom Model</span></a>
+      <a href="#for-citizens"><span class="num">08</span><span>For Citizens</span></a>
+      <a href="#technology"><span class="num">09</span><span>Technology &amp; Security</span></a>
+      <a href="#trust"><span class="num">10</span><span>Trust &amp; Neutrality</span></a>
+      <a href="#status"><span class="num">11</span><span>Current Status &amp; Roadmap</span></a>
+      <a href="#faq"><span class="num">12</span><span>Frequently Asked Questions</span></a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="btn-print" id="printBtn">&#9099; Print / Save as PDF</button>
+      <div class="meta">
+        AHADI: Kenya Public Accountability Platform<br>
+        A civic technology initiative<br>
+        Updated July 2026
+      </div>
+    </div>
+  </aside>
+
+  <main id="main-content">
+    <section class="hero" id="top">
+      <div class="hero-inner">
+        <span class="hero-eyebrow">National Civic Accountability Platform . Updated July 2026</span>
+        <h1>AHADI<span class="mark">.</span></h1>
+        <p class="subtitle">Kenya Public Accountability Platform</p>
+        <p class="lede">A national platform that records what Kenyan leaders promise, from the President down to Members of County Assembly, and tracks what actually happens next: started, delayed, stalled, or completed, with dated, sourced evidence behind every entry and a journalist standing behind every publication.</p>
+        <p class="swahili-line">"Ahadi ni deni." (A promise is a debt.) Ahadi is the Swahili word for promise.</p>
+
+        <div class="hero-stats">
+          <div class="hero-stat"><div class="v">47 / 289 / 1,448</div><div class="l">counties, constituencies and wards mapped nationwide</div></div>
+          <div class="hero-stat"><div class="v">38%</div><div class="l">of Kenyan adults say they trust government to do what is right (Edelman Trust Barometer, 2025)</div></div>
+          <div class="hero-stat"><div class="v">Art. 35</div><div class="l">the constitutional right of every Kenyan to information held by the state</div></div>
+          <div class="hero-stat"><div class="v">6 levels</div><div class="l">of elected office tracked, President to MCA, on one searchable record</div></div>
+        </div>
+
+        <div class="about-notice">
+          <div class="seal">AHADI</div>
+          <p><strong>About this document.</strong> This guide explains what Ahadi is, why it exists, and how it works, for citizens, journalists, leaders and their offices, and anyone evaluating the platform. Ahadi is a civic technology initiative for Kenya, built on the principle that every promise a leader makes in public should remain a matter of public record. It is a sibling initiative to UWAZI, a separate proposed platform for public finance transparency.</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="content-wrap">
+      <!-- ============================================================ -->
+      <!-- READER GUIDANCE -->
+      <!-- ============================================================ -->
+      <section class="part" id="reader-guide" style="border-bottom:1px solid var(--line);">
+        <div class="part-header">
+          <span class="part-tag"><span class="line"></span>How to Use This Guide</span>
+          <h2>Start Here: A Guide for Each Reader</h2>
+          <p class="part-sub">Ahadi serves several audiences at once. This section points each one to what matters most to them.</p>
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <h4>Citizens</h4>
+            <p>Read Parts 01 and 02 for what Ahadi does and why it matters. Part 08 walks through exactly how to search for your leaders, read a promise's history, and report something you have seen, with evidence, to the newsroom.</p>
+          </div>
+          <div class="card">
+            <h4>Journalists &amp; newsrooms</h4>
+            <p>Part 03 covers the full life cycle of a promise record. Part 07 explains editorial roles, the audit trail, and how to get newsroom access. Part 10 sets out the neutrality and correction standards every entry is held to.</p>
+          </div>
+          <div class="card">
+            <h4>Leaders &amp; their offices</h4>
+            <p>Part 04 explains exactly what data is recorded about a promise and what counts as evidence. Part 10 covers the standing right of reply: any leader or their office can have an official response recorded and displayed next to any promise concerning them.</p>
+          </div>
+          <div class="card">
+            <h4>Developers, researchers &amp; partners</h4>
+            <p>Part 09 covers the technical architecture in plain terms, plus a short technical summary for engineers. Part 11 is an honest account of what is built and verified today versus what remains on the roadmap.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- PART 01 — WHAT IS AHADI -->
+      <!-- ============================================================ -->
+      <section class="part" id="what-is-ahadi">
+        <div class="part-header">
+          <span class="part-tag"><span class="line"></span>Part 01 of 12</span>
+          <h2>What Is Ahadi</h2>
+          <p class="part-sub">A single, searchable national record of what Kenya's elected leaders have promised, and what has happened since.</p>
+        </div>
+
+        <p>Ahadi is a public accountability platform built around one simple idea: a promise made in public by an elected leader should stay on the public record until it is delivered, or until it is honestly marked as delayed, stalled, or abandoned. Not summarised from memory. Not left to whoever shouts loudest on social media at election time. Recorded once, with evidence, and updated as things actually change.</p>
+
+        <p>The platform covers every level of elected office in Kenya: the President and Deputy President nationally, Governors, Senators and Women Representatives at county level, Members of Parliament at constituency level, and Members of County Assembly at ward level. A citizen can search their own location, or a specific leader's name, and see every promise tied to that seat, in one place, with a dated history of what has happened since it was made.</p>
+
+        <div class="grid-3">
+          <div class="card">
+            <span class="card-eyebrow">For citizens</span>
+            <h4>A record you can check</h4>
+            <p>Enter your county, constituency or ward and see who represents you, what they have promised, and how far each promise has actually gone.</p>
+          </div>
+          <div class="card">
+            <span class="card-eyebrow">For journalists</span>
+            <h4>A tool, not a replacement</h4>
+            <p>Ahadi is built for journalists to publish through, not to publish instead of them. Every entry is created or reviewed by a verified newsroom account.</p>
+          </div>
+          <div class="card">
+            <span class="card-eyebrow">For leaders</span>
+            <h4>A fair, factual record</h4>
+            <p>Every promise is dated and sourced. Every leader has a standing right of reply. Nothing is published as an accusation; everything is published as a documented fact with its source attached.</p>
+          </div>
+        </div>
+
+        <h3 class="with-rule">What Ahadi is not</h3>
+        <p>Ahadi does not rate leaders on popularity, ideology, or personal opinion. It does not accept anonymous, unverified claims for direct publication. It is not affiliated with any political party, and it does not accept political sponsorship. It records what was promised, what evidence exists, and what has happened since, and nothing else.</p>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- PART 02 — WHY THIS MATTERS -->
+      <!-- ============================================================ -->
+      <section class="part" id="why-it-matters">
+        <div class="part-header">
+          <span class="part-tag"><span class="line"></span>Part 02 of 12</span>
+          <h2>Why This Matters</h2>
+          <p class="part-sub">Kenya has a well documented trust gap between citizens and the leaders who make promises to them.</p>
+        </div>
+
+        <p>Public trust in Kenyan government institutions has been declining for years, not rising. According to the Edelman Trust Barometer's 2025 findings, only 38 percent of Kenyan adults say they trust government to do what is right, a further decline from the year before. Afrobarometer's research over the past decade shows trust in the ruling party falling from 61 percent to 38 percent, with confidence in the national electoral commission sitting even lower. A growing majority of Kenyans say they believe political leaders routinely mislead the public, a concern that has been rising since 2021.</p>
+
+        <p>This is not an abstract statistic. It shows up directly in how elections are fought and how leaders are judged once in office. Campaign promises are made loudly, at rallies and in manifestos, and then rarely revisited in any organised way once the campaign is over. By the next election cycle, most voters are working from memory, rumour, or whatever a candidate's opponents choose to remind them of, rather than an actual, verifiable record.</p>
+
+        <div class="callout gold">
+          <span class="callout-label">The constitutional basis</span>
+          <p>Article 35 of the Constitution of Kenya gives every citizen the right to information held by the state, and information held by another person where required for the exercise of any right. Article 232 requires public officers to be held accountable for administrative acts. Ahadi does not invent a new right; it makes an existing one practical, by putting the record in one searchable place instead of scattered across newspaper archives, parliamentary Hansards, and county gazette notices that most citizens will never think to look up.</p>
+        </div>
+
+        <p>Ahadi's premise is straightforward. If a promise was made in public, in front of a camera, a crowd, or a parliamentary record, then a citizen has a reasonable claim to know whether it happened. Making that record easy to find does not fix a trust gap by itself, but it removes one real barrier: the sheer difficulty of finding out.</p>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- PART 03 — HOW AHADI WORKS -->
+      <!-- ============================================================ -->
+      <section class="part" id="how-it-works">
+        <div class="part-header">
+          <span class="part-tag"><span class="line"></span>Part 03 of 12</span>
+          <h2>How Ahadi Works</h2>
+          <p class="part-sub">The life of a promise, from the moment it is spoken to the day it is delivered, delayed, or dropped.</p>
+        </div>
+
+        <p>Every promise on Ahadi moves through the same disciplined process. Nothing skips a step, and nothing is published without a named journalist or editor taking responsibility for it.</p>
+
+        <div class="flow">
+          <div class="flow-step">
+            <div class="flow-num">1</div>
+            <div><b>A leader makes a promise</b><span class="detail">In a speech, a rally, a parliamentary session, a TV interview, or an official address. It is a real, recorded, public moment, not a private conversation.</span></div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">2</div>
+            <div><b>Evidence is captured</b><span class="detail">A video clip, an audio recording, an official transcript, a Hansard extract, or a news report, tied to a specific date and location.</span></div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">3</div>
+            <div><b>It reaches a verified newsroom account</b><span class="detail">Either a journalist records it directly, or a citizen submits a tip with evidence, which sits in a review queue until a journalist looks at it.</span></div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">4</div>
+            <div><b>A journalist or editor reviews it</b><span class="detail">Checking the evidence, the date, the leader, and the location before anything goes live. Nothing a citizen submits publishes automatically.</span></div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">5</div>
+            <div><b>The promise record is published</b><span class="detail">With its own permanent page: what was promised, the date, the deadline, the budget where known, the category, and the location it applies to.</span></div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">6</div>
+            <div><b>The record is updated over time, never overwritten</b><span class="detail">As a promise moves from promised to in progress, delayed, stalled, completed, or abandoned, each change is added as a new, dated, sourced entry.</span></div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">7</div>
+            <div><b>The leader has a standing right of reply</b><span class="detail">A leader or their office can have an official response recorded and shown clearly alongside the promise at any time.</span></div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">8</div>
+            <div><b>It feeds the leader's accountability profile</b><span class="detail">Every published promise contributes automatically to that leader's overall record and score, recalculated as new information comes in.</span></div>
+          </div>
+        </div>
+
+        <h3 class="with-rule">Why a full history matters more than a single status</h3>
+        <p>A promise that says only "completed" or "not completed" hides most of the story. Ahadi records the full sequence instead: when it was promised, when funding was approved, when work started, whether it stalled and why, and when it finally finished, or did not. Each entry in that sequence carries its own evidence and its own source. Reading the whole timeline tells a citizen far more than a single status label ever could.</p>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- PART 04 — ANATOMY OF A PROMISE -->
+      <!-- ============================================================ -->
+      <section class="part" id="promise-record">
+        <div class="part-header">
+          <span class="part-tag"><span class="line"></span>Part 04 of 12</span>
+          <h2>Anatomy of a Promise Record</h2>
+          <p class="part-sub">What information Ahadi actually records, and what counts as acceptable evidence.</p>
+        </div>
+
+        <div class="table-wrap">
+          <table class="ahadi-table">
+            <caption>Core fields recorded for every promise</caption>
+            <thead>
+              <tr><th>Field</th><th>What it captures</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>Leader &amp; position</strong></td><td>Who made the promise, and the specific office they held at the time (a promise stays attached to the term it was made under, even after an election).</td></tr>
+              <tr><td><strong>Date made</strong></td><td>The exact date the promise was spoken or published, not the date it was entered into the system.</td></tr>
+              <tr><td><strong>Deadline</strong></td><td>Any stated completion date, where the leader gave one. Left blank rather than guessed when none was given.</td></tr>
+              <tr><td><strong>Budget</strong></td><td>The stated cost of the promise, where disclosed. Left at zero rather than estimated when no figure was given publicly.</td></tr>
+              <tr><td><strong>Category</strong></td><td>Infrastructure, health, education, water, security, environment, economy, governance, legislation, or youth and ICT.</td></tr>
+              <tr><td><strong>Location</strong></td><td>National, county, constituency, or ward, tied to the actual administrative area the promise applies to.</td></tr>
+              <tr><td><strong>Status &amp; progress</strong></td><td>The current state of the promise, and a percentage estimate of how far it has progressed.</td></tr>
+              <tr><td><strong>Evidence</strong></td><td>One or more sourced items: video, audio, an official document, a photograph, or a news report, attached to every entry in the timeline.</td></tr>
+              <tr><td><strong>Reported by</strong></td><td>The named newsroom or journalist account responsible for that entry, visible on the public record.</td></tr>
+              <tr><td><strong>Right of reply</strong></td><td>An optional, clearly labelled response from the leader or their office, shown separately from the newsroom's own reporting.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 class="with-rule">Status lifecycle</h3>
+        <p>Every promise sits in exactly one of six states at any given time. The label is chosen by a journalist, backed by the evidence attached to that update.</p>
+
+        <div class="table-wrap">
+          <table class="ahadi-table">
+            <thead>
+              <tr><th>Status</th><th>What it means</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><span class="tag tag-promised">Promised</span></td><td>The promise has been made and recorded. No visible action has been confirmed yet.</td></tr>
+              <tr><td><span class="tag tag-progress">In Progress</span></td><td>Confirmed activity is under way: funding approved, a tender awarded, construction started, or similar.</td></tr>
+              <tr><td><span class="tag tag-delayed">Delayed</span></td><td>Work is behind its stated timeline, but has not stopped entirely.</td></tr>
+              <tr><td><span class="tag tag-stalled">Stalled</span></td><td>Work has stopped, with no confirmed activity for a meaningful period, and no completion in sight.</td></tr>
+              <tr><td><span class="tag tag-completed">Completed</span></td><td>The promise has been fulfilled, confirmed by evidence such as a completion certificate, site visit, or official record.</td></tr>
+              <tr><td><span class="tag tag-abandoned">Abandoned</span></td><td>There is clear evidence the promise has been dropped: funds redirected, the project cancelled, or no explanation given after an extended period of inaction.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout info">
+          <span class="callout-label">On evidence standards</span>
+          <p>Acceptable evidence includes video or audio of the promise itself, official transcripts, parliamentary Hansard extracts, gazette notices, budget and procurement documents, dated site photographs, and reporting from established news outlets. A citizen's tip alone is never sufficient for publication; it becomes part of the record only once a journalist has reviewed it against evidence of this kind.</p>
+        </div>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- PART 05 — NATIONAL COVERAGE -->
+      <!-- ============================================================ -->
+      <section class="part" id="coverage">
+        <div class="part-header">
+          <span class="part-tag"><span class="line"></span>Part 05 of 12</span>
+          <h2>National Coverage</h2>
+          <p class="part-sub">Ahadi is built for the whole country from the start, not piloted in one county and expanded later.</p>
+        </div>
+
+        <div class="stat-strip">
+          <div class="stat-box"><div class="v">47</div><div class="l">counties mapped, with Governor, Senator and Woman Representative seats</div></div>
+          <div class="stat-box"><div class="v">289</div><div class="l">constituencies mapped, each with its Member of Parliament seat</div></div>
+          <div class="stat-box"><div class="v">1,448</div><div class="l">wards mapped, each with its Member of County Assembly seat</div></div>
+          <div class="stat-box"><div class="v">6</div><div class="l">levels of elected office searchable in one record, President to MCA</div></div>
+        </div>
+
+        <p>The geographic structure of Ahadi mirrors Kenya's actual system of devolved government. Search by location and the platform resolves every level of representation for that area: which county, which constituency, which ward, and who currently holds each seat. This is the same structure used in Part 08 for how citizens actually search the platform.</p>
+
+        <div class="table-wrap">
+          <table class="ahadi-table">
+            <thead>
+              <tr><th>Level</th><th>Office</th><th>Seats nationwide</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>National</td><td>President, Deputy President</td><td class="num">2</td></tr>
+              <tr><td>County</td><td>Governor, Senator, Woman Representative</td><td class="num">141</td></tr>
+              <tr><td>Constituency</td><td>Member of Parliament</td><td class="num">289</td></tr>
+              <tr><td>Ward</td><td>Member of County Assembly</td><td class="num">1,448</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 class="with-rule">A deliberately honest approach to who is listed</h3>
+        <p>Every seat above exists in Ahadi's directory, searchable by name and location, whether or not a verified leader record has been attached to it yet. Where a leader's identity has been checked against multiple independent sources, their name is shown. Where it has not yet been verified, the seat is shown clearly as pending verification rather than filled with a guessed or unconfirmed name.</p>
+
+        <div class="callout gold">
+          <span class="callout-label">Why this matters</span>
+          <p>A platform that puts a name to a real person's office needs to be right, not just complete. Filling in a plausible sounding name for a seat that has not actually been verified would risk a citizen mistaking an unverified guess for their real representative. Ahadi treats an honest "pending verification" as strictly better than a confident wrong answer.</p>
+        </div>
+
+        <p>As of this document's publication, the President, the Deputy President, three county Governors, and six constituency MPs have been verified against multiple independent sources and are shown by name. Every other seat is visible in the directory and awaits verification as the newsroom grows. See Part 11 for the current, honest count.</p>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- PART 06 — SCORES & COMPARISON -->
+      <!-- ============================================================ -->
+      <section class="part" id="scoring">
+        <div class="part-header">
+          <span class="part-tag"><span class="line"></span>Part 06 of 12</span>
+          <h2>Accountability Scores &amp; Comparison</h2>
+          <p class="part-sub">A single, explainable number, built from the promise record itself, not from opinion polling.</p>
+        </div>
+
+        <p>Once a leader has published promises on record, Ahadi calculates an accountability score out of 100, built from four measurable components. Nothing in the formula is a judgement call by an editor; it is a calculation over the leader's own recorded history.</p>
+
+        <div class="score-bars">
+          <div class="score-row"><span>Delivery</span><div class="score-track"><div class="score-fill" style="width:82%"></div></div></div>
+          <div class="score-row"><span>Transparency</span><div class="score-track"><div class="score-fill" style="width:68%"></div></div></div>
+          <div class="score-row"><span>Budget efficiency</span><div class="score-track"><div class="score-fill" style="width:74%"></div></div></div>
+          <div class="score-row"><span>Average progress</span><div class="score-track"><div class="score-fill" style="width:60%"></div></div></div>
+        </div>
+        <p style="font-size:.82rem;color:var(--ink-faint);margin-top:-10px;">Illustrative example only, not a real leader's score.</p>
+
+        <div class="grid-2">
+          <div class="card">
+            <h4>Delivery</h4>
+            <p>The share of a leader's promises that reached "completed," reduced when promises are marked stalled or abandoned.</p>
+          </div>
+          <div class="card">
+            <h4>Transparency</h4>
+            <p>How much verifiable evidence backs each of a leader's promises on average. More sourced updates, higher transparency.</p>
+          </div>
+          <div class="card">
+            <h4>Budget efficiency</h4>
+            <p>Reduced when promises run past their deadline or stall outright, since delay and inaction both carry a real cost.</p>
+          </div>
+          <div class="card">
+            <h4>Average progress</h4>
+            <p>Where a leader's promises currently stand overall, including the ones still under way.</p>
+          </div>
+        </div>
+
+        <p>A leader with no published promises yet shows no score at all, rather than a default or an assumed zero. A score only exists once there is a real record to calculate it from.</p>
+
+        <h3 class="with-rule">Comparing leaders</h3>
+        <p>Any two leaders can be compared directly: promises made, completed, delayed or stalled, completion rate, and overall score, side by side on the same scale. This is designed for the moment that matters most, when a voter is deciding between an incumbent and a challenger, or comparing their own representative against a neighbouring seat.</p>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- PART 07 — THE NEWSROOM MODEL -->
+      <!-- ============================================================ -->
+      <section class="part" id="newsroom">
+        <div class="part-header">
+          <span class="part-tag"><span class="line"></span>Part 07 of 12</span>
+          <h2>The Newsroom Model</h2>
+          <p class="part-sub">Journalists are the gatekeepers on Ahadi. There is no automated system that publishes claims on its own.</p>
+        </div>
+
+        <p>This is a deliberate design choice, not a limitation waiting to be automated away. Extracting a "promise" reliably from a speech, in English, Kiswahili, Sheng, or a mix of all three, is a genuinely hard problem, and getting it wrong at scale would put false claims into a record meant to be trusted. Ahadi keeps a person accountable for every entry instead.</p>
+
+        <div class="table-wrap">
+          <table class="ahadi-table">
+            <thead>
+              <tr><th>Role</th><th>Can do</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>Journalist</strong></td><td>Create new promise records, log dated timeline updates with evidence, record a leader's right of reply.</td></tr>
+              <tr><td><strong>Editor</strong></td><td>Everything a journalist can do, plus reviewing the citizen report queue, and closing a leader's term (resignation, death, impeachment, election loss) with a successor recorded.</td></tr>
+              <tr><td><strong>Admin</strong></td><td>Full editorial access, including account and platform-level administration.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 class="with-rule">Every action is logged</h3>
+        <p>Ahadi keeps an audit trail of every editorial action: who did it, exactly when, and what changed. This is not a feature that can be turned off. It exists so that if a claim is ever disputed, there is a clear, timestamped record of who published it and why, and so that the platform's own conduct is as accountable as the leaders it tracks.</p>
+
+        <h3 class="with-rule">Access is authenticated, not open</h3>
+        <p>Newsroom accounts require a verified login before any record can be created or changed. Passwords are never stored in plain text. Every write action, not just login, is checked against the account's role before it is allowed to happen.</p>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- PART 08 — FOR CITIZENS -->
+      <!-- ============================================================ -->
+      <section class="part" id="for-citizens">
+        <div class="part-header">
+          <span class="part-tag"><span class="line"></span>Part 08 of 12</span>
+          <h2>For Citizens: How to Use Ahadi</h2>
+          <p class="part-sub">No account is required to search, read, or compare. An account is only needed to report a tip.</p>
+        </div>
+
+        <div class="flow">
+          <div class="flow-step">
+            <div class="flow-num">1</div>
+            <div><b>Search your location or your leader</b><span class="detail">By county, constituency, ward, or by typing a leader's name directly.</span></div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">2</div>
+            <div><b>Browse the directory at any level</b><span class="detail">Dedicated, searchable listings exist for all counties, all constituencies, and all wards.</span></div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">3</div>
+            <div><b>Open a promise to see its full timeline</b><span class="detail">Every dated update, every piece of evidence, and the current status, in one place.</span></div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">4</div>
+            <div><b>Compare two leaders side by side</b><span class="detail">Useful when deciding between an incumbent and a challenger, or checking a neighbouring seat.</span></div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">5</div>
+            <div><b>Report something you have seen, with evidence</b><span class="detail">A short description, a link to a video or photo if you have one, and, optionally, a way for a journalist to reach you.</span></div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">6</div>
+            <div><b>A journalist reviews it before anything publishes</b><span class="detail">Your report joins a review queue. Nothing you submit goes live automatically.</span></div>
+          </div>
+        </div>
+
+        <div class="callout success">
+          <span class="callout-label">A note on ward-level data</span>
+          <p>Ahadi's biggest practical value is often local: what has actually changed in your own ward, not just national headlines. As more MCA seats are verified and more ward-level promises are recorded, this becomes the most directly useful part of the platform for day-to-day accountability, not just at election time.</p>
+        </div>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- PART 09 — TECHNOLOGY & SECURITY -->
+      <!-- ============================================================ -->
+      <section class="part" id="technology">
+        <div class="part-header">
+          <span class="part-tag"><span class="line"></span>Part 09 of 12</span>
+          <h2>Technology &amp; Security</h2>
+          <p class="part-sub">Built to be verifiable and hard to quietly tamper with, in plain terms first, then in technical detail.</p>
+        </div>
+
+        <p>Ahadi is built as two separate pieces: a public website anyone can browse, and a database and programming interface behind it that only authenticated newsroom accounts can write to. Nothing on the public side can change the record directly. Every change goes through the newsroom system, and every change is logged.</p>
+
+        <div class="arch-stack">
+          <div class="arch-layer l1"><span class="name">Public interface</span><span class="detail">Searchable directories, leader profiles, promise timelines, comparison tool</span></div>
+          <div class="arch-layer l2"><span class="name">Newsroom panel</span><span class="detail">Authenticated access for journalists, editors and admins only</span></div>
+          <div class="arch-layer l3"><span class="name">Application programming interface</span><span class="detail">Every read and write action passes through here, nothing bypasses it</span></div>
+          <div class="arch-layer l4"><span class="name">Authentication layer</span><span class="detail">Hashed passwords, session tokens, role checks on every write</span></div>
+          <div class="arch-layer l5"><span class="name">Database</span><span class="detail">Leaders, offices, promises, timeline updates and evidence, kept as separate, linked records</span></div>
+          <div class="arch-layer l6"><span class="name">Audit log</span><span class="detail">A permanent, append-only record of every editorial action taken on the platform</span></div>
+        </div>
+
+        <h3 class="with-rule">Why a leader's office is separate from the person holding it</h3>
+        <p>An MP for a given constituency and the person who happens to hold that seat today are treated as two different things in the data. When a leader resigns, dies in office, is removed, or loses an election, their term is closed with a reason and a date, and a successor is attached to the office going forward. The outgoing leader's full history stays exactly as it was. Nothing about a resignation or an election result requires rewriting the record.</p>
+
+        <h3 class="with-rule">Technical summary</h3>
+        <p style="font-size:.92rem;">A React front end serves the public site. A Node.js and Express backend exposes a REST API. Data is held in a relational database with leaders, offices, and terms modelled as separate, linked tables, so that election results and resignations never overwrite history. Authentication uses hashed passwords and signed session tokens, with role checks enforced on every write endpoint, not just at login. Every promise update carries its own evidence records rather than a single overwritable status field. The architecture is built to scale from a single-server deployment toward a larger database with read replicas and caching as usage grows, without a redesign.</p>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- PART 10 — TRUST & NEUTRALITY -->
+      <!-- ============================================================ -->
+      <section class="part" id="trust">
+        <div class="part-header">
+          <span class="part-tag"><span class="line"></span>Part 10 of 12</span>
+          <h2>Trust, Neutrality &amp; Editorial Standards</h2>
+          <p class="part-sub">The single biggest risk to a platform like this is being seen, correctly or not, as favouring one side.</p>
+        </div>
+
+        <p>Ahadi is built around a small set of standards that are not optional and not adjusted case by case.</p>
+
+        <div class="grid-2">
+          <div class="card">
+            <h4>No political sponsorship</h4>
+            <p>Ahadi does not accept funding or sponsorship from political parties, candidates, or their affiliated organisations.</p>
+          </div>
+          <div class="card">
+            <h4>Every claim is sourced</h4>
+            <p>No promise, and no status change, is published without dated, attributable evidence behind it.</p>
+          </div>
+          <div class="card">
+            <h4>Corrections, not deletions</h4>
+            <p>If a published entry turns out to be wrong, it is corrected with a new, dated entry explaining the correction, not silently edited or removed.</p>
+          </div>
+          <div class="card">
+            <h4>A standing right of reply</h4>
+            <p>Any leader or their office can have an official response recorded and shown clearly alongside any promise concerning them, at any time.</p>
+          </div>
+          <div class="card">
+            <h4>Consistent standards across every party</h4>
+            <p>The same evidence bar, the same status definitions, and the same review process apply regardless of party, region, or office.</p>
+          </div>
+          <div class="card">
+            <h4>Applies equally to Ahadi itself</h4>
+            <p>Every editorial action is logged and attributable. The platform holds its own conduct to the same transparency standard it asks of leaders.</p>
+          </div>
+        </div>
+
+        <div class="lead-quote">
+          A citizen does not have to trust Ahadi's judgement about a leader. They only have to trust that the evidence shown is real and the timeline is accurate, and check it themselves if they want to.
+        </div>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- PART 11 — CURRENT STATUS & ROADMAP -->
+      <!-- ============================================================ -->
+      <section class="part" id="status">
+        <div class="part-header">
+          <span class="part-tag"><span class="line"></span>Part 11 of 12</span>
+          <h2>Current Status &amp; Roadmap</h2>
+          <p class="part-sub">An honest account of what exists today, what is verified, and what comes next.</p>
+        </div>
+
+        <div class="grid-3">
+          <div class="card">
+            <span class="status-pill status-live">LIVE</span>
+            <h4 style="margin-top:10px;">Full national geography</h4>
+            <p>All 47 counties, 289 constituencies, and 1,448 wards are mapped and searchable, with directory pages at every level.</p>
+          </div>
+          <div class="card">
+            <span class="status-pill status-live">LIVE</span>
+            <h4 style="margin-top:10px;">Verified national leadership</h4>
+            <p>The President and Deputy President, three county Governors, and six constituency MPs are shown by name, checked against multiple independent sources.</p>
+          </div>
+          <div class="card">
+            <span class="status-pill status-live">LIVE</span>
+            <h4 style="margin-top:10px;">Real national promises</h4>
+            <p>Recorded national-level promises are drawn from actual public statements, not invented examples, each with its official source noted.</p>
+          </div>
+          <div class="card">
+            <span class="status-pill status-pending">IN PROGRESS</span>
+            <h4 style="margin-top:10px;">Remaining leader verification</h4>
+            <p>Senators, Women Representatives, most MPs, and every MCA seat are mapped but await a verified name, added as the newsroom confirms each one.</p>
+          </div>
+          <div class="card">
+            <span class="status-pill status-pending">IN PROGRESS</span>
+            <h4 style="margin-top:10px;">Newsroom onboarding</h4>
+            <p>Expanding from a small founding newsroom to additional verified journalists and partner outlets across the country.</p>
+          </div>
+          <div class="card">
+            <span class="status-pill status-planned">PLANNED</span>
+            <h4 style="margin-top:10px;">Notifications &amp; API access</h4>
+            <p>Following a leader or a location for updates, and an open, read-only data interface for researchers, media houses, and civic organisations.</p>
+          </div>
+        </div>
+
+        <div class="callout gold">
+          <span class="callout-label">Why so much is marked pending, on purpose</span>
+          <p>It would have been straightforward to fill every seat with a plausible name and every promise with a plausible story. Ahadi does not do that. Directory structure without a confirmed name is honest. A confident, unverified guess is not, and once trust in a specific record breaks, it is hard to win back trust in the rest of the platform.</p>
+        </div>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- PART 12 — FAQ -->
+      <!-- ============================================================ -->
+      <section class="part" id="faq">
+        <div class="part-header">
+          <span class="part-tag"><span class="line"></span>Part 12 of 12</span>
+          <h2>Frequently Asked Questions</h2>
+          <p class="part-sub">Common questions from citizens, leaders, and newsroom partners.</p>
+        </div>
+
+        <div class="faq-item">
+          <h4>Is Ahadi affiliated with any political party or the government?</h4>
+          <p>No. Ahadi is an independent civic technology initiative. It does not accept political sponsorship, and the same standards apply to every leader regardless of party or office.</p>
+        </div>
+        <div class="faq-item">
+          <h4>Can a leader or their team get a promise removed from the record?</h4>
+          <p>No. A published promise stays on the record. If a leader disputes how it is described, the correct route is a recorded right of reply, or evidence supporting a correction, which is added as a new, dated entry rather than a deletion.</p>
+        </div>
+        <div class="faq-item">
+          <h4>What happens when a leader resigns, dies in office, or loses an election?</h4>
+          <p>Their term is closed with a stated reason and date, and a successor is recorded going forward if one exists. The outgoing leader's full promise history remains exactly as it was, unchanged and still searchable.</p>
+        </div>
+        <div class="faq-item">
+          <h4>Is my report to the newsroom anonymous?</h4>
+          <p>Contact information is optional when reporting a tip. If you leave it, it is used only so a journalist can follow up on your report, and it is not published.</p>
+        </div>
+        <div class="faq-item">
+          <h4>How is a leader's name verified before it is published?</h4>
+          <p>Against multiple independent sources: official government or parliamentary records, and at least one established news outlet. If that bar is not met, the seat is shown as pending verification instead of a name.</p>
+        </div>
+        <div class="faq-item">
+          <h4>Does Ahadi use artificial intelligence to detect or write promises?</h4>
+          <p>No. Every promise record and every timeline update is created or reviewed by a named journalist or editor. This is a deliberate design decision, not a temporary limitation.</p>
+        </div>
+        <div class="faq-item">
+          <h4>Who can see the audit log?</h4>
+          <p>Newsroom editors and admins can see the full audit log of editorial actions on the platform, as part of holding Ahadi's own process to the same standard it asks of the leaders it tracks.</p>
+        </div>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- CONCLUSION -->
+      <!-- ============================================================ -->
+      <section class="part" id="conclusion" style="border-bottom:none;">
+        <div class="part-header">
+          <span class="part-tag"><span class="line"></span>Conclusion</span>
+          <h2>A Debt That Should Stay on the Record</h2>
+        </div>
+
+        <p>"Ahadi ni deni," a promise is a debt, is a common Swahili saying, and it is the idea the platform is named for. A debt does not disappear because it is inconvenient to remember. Ahadi exists to make sure a public promise does not either: recorded once, with evidence, held open until it is honestly resolved, and available to any citizen who wants to check.</p>
+
+        <p>Ahadi is not finished. Most of Kenya's elected seats still show pending verification rather than a confirmed name, and the platform's real value grows with every journalist who joins and every promise that gets recorded. That is by design. A national accountability record built honestly, one verified entry at a time, is worth more than one built quickly and wrong.</p>
+
+        <div class="card" style="margin-top:20px;">
+          <h4>About Ahadi</h4>
+          <p>Ahadi is a civic technology initiative for Kenya, built on the principle that journalists, not automated systems, should stand behind every claim published about a public leader. It is a sibling project to UWAZI, a separate proposed platform focused on public finance transparency, sharing the same underlying commitment to making public information easy to find and hard to quietly bury.</p>
+        </div>
+      </section>
+    </div><!-- /.content-wrap -->
+  </main>
+</div><!-- /.shell -->
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="swahili">"Ahadi ni deni." (A promise is a debt.)</div>
+    <div class="footer-grid">
+      <div>
+        <h5>AHADI</h5>
+        <p>A national public accountability platform for Kenya, tracking promises made by elected leaders from the President to Members of County Assembly. This guide was last updated July 2026.</p>
+      </div>
+      <div>
+        <h5>About This Guide</h5>
+        <p>Written for citizens, journalists, leaders and their offices, and anyone evaluating the platform. For the full national geography, leader directories and live promise records, use the Ahadi platform itself.</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      Statistics on public trust cited in Part 02 are drawn from the Edelman Trust Barometer (2025) and Afrobarometer's Kenya survey research, and are the original work of those organisations, cited here for context rather than reproduced in full. All other content describes the Ahadi platform itself.
+    </div>
+  </div>
+</footer>
+
+<button class="back-to-top" id="backToTop" aria-label="Back to top">&#8593;</button>
+
+<script>
+(function(){
+  "use strict";
+
+  var sidebar = document.getElementById('sidebar');
+  var overlay = document.getElementById('sidebarOverlay');
+  var hamburger = document.getElementById('hamburgerBtn');
+
+  function openSidebar(){
+    sidebar.classList.add('open');
+    overlay.classList.add('show');
+    hamburger.classList.add('open');
+    hamburger.setAttribute('aria-expanded','true');
+  }
+  function closeSidebar(){
+    sidebar.classList.remove('open');
+    overlay.classList.remove('show');
+    hamburger.classList.remove('open');
+    hamburger.setAttribute('aria-expanded','false');
+  }
+  if(hamburger){
+    hamburger.addEventListener('click', function(){
+      if(sidebar.classList.contains('open')){ closeSidebar(); } else { openSidebar(); }
+    });
+  }
+  if(overlay){ overlay.addEventListener('click', closeSidebar); }
+
+  var tocLinks = Array.prototype.slice.call(document.querySelectorAll('#tocNav a'));
+  tocLinks.forEach(function(link){
+    link.addEventListener('click', function(){
+      if(window.matchMedia('(max-width: 880px)').matches){ closeSidebar(); }
+    });
+  });
+
+  var sections = Array.prototype.slice.call(document.querySelectorAll('.part'));
+  var linkMap = {};
+  tocLinks.forEach(function(link){
+    var id = link.getAttribute('href').replace('#','');
+    linkMap[id] = link;
+  });
+
+  function setActive(id){
+    tocLinks.forEach(function(l){ l.classList.remove('active'); });
+    if(linkMap[id]){
+      linkMap[id].classList.add('active');
+      var rect = linkMap[id].getBoundingClientRect();
+      var sbRect = sidebar.getBoundingClientRect();
+      if(rect.top < sbRect.top || rect.bottom > sbRect.bottom){
+        linkMap[id].scrollIntoView({block:'nearest'});
+      }
+    }
+  }
+
+  if('IntersectionObserver' in window){
+    var observer = new IntersectionObserver(function(entries){
+      var visible = entries.filter(function(e){ return e.isIntersecting; });
+      if(visible.length > 0){
+        visible.sort(function(a,b){ return b.intersectionRatio - a.intersectionRatio; });
+        setActive(visible[0].target.id);
+      }
+    }, { rootMargin: '-15% 0px -55% 0px', threshold: [0, 0.1, 0.25, 0.5, 0.75, 1] });
+    sections.forEach(function(sec){ observer.observe(sec); });
+  }
+
+  var printBtn = document.getElementById('printBtn');
+  if(printBtn){ printBtn.addEventListener('click', function(){ window.print(); }); }
+
+  var backToTop = document.getElementById('backToTop');
+  window.addEventListener('scroll', function(){
+    if(window.scrollY > 600){ backToTop.classList.add('show'); }
+    else { backToTop.classList.remove('show'); }
+  }, { passive:true });
+  backToTop.addEventListener('click', function(){
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    document.documentElement.style.scrollBehavior = 'auto';
+  }
+})();
+</script>
+</body>
+</html>

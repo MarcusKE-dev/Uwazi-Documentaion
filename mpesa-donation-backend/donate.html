@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Donate via M‑Pesa</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      max-width: 400px;
+      margin: 40px auto;
+      padding: 0 16px;
+    }
+
+    h2 {
+      color: #1a2233;
+    }
+
+    label {
+      display: block;
+      margin-top: 16px;
+      font-weight: 600;
+    }
+
+    input,
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 6px;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-sizing: border-box;
+    }
+
+    button {
+      background: #f5b041;
+      color: #081120;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: background 0.2s;
+    }
+
+    button:hover {
+      background: #f7c25c;
+    }
+
+    #status {
+      margin-top: 16px;
+      padding: 10px;
+      border-radius: 8px;
+      display: none;
+    }
+
+    .loading {
+      background: #fdf3e2;
+      color: #5c4011;
+    }
+
+    .success {
+      background: #e9f4ee;
+      color: #1f6b46;
+    }
+
+    .error {
+      background: #fbeae6;
+      color: #a8341f;
+    }
+  </style>
+</head>
+
+<body>
+  <h2>Support UWAZI</h2>
+  <p>Enter your M‑Pesa registered phone number and the amount you wish to donate.</p>
+
+  <form id="donateForm">
+    <label for="phone">📱 M‑Pesa Phone Number</label>
+    <!-- Updated pattern allows optional '+', optional '254' or '0', followed by 1, 7, 0, or 6 and the remaining digits -->
+    <input type="tel" id="phone" placeholder="0712345678 or 254712345678" required pattern="^(\+?254|0)[1706]\d{8}$"
+      title="Enter a valid phone number (e.g., 0712345678, 0112345678, or 254712345678)">
+
+    <label for="amount">💰 Amount (KES)</label>
+    <input type="number" id="amount" placeholder="e.g. 100" min="1" required>
+
+    <button type="submit">Donate Now</button>
+  </form>
+
+  <div id="status"></div>
+
+  <script>
+    const form = document.getElementById('donateForm');
+    const statusDiv = document.getElementById('status');
+
+    const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+      ? 'http://localhost:3000'
+      : window.location.origin;
+    const BACKEND_URL = `${API_BASE}/api/donate`;
+    const STATUS_URL = `${API_BASE}/api/payment-status`;
+    let paymentPollTimer = null;
+
+    function clearPaymentPolling() {
+      if (paymentPollTimer) {
+        clearInterval(paymentPollTimer);
+        paymentPollTimer = null;
+      }
+    }
+
+    function resetForm() {
+      form.reset();
+    }
+
+    async function pollPaymentStatus(checkoutRequestId) {
+      const maxAttempts = 180;
+      let attempts = 0;
+
+      const checkStatus = async () => {
+        attempts += 1;
+
+        try {
+          const response = await fetch(`${STATUS_URL}/${checkoutRequestId}`);
+          const data = await response.json();
+
+          if (data.status === 'success') {
+            clearPaymentPolling();
+            statusDiv.className = 'success';
+            statusDiv.textContent = `✅ Donation received. Thank you! Receipt: ${data.receiptNumber || 'N/A'}`;
+            resetForm();
+            return;
+          }
+
+          if (data.status === 'failed') {
+            clearPaymentPolling();
+            statusDiv.className = 'error';
+            const friendlyMessage = String(data.message || 'Payment failed')
+              .replace(/\bpin\b/gi, 'PIN')
+              .replace(/incorrect/i, 'incorrect');
+            statusDiv.textContent = `❌ ${friendlyMessage}`;
+            return;
+          }
+
+          if (attempts >= maxAttempts) {
+            clearPaymentPolling();
+            statusDiv.className = 'error';
+            statusDiv.textContent = '⏰ Payment confirmation took too long. If you already paid, please check your phone or try again shortly.';
+            return;
+          }
+
+          statusDiv.className = 'loading';
+          statusDiv.textContent = '⏳ Waiting for payment confirmation...';
+        } catch (err) {
+          clearPaymentPolling();
+          statusDiv.className = 'error';
+          statusDiv.textContent = '❌ Unable to verify payment status';
+        }
+      };
+
+      await checkStatus();
+      paymentPollTimer = setInterval(checkStatus, 5000);
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      clearPaymentPolling();
+
+      // 1. Get input values and strip empty spaces
+      let rawPhone = document.getElementById('phone').value.replace(/\s+/g, '');
+      const amount = document.getElementById('amount').value.trim();
+
+      // 2. Format Phone Number to match Safaricom's strict '254XXXXXXXXX' rule
+      // Remove a leading '+' if present
+      if (rawPhone.startsWith('+')) {
+        rawPhone = rawPhone.substring(1);
+      }
+
+      // Convert '07...' or '01...' to '2547...' or '2541...'
+      if (rawPhone.startsWith('0')) {
+        rawPhone = '254' + rawPhone.substring(1);
+      }
+
+      const formattedPhone = rawPhone;
+
+      // Show loading state
+      statusDiv.className = 'loading';
+      statusDiv.textContent = `⏳ Requesting M‑Pesa prompt for ${formattedPhone}...`;
+      statusDiv.style.display = 'block';
+
+      try {
+        const response = await fetch(BACKEND_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ phone: formattedPhone, amount })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.ResponseCode === '0') {
+          statusDiv.className = 'success';
+          statusDiv.textContent = '✅ Payment request sent! Check your phone and enter your M‑Pesa PIN to complete.';
+          if (data.checkoutRequestId) {
+            pollPaymentStatus(data.checkoutRequestId);
+          }
+        } else {
+          const serverError = data.errorMessage || data.error || 'M‑Pesa request failed';
+          const friendlyServerError = serverError.includes('Failed to generate access token')
+            ? 'M-Pesa is temporarily busy. Please wait a moment and try again.'
+            : serverError;
+          throw new Error(friendlyServerError);
+        }
+      } catch (err) {
+        clearPaymentPolling();
+        statusDiv.className = 'error';
+        statusDiv.textContent = '❌ ' + err.message;
+      }
+    });
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,1400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UWAZI: Kenya Public Finance Transparency &amp; Anti-Corruption System</title>
+<meta name="description" content="UWAZI: a proposed national platform tracking every Kenyan shilling from tax collection to project completion, in real time, with full public accountability.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a href="#main-content" class="skip-link">Skip to content</a>
+
+<div class="topbar">
+  <div class="topbar-brand"><span class="mark">◆</span> UWAZI</div>
+  <button class="hamburger" id="hamburgerBtn" aria-label="Open navigation menu" aria-expanded="false" aria-controls="sidebar">
+    <span></span><span></span><span></span>
+  </button>
+</div>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<div class="shell">
+  <aside class="sidebar" id="sidebar" aria-label="Document navigation">
+    <div class="brand">
+      <div class="wordmark">UWAZI<span class="dot">.</span></div>
+      <div class="tagline">Kenya Public Finance Transparency &amp; Anti-Corruption System</div>
+      <div class="swahili">"Huwezi kuiba kile kila mtu anachoona."</div>
+    </div>
+
+    <div class="nav-section-label">Document Series: 11 Parts</div>
+    <nav class="toc" id="tocNav" aria-label="Table of contents">
+      <a href="#reader-guide"><span class="num">00</span><span>How to Use This Document</span></a>
+      <a href="#executive-brief"><span class="num">01</span><span>Executive Brief</span></a>
+      <a href="#crisis"><span class="num">02</span><span>The Crisis</span></a>
+      <a href="#architecture"><span class="num">03</span><span>Technical Architecture</span></a>
+      <a href="#fraud-detection"><span class="num">04</span><span>Fraud Detection &amp; Accountability</span></a>
+      <a href="#enforcement"><span class="num">05</span><span>Enforcement &amp; Legal Framework</span></a>
+      <a href="#modules-a"><span class="num">06</span><span>Modules A: Core, Debt, Resources</span></a>
+      <a href="#modules-b"><span class="num">07</span><span>Modules B: Citizen, Assets, Donor</span></a>
+      <a href="#roadmap"><span class="num">08</span><span>Roadmap &amp; Organisation</span></a>
+      <a href="#budget"><span class="num">09</span><span>Budget &amp; Funding</span></a>
+      <a href="#risk-roi"><span class="num">10</span><span>Risk, ROI &amp; Global Vision</span></a>
+      <a href="#conclusion"><span class="num">11</span><span>Conclusion &amp; Contact</span></a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="btn-print" id="printBtn">⎙ Print / Save as PDF</button>
+      <div class="meta">
+        UWAZI-CONCEPT-001<br>
+        Originated 15 March 2026, Kajiado, Kenya<br>
+        Updated June 2026 · Confidential IP of originator
+      </div>
+    </div>
+  </aside>
+
+  <main id="main-content">
+
+    <div class="cta-links-bar" aria-label="Quick navigation links">
+  <div class="cta-links-inner">
+    <span class="cta-label">Quick Access</span>
+
+    <!-- Mock link 1 — Featured / Primary CTA -->
+    <a href="./mpesa-donation-backend/donate.html" class="cta-link-card featured">
+       Support
+      <span class="arrow">→</span>
+    </a>
+
+    <!-- Mock link 2 -->
+    <a href="./Ahadi/Ahadi.html" class="cta-link-card">
+       Ahadi
+      <span class="arrow">→</span>
+    </a>
+
+    <!-- Mock link 3 -->
+    <a href="./Message/Message.html" class="cta-link-card">
+       Messsage to Kenyans
+      <span class="arrow">→</span>
+    </a>
+
+        <a href="https://dev-john.vercel.app" class="cta-link-card">
+       About Author
+      <span class="arrow">→</span>
+    </a>
+
+  </div>
+</div>
+
+    <section class="hero" id="top">
+      <div class="hero-inner">
+        <span class="hero-eyebrow">National Public Finance Infrastructure Proposal · Updated June 2026</span>
+        <h1>UWAZI<span class="mark">.</span></h1>
+        <p class="subtitle">Kenya Public Finance Transparency &amp; Anti-Corruption System</p>
+        <p class="lede">A proposed national digital platform that tracks every Kenyan shilling from the moment it is collected as tax to the final coin spent on any public project, in real time, with full public accountability and individual officer responsibility attached to every transaction.</p>
+        <p class="swahili-line">"Huwezi kuiba kile kila mtu anachoona." (You cannot steal what everyone can see.)</p>
+
+        <div class="hero-stats">
+          <div class="hero-stat"><div class="v">KSh 608B</div><div class="l">lost to corruption every year: 7.8% of GDP (EACC, FY2024/25)</div></div>
+          <div class="hero-stat"><div class="v">KSh 13T+</div><div class="l">national public debt, crossed in May 2026 (about 70% of GDP)</div></div>
+          <div class="hero-stat"><div class="v">130 / 180</div><div class="l">Kenya's rank on the 2025 Corruption Perceptions Index (score 30/100)</div></div>
+          <div class="hero-stat"><div class="v">KSh 4.8T</div><div class="l">national budget, FY2026/27: the largest in Kenya's history</div></div>
+        </div>
+
+        <div class="ip-notice">
+          <div class="seal">UWAZI<br>IP</div>
+          <p><strong>Intellectual Property Notice.</strong> This document and the UWAZI concept described herein are the original intellectual work of <strong>John Thindi Mwaura ("Marcus")</strong>, originated in Kajiado, Kenya on 15 March 2026 (Reference: UWAZI-CONCEPT-001). Reproduction, adaptation, commercial use, or implementation without the originator's written consent is prohibited under Kenyan and international intellectual property law. Contact: mwaura.ke.john@gmail.com · uwazi.ke@gmail.com · +254 705 062 319.</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="content-wrap">
+      <!-- ============================================================ -->
+      <!-- READER GUIDANCE -->
+      <!-- ============================================================ -->
+      <section class="part" id="reader-guide" style="border-bottom:1px solid var(--line);">
+        <div class="part-header">
+          <span class="part-tag"><span class="line"></span>How to Use This Document</span>
+          <h2>Start Here: A Guide for Each Reader</h2>
+          <p class="part-sub">This document is designed so different audiences can navigate directly to what matters most to them.</p>
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <h4>Government officials &amp; policy makers</h4>
+            <p>Start with Parts 01 and 02 for the scale of the problem and why it is structural, not individual. Then go to Part 05 for the legal and constitutional basis. UWAZI is built around laws that already exist and mandates that government already has.</p>
+          </div>
+          <div class="card">
+            <h4>Donors &amp; development partners</h4>
+            <p>Start with Part 01 (investment case and ROI), then Part 08 (specific milestones), Part 09 (full budget and funding strategy), and Part 10 (evidence-based return ratios and risk register). Part 07, Module 17 covers how UWAZI creates a measurable accountability feedback loop on your existing disbursements.</p>
+          </div>
+          <div class="card">
+            <h4>Technical reviewers &amp; engineers</h4>
+            <p>Start with Part 03 (full system architecture and technology stack), Part 04 (fraud detection engine and all nine patterns), and Part 05 (enforcement workflow and evidence package). The phased data ingestion justification in Part 03 directly addresses the most common technical critique.</p>
+          </div>
+          <div class="card">
+            <h4>Civil society organisations &amp; journalists</h4>
+            <p>Start with Parts 01 and 02 for the documented corruption cases and the case for accountability. Parts 06 and 07 cover every module including the Open API (Module 19d) and the Citizen Verification system (Module 15). The Annual Corruption Cost Report (Module 19e) is specifically designed for public-interest journalism.</p>
+          </div>
+          <div class="card">
+            <h4>Citizens</h4>
+            <p>Part 01 explains what UWAZI does and why it matters to you directly. Part 04 explains how you can participate as a project verifier. Part 06, Module 14 covers NG-CDF and the Ward Development Fund, which are the public funds most directly controlled by your elected representatives. You have a constitutional right under Article 35 to know where your tax money went; UWAZI gives you that right in practice.</p>
+          </div>
+          <div class="card">
+            <h4>Academic researchers</h4>
+            <p>Part 10 contains the full ROI methodology and evidence base (FATF, World Bank, IMF working papers). Part 03 covers the technical architecture including the data governance and access levels. Module 19d (Open API) and Module 19a (Historical Data Archive) are the most directly relevant to governance research.</p>
+          </div>
+        </div>
+
+        <h3 class="with-rule">The Five Core Innovations That Make UWAZI Different</h3>
+        <p>Transparency portals exist in many countries. None of them do all five of these things simultaneously, and the combination is what makes UWAZI structurally different from what came before.</p>
+        <div class="table-wrap">
+          <table class="uwazi-table">
+            <thead><tr><th>#</th><th>Innovation</th><th>Why it matters</th></tr></thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td><strong>Officer photographs and names on every transaction</strong></td>
+                <td>Making personal accountability the default, not the exception. Not a department or a vote code: a named, photographed person whose professional record is permanently attached to every shilling they authorise.</td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td><strong>End-to-end integration in a single platform</strong></td>
+                <td>Real-time tax collection tracking, Consolidated Fund balance visibility, individual officer profiles, rule-based and AI fraud detection, auto-generated court-admissible evidence, and direct simultaneous filing to EACC, ODPP, FRC, and PSC (all in one system, not scattered across disconnected agencies).</td>
+              </tr>
+              <tr>
+                <td>3</td>
+                <td><strong>The shilling-to-shilling philosophy</strong></td>
+                <td>Tracking every public coin from the exact moment of tax collection through every institutional hand to the final verified point of expenditure, with no gaps and no black boxes in the chain.</td>
+              </tr>
+              <tr>
+                <td>4</td>
+                <td><strong>The Integrity Clock</strong></td>
+                <td>A publicly visible, permanently running counter showing how long each filed corruption case has been active and what every agency's last stated status is. Not a legal deadline; a transparency mechanism that makes inaction as visible as the original fraud.</td>
+              </tr>
+              <tr>
+                <td>5</td>
+                <td><strong>Smart contract conditional spending</strong></td>
+                <td>Funds for a specific project held in digital escrow and released to contractors only when physical on-the-ground verification confirms milestones are actually met, not just declared complete on paper. Available Phase 3 with IFMIS integration.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 class="with-rule">What UWAZI Is, and What It Is Not</h3>
+        <p>These distinctions matter legally and operationally. Any reviewer (government, legal, technical, or journalistic) will have these questions. The answers are stated here plainly rather than buried in footnotes.</p>
+        <div class="table-wrap">
+          <table class="uwazi-table">
+            <thead><tr><th>What UWAZI does</th><th>What UWAZI does NOT do</th></tr></thead>
+            <tbody>
+              <tr><td>Detects fraud patterns using rules (Phases 1–2) and machine learning (Phase 3+)</td><td>Determine guilt. A flag is a flag until a human analyst confirms it and the legal system acts on it.</td></tr>
+              <tr><td>Publishes a fraud flag and evidence chain after mandatory human analyst confirmation</td><td>Publish unconfirmed flags. No alert is ever issued from raw detection alone; human review is enforced architecturally, not by policy.</td></tr>
+              <tr><td>Files a complete, court-ready evidence package to EACC, ODPP, FRC, and PSC</td><td>Prosecute anyone. The ODPP makes prosecution decisions under constitutionally protected independence (Article 157). UWAZI has no authority over that decision.</td></tr>
+              <tr><td>Files a Suspicious Activity Report with the Financial Reporting Centre</td><td>Freeze bank accounts. Only the FRC and the courts have that authority. UWAZI initiates the FRC's own independent process.</td></tr>
+              <tr><td>Notifies the Public Service Commission with the full evidence package</td><td>Suspend officers or withhold salaries. PSC makes those decisions under its own legal mandate.</td></tr>
+              <tr><td>Holds project funds in smart-contract escrow (Phase 3) and releases them against verified milestones</td><td>Override IFMIS or the National Treasury. Smart contracts operate within the agreed contractual terms, not as a mechanism for UWAZI to control the Treasury unilaterally.</td></tr>
+              <tr><td>Shows the Integrity Clock: days elapsed since a case was filed and the agency's last stated status</td><td>Impose legal deadlines on any agency. The Clock is a transparency mechanism; it conveys facts, it does not confer authority.</td></tr>
+              <tr><td>Publish professional conduct connected to public funds for every officer who authorises public spending</td><td>Publish personal data. Home addresses, family information, personal finances, medical data: none of this is ever published. Only professional conduct with public funds.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout gold">
+          <span class="callout-label">The principle behind every limitation above</span>
+          <p>UWAZI is an accountability infrastructure platform, not a replacement for the institutions that hold constitutional authority over prosecution, suspension, asset freezing, and sentencing. Its power comes from <strong>making information impossible to suppress</strong>, not from claiming authority it does not have. Every overreach in that direction would expose UWAZI to legitimate constitutional challenge and undermine the entire project.</p>
+        </div>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- PART 01 — EXECUTIVE BRIEF -->
+      <!-- ============================================================ -->
+      <section class="part" id="executive-brief">
+        <div class="part-header">
+          <span class="part-tag"><span class="line"></span>Part 01 of 11</span>
+          <h2>Executive Brief: What UWAZI Is, and Why It Matters Now</h2>
+          <p class="part-sub">A plain overview for government officials, donors, technical reviewers, civil society, journalists, and citizens.</p>
+        </div>
+
+        <h3 class="with-rule">What UWAZI Is</h3>
+        <p><strong>UWAZI</strong>, meaning "transparency" in Kiswahili, is a proposed national digital platform that makes every Kenyan government financial transaction publicly visible and permanently recorded. From the moment VAT is collected at a supermarket checkout to the final payment released to a road contractor, every movement of public money is timestamped and published for any citizen to inspect.</p>
+        <p>It is accessible on any phone, tablet, or computer at zero cost, in English and Kiswahili. A proposed USSD short code would extend access to basic feature phones without internet, subject to Communications Authority of Kenya approval and carrier agreements with Safaricom, Airtel, and Telkom.</p>
+
+        <div class="grid-3">
+          <div class="card">
+            <span class="card-eyebrow">01</span>
+            <h4>A Public Finance Operating System</h4>
+            <p>The layer that makes government financial data machine-readable and publicly accessible as it is generated, rather than buried in retrospective PDF reports.</p>
+          </div>
+          <div class="card">
+            <span class="card-eyebrow">02</span>
+            <h4>A Transparency Infrastructure Layer</h4>
+            <p>Permanent, immutable, distributed record-keeping. Data is replicated across independent nodes so no single administration can suppress or alter it.</p>
+          </div>
+          <div class="card">
+            <span class="card-eyebrow">03</span>
+            <h4>A Data Intelligence Platform</h4>
+            <p>Automated analysis that detects fraud patterns, generates court-admissible evidence, and routes confirmed cases to the relevant oversight agency.</p>
+          </div>
+        </div>
+
+        <h3 class="with-rule">The Journey of a Kenyan Shilling</h3>
+        <p>This is where public money currently disappears, and where each UWAZI phase intervenes.</p>
+        <div class="flow">
+          <div class="flow-step"><div class="flow-num">1</div><div><b>Citizen pays tax</b><br><span class="detail">VAT, PAYE, excise, customs</span></div></div>
+          <div class="flow-step"><div class="flow-num">2</div><div><b>KRA collects</b><br><span class="detail">Held in commercial bank accounts pending remittance</span></div></div>
+          <div class="flow-step"><div class="flow-num">3</div><div><b>Consolidated Fund</b><br><span class="detail">Central Bank of Kenya master account; no withdrawal without Controller of Budget approval</span></div></div>
+          <div class="flow-step"><div class="flow-num">4</div><div><b>Parliament approves budget</b><br><span class="detail">Treasury issues Exchequer releases</span></div></div>
+          <div class="flow-step"><div class="flow-num">5</div><div><b>Ministry or county receives</b><br><span class="detail">47 counties plus all national ministries</span></div></div>
+          <div class="flow-step"><div class="flow-num">6</div><div><b>Contractor or employee paid</b><br><span class="detail">Via IFMIS, authorised by a named Accounting Officer</span></div></div>
+          <div class="flow-step gap"><div class="flow-num">!</div><div><b>Is the project actually complete?</b><br><span class="detail">This is where corruption happens: contractors paid in full, the road does not exist, the hospital has no equipment, the teacher never taught.</span></div></div>
+        </div>
+        <div class="callout gold">
+          <span class="callout-label">UWAZI's intervention</span>
+          <p>Every arrow above becomes a tracked, timestamped, publicly recorded transaction. The closing question mark becomes an answer that any Kenyan can verify, on any phone, at zero cost.</p>
+        </div>
+
+        <h3 class="with-rule">Two Scenarios: What Phase 1 and Phase 3 Each Make Possible</h3>
+        <p>UWAZI is built in phases, and Phase 1 and Phase 3 have fundamentally different capabilities. Both matter.</p>
+
+        <div class="card" style="margin-bottom:16px;">
+          <span class="card-eyebrow">Scenario 1 · Phase 1 (Months 1–12), public data only</span>
+          <h4>A ward project contract that should never have been awarded</h4>
+          <p>Today, a Ward Development Fund contract worth KSh 8 million for a water tank project is awarded in a Kenyan county. It is never published. Residents have no way to know the project exists, who the contractor is, or that money was released. The Auditor-General may flag it two years later. Nothing happens.</p>
+          <p>Under UWAZI Phase 1: the moment PPRA publishes the contract award (already public data), UWAZI ingests it automatically and checks whether there was a competitive tender, when the company was registered, and whether the price sits within market range. The company was registered 45 days before winning the contract. This triggers a flag for human-analyst review; once confirmed, a public alert is published and the civil society coalition is notified. UWAZI cannot freeze the payment in Phase 1, since it has no IFMIS integration yet, but it makes the suspicious contract visible to every Kenyan with a phone before the money disappears.</p>
+        </div>
+
+        <div class="card">
+          <span class="card-eyebrow">Scenario 2 · Phase 3 (Month 18+), full government integration</span>
+          <h4>A road contract held to delivery</h4>
+          <p>A road project is budgeted at KSh 45 million. The contract is published the moment it is signed: contractor name, registration number, directors, amount, and the authorising officer's name and photo. A smart contract holds funds in escrow. At Month 4, residents upload 14 photos showing 2km of road built out of a contracted 8km. UWAZI's image analysis cross-references the photos against satellite imagery and the contract specification, raising a flag. A human analyst confirms the discrepancy within 24 hours. The officer is named publicly and given 72 hours to respond. EACC receives a court-ready evidence package. Remaining funds stay frozen in escrow, and the contractor cannot receive further government payment until the case is resolved. The Integrity Clock starts, showing every Kenyan how many days have passed and what EACC's last reported status is.</p>
+        </div>
+
+        <h3 class="with-rule">Why This Matters to Each Audience</h3>
+        <div class="grid-2">
+          <div class="card">
+            <h4>Reform-minded government officials</h4>
+            <p>In Kenya's current system, honest officers face informal pressure to participate in or ignore corrupt practices, because invisibility favours the corrupt. UWAZI inverts that: when every transaction is permanently visible and named, the system structurally protects honest officers and exposes dishonest ones. Stronger governance ratings also reduce borrowing costs directly: Kenya's debt service alone consumed roughly KSh 1.35 trillion (about 42% of revenue) in the first nine months of FY2025/26 (Controller of Budget).</p>
+          </div>
+          <div class="card">
+            <h4>Donors and development partners</h4>
+            <p>Kenya's $3.6 billion IMF Extended Fund Facility and Extended Credit Facility programme expired in April 2025 after the ninth review did not proceed; a successor programme was requested but had not been agreed as of June 2026. The IMF's Governance Diagnostic mission (completed June 2025) was due to share a draft report with the authorities before the end of 2025. UWAZI offers donors verified, citizen-confirmed evidence that disbursed funds reached their intended destination, turning accountability from a self-reported obligation into an independently checkable fact.</p>
+          </div>
+          <div class="card">
+            <h4>Civil society and media</h4>
+            <p>For the first time, any journalist, researcher, or citizen organisation has free, real-time, machine-readable access to government financial data with no gatekeeping. Data living simultaneously in thousands of independent hands cannot be suppressed by any single administration. The Integrity Clock makes inaction on a filed case as visible as the original fraud.</p>
+          </div>
+          <div class="card">
+            <h4>Citizens</h4>
+            <p>Every Kenyan has a constitutional right, under Article 35, to know where their tax money went. UWAZI gives them that right in practice: on any phone, in Kiswahili or English, at zero cost. It also gives them the power to act: photographing an incomplete project and uploading it becomes part of the official public record that no officer can delete.</p>
+          </div>
+        </div>
+
+        <h3 class="with-rule">Key Statistics</h3>
+        <div class="table-wrap">
+          <table class="uwazi-table">
+            <thead><tr><th>Indicator</th><th class="num">Figure</th><th>Source</th></tr></thead>
+            <tbody>
+              <tr><td>National budget, FY2026/27</td><td class="num">KSh 4.82 trillion</td><td>National Treasury Budget Summary, 30 Apr 2026</td></tr>
+              <tr><td>Total revenue incl. grants, FY2026/27</td><td class="num">KSh 3.67 trillion</td><td>National Treasury, Jun 2026</td></tr>
+              <tr><td>Total public debt</td><td class="num">KSh 13+ trillion</td><td>Crossed KSh 13T, May 2026 (CBK)</td></tr>
+              <tr><td>Debt-to-GDP ratio</td><td class="num">≈70%, rising to 71.6% (2026), 72.4% (2027)</td><td>Controller of Budget / IMF projections</td></tr>
+              <tr><td>Debt servicing, 9 months FY2025/26</td><td class="num">≈KSh 1.35 trillion (≈42% of revenue)</td><td>Controller of Budget</td></tr>
+              <tr><td>Annual corruption loss</td><td class="num">KSh 608 billion (7.8% of GDP)</td><td>EACC Annual Report, FY2024/25</td></tr>
+              <tr><td>Corruption Perceptions Index 2025</td><td class="num">Score 30/100, rank 130 of 180</td><td>Transparency International, Feb 2026</td></tr>
+              <tr><td>EACC assets traced / recovered, FY2024/25</td><td class="num">KSh 22.9B traced / KSh 3.4B recovered</td><td>EACC Annual Report, Dec 2025</td></tr>
+              <tr><td>EACC losses averted, FY2024/25</td><td class="num">KSh 16.5 billion</td><td>EACC Annual Report, Dec 2025</td></tr>
+              <tr><td>EACC convictions, FY2024/25</td><td class="num">33 (up from 12 the prior year)</td><td>EACC Annual Report, Dec 2025</td></tr>
+              <tr><td>Auditor-General queries on county funds (FY ended Jun 2024)</td><td class="num">KSh 87 billion (≈24% of funds sent to counties)</td><td>Office of the Auditor-General</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 class="with-rule">The Investment Case</h3>
+        <p>All projections below are conservative, evidence-based ranges drawn from comparable transparency platforms and independent research (FATF, World Bank, IMF), not guarantees. Full methodology is in Part 10.</p>
+        <div class="table-wrap">
+          <table class="uwazi-table">
+            <thead><tr><th>Metric</th><th class="num">Figure</th></tr></thead>
+            <tbody>
+              <tr><td>Total 3-year build cost (25% contingency included)</td><td class="num">KSh 1.25B – 1.53B</td></tr>
+              <tr><td>Build cost as % of one year's corruption loss</td><td class="num">0.21% – 0.25%</td></tr>
+              <tr><td>Conservative 5% fraud reduction, Year 2–3</td><td class="num">KSh 30.4B / year saved</td></tr>
+              <tr><td>Conservative 10% fraud reduction, Year 3–4</td><td class="num">KSh 60.8B / year saved</td></tr>
+              <tr><td>Time to recover full build cost at conservative impact</td><td class="num">Under 19 days</td></tr>
+              <tr><td>Conservative combined annual return ratio (Year 3 steady state)</td><td class="num">67:1 to 82:1</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="lead-quote">"UWAZI's entire three-year build cost is recovered in under three weeks of operating at conservative impact levels. For donors, every shilling invested in UWAZI improves the return on every other shilling Kenya receives in development financing, because it strengthens the system through which all of it flows."</p>
+      </section>
+      <!-- ============================================================ -->
+      <!-- PART 02 — THE CRISIS -->
+      <!-- ============================================================ -->
+      <section class="part" id="crisis">
+        <div class="part-header">
+          <span class="part-tag"><span class="line"></span>Part 02 of 11</span>
+          <h2>The Crisis: Kenya's Public Finance Problem</h2>
+          <p class="part-sub">A documented, source-cited account of the scale of the problem and why existing systems have not solved it.</p>
+        </div>
+
+        <div class="callout danger">
+          <span class="callout-label">EACC, FY2024/25</span>
+          <p>Kenya loses an estimated <strong>KSh 608 billion</strong>, 7.8% of GDP, to corruption every year. That is roughly <strong>KSh 1.67 billion a day</strong>, or <strong>KSh 69 million an hour</strong>. While reading this page, Kenya has likely lost over a million shillings of public money.</p>
+        </div>
+
+        <h3 class="with-rule">The Human Cost of Corruption</h3>
+        <div class="table-wrap">
+          <table class="uwazi-table">
+            <thead><tr><th>KSh lost</th><th>Timeframe</th><th>What it could have built</th><th>Who suffers</th></tr></thead>
+            <tbody>
+              <tr><td>KSh 2 billion</td><td>1 day</td><td>200 fully equipped classrooms, or 50 hospital wards</td><td>10,000 children without desks; patients on hospital floors</td></tr>
+              <tr><td>KSh 14 billion</td><td>1 week</td><td>1,400 km of tarmac road, or 700 rural boreholes</td><td>Rural communities cut off; farmers lose produce</td></tr>
+              <tr><td>KSh 60 billion</td><td>1 month</td><td>60 fully equipped district hospitals, or 3 new universities</td><td>Mothers dying in childbirth; a million students locked out of education</td></tr>
+              <tr><td>KSh 608 billion</td><td>1 year (EACC est.)</td><td>A national railway expansion, or universal free primary and secondary education</td><td>A generation denied a fair start in life</td></tr>
+              <tr><td>KSh 13 trillion+</td><td>Total public debt</td><td>Every road, school, hospital, and dam Kenya has been promised</td><td>Every Kenyan already owes roughly KSh 250,000+ for projects many never saw completed</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 class="with-rule">Documented Cases, 2024–2026</h3>
+        <p>Every case below is drawn from official audit reports, EACC findings, parliamentary proceedings, or court records. These are documented facts, not allegations of UWAZI's making. The final column shows specifically how UWAZI's detection layer would have intervened.</p>
+
+        <div class="table-wrap">
+          <table class="uwazi-table">
+            <thead><tr><th>Case</th><th class="num">Amount</th><th>Status</th><th>How UWAZI intervenes</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><strong>eCitizen Government Digital Payments Platform</strong> (2025–2026). Auditor-General's special audit (covering FY2023/24 and the platform's history to 2025) found KSh 44.8 billion in collections unaccounted for, KSh 6.3–9.4 billion irregularly diverted to an undisclosed "Pesaflow" account at Equity Bank, and KSh 1.8 billion in convenience fees retained by private vendors without legal authorisation. MPs summoned the Attorney-General and Equity Bank's CEO in March 2026; the inquiry had stalled by May 2026.</td>
+                <td class="num">KSh 6.3B–44.8B</td>
+                <td><span class="tag tag-active">Probe stalled</span></td>
+                <td>Payment-gateway diversion detection would flag the moment funds leave an approved Treasury collection account; an Integrity Clock would make the May 2026 stall publicly visible rather than quietly forgotten.</td>
+              </tr>
+              <tr>
+                <td><strong>Social Health Authority (SHA) claims fraud</strong> (2024–2026). Ministry of Health audit found KSh 11 billion lost to fraudulent claims between October 2024 and April 2025. Enforcement escalated from 40 facilities suspended in August 2025 to over 1,000 facilities closed or suspended nationwide by April 2026, with 18 facing prosecution.</td>
+                <td class="num">KSh 11B</td>
+                <td><span class="tag tag-active">Active prosecution</span></td>
+                <td>Duplicate-invoice and ghost-facility detection would flag repeated and upcoded billing within days, not the 6+ months it took here.</td>
+              </tr>
+              <tr>
+                <td><strong>County government fund misuse</strong> (FY ended June 2024). The Auditor-General queried KSh 87 billion in county spending, roughly 24% of all funds transferred to the 47 counties, with 200 corruption cases reported to EACC involving sitting and former governors, county secretaries, and speakers.</td>
+                <td class="num">KSh 87B</td>
+                <td><span class="tag tag-probe">Under audit</span></td>
+                <td>Live county-by-county dashboards would make the gap between funds released and funds verifiably spent visible in the same year, not two years later.</td>
+              </tr>
+              <tr>
+                <td><strong>JKIA modernisation procurement opacity</strong> (2024–2026). The original KSh 230–258 billion Adani Group build-operate-transfer deal was cancelled in 2024–2025 after public and court pressure over its secrecy. A new ≈KSh 154–180 billion procurement to a China Road and Bridge Corporation joint venture has itself drawn fresh scrutiny over a partner linked to a Zimbabwean businessman with a record of tender disputes abroad.</td>
+                <td class="num">KSh 154B–258B</td>
+                <td><span class="tag tag-probe">Court challenge pending</span></td>
+                <td>Beneficial-ownership cross-checks against joint-venture partners, published the moment a tender opens, would surface this kind of link before signature, not after press exposés.</td>
+              </tr>
+              <tr>
+                <td><strong>National Youth Service (NYS) fictitious contracts</strong> (May 2025). EACC raids on senior officials uncovered fictitious contracts spanning five financial years.</td>
+                <td class="num">KSh 2B</td>
+                <td><span class="tag tag-active">Charged</span></td>
+                <td>Ghost-company and split-purchasing detection would flag contractors with no operating history before contract award.</td>
+              </tr>
+              <tr>
+                <td><strong>Edible oil and rice import scheme</strong>, Kenya National Trading Corporation (2022–2026). Bulk procurement of essential goods proceeded without required PPRA reporting or approvals.</td>
+                <td class="num">KSh 6.6B</td>
+                <td><span class="tag tag-active">Charged</span></td>
+                <td>No-tender procurement detection flags any payment with no matching public tender record above threshold.</td>
+              </tr>
+              <tr>
+                <td><strong>KEMSA mosquito-net tender</strong> (2024). A botched procurement for treated mosquito nets failed to deliver value for the contracted amount.</td>
+                <td class="num">KSh 3.7B</td>
+                <td><span class="tag tag-probe">Under investigation</span></td>
+                <td>Inflated-pricing detection benchmarks unit cost against verified comparable contracts at the point of award.</td>
+              </tr>
+              <tr>
+                <td><strong>Fertiliser subsidy programme</strong> (2024). 69,070 bags of substandard NPK fertiliser supplied; KEBS confirmed nutrient levels below specification, affecting 13,633 farmers.</td>
+                <td class="num">KSh 10B</td>
+                <td><span class="tag tag-probe">Under investigation</span></td>
+                <td>Citizen verification lets affected farmers report non-conforming product directly into the official record.</td>
+              </tr>
+              <tr>
+                <td><strong>Busia County IFMIS manipulation</strong> (FY2022/23). False records and fraudulent budget variations recorded directly inside the financial management system.</td>
+                <td class="num">KSh 5.25B</td>
+                <td><span class="tag tag-probe">EACC investigation</span></td>
+                <td>Immutable blockchain shadow-records cannot be altered after the fact, unlike IFMIS entries.</td>
+              </tr>
+              <tr>
+                <td><strong>Nairobi County legal fees</strong>. Ghost law firms and inflated compensation claims, including one firm charging KSh 3.3M in fees for a case where compensation awarded was KSh 1M.</td>
+                <td class="num">KSh 21.4B</td>
+                <td><span class="tag tag-probe">Forensic audit called</span></td>
+                <td>Inflated-pricing detection flags professional fees that are multiples of the documented case outcome.</td>
+              </tr>
+              <tr>
+                <td><strong>Arror and Kimwarer dams</strong>. Billions borrowed for two dams; contractors paid in full; construction never started at Arror. Former Finance CS Henry Rotich arrested, the first sitting Kenyan minister jailed over corruption.</td>
+                <td class="num">KSh 65B</td>
+                <td><span class="tag tag-probe">Partial conviction</span></td>
+                <td>Smart-contract milestone payments (Phase 3) release zero funds without verified physical construction progress.</td>
+              </tr>
+              <tr>
+                <td><strong>Kenya Youth Employment Opportunities Programme (KYEOP)</strong>. A World Bank-funded youth jobs programme; auditors could not trace the majority of "beneficiaries" of large grants.</td>
+                <td class="num">KSh 15B (incl. KSh 9.2B WB loan)</td>
+                <td><span class="tag tag-probe">Auditor flagged</span></td>
+                <td>Citizen and biometric verification of beneficiaries would close the ghost-beneficiary gap exploited here.</td>
+              </tr>
+              <tr>
+                <td><strong>Kenya Power overbilling</strong>. Systematic overbilling of electricity customers over multiple years, confirmed by EPRA audit.</td>
+                <td class="num">KSh 150B (multi-year cumulative)</td>
+                <td><span class="tag tag-probe">Reforms ongoing</span></td>
+                <td>Continuous billing-pattern monitoring flags systematic anomalies years earlier than a periodic audit.</td>
+              </tr>
+              <tr>
+                <td><strong>NSSF graft fine</strong> (2025–2026). Kenya's largest single graft fine on record, issued by the courts.</td>
+                <td class="num">KSh 9.8B</td>
+                <td><span class="tag tag-convicted">Court order</span></td>
+                <td>Officer accountability profiles and real-time monitoring would have flagged the underlying payments years earlier.</td>
+              </tr>
+              <tr>
+                <td><strong>Mandera County irregular payments</strong>. Former governor: irregular payments to ten companies. Former assembly speaker: contracts to one firm over a decade.</td>
+                <td class="num">KSh 1.67B + KSh 1.42B</td>
+                <td><span class="tag tag-probe">EACC probe</span></td>
+                <td>Conflict-of-interest mapping flags repeated payments to the same beneficial owners over time.</td>
+              </tr>
+              <tr>
+                <td><strong>National Industrial Training Authority ERP procurement</strong> (2025). Irregular, non-competitive acquisition of an enterprise system.</td>
+                <td class="num">KSh 1.62B</td>
+                <td><span class="tag tag-probe">EACC probe</span></td>
+                <td>No-tender detection flags the absence of a matching PPRA record immediately.</td>
+              </tr>
+              <tr>
+                <td><strong>Kitui County conflict of interest</strong> (2025). Embezzlement linked to undisclosed officer-contractor relationships.</td>
+                <td class="num">KSh 1.42B</td>
+                <td><span class="tag tag-probe">EACC probe</span></td>
+                <td>Beneficial-ownership cross-reference flags officer-contractor connections before payment.</td>
+              </tr>
+              <tr>
+                <td><strong>Turkana County embezzlement</strong> (2025–2026). Ten county officials taken into custody.</td>
+                <td class="num">KSh 600M</td>
+                <td><span class="tag tag-active">In custody</span></td>
+                <td>Split-purchasing and ghost-worker detection target the pattern typically used at this scale.</td>
+              </tr>
+              <tr>
+                <td><strong>Kenya Pipeline Company procurement fraud</strong>. Four officials convicted, a landmark prosecution.</td>
+                <td class="num">KSh 550M</td>
+                <td><span class="tag tag-convicted">4 convictions</span></td>
+                <td>Conflict-of-interest and inflated-pricing detection flags would have raised the case at award stage.</td>
+              </tr>
+              <tr>
+                <td><strong>Waititu conviction</strong> (Feb 2025). Former Kiambu Governor convicted for using office to confer benefit on himself.</td>
+                <td class="num">KSh 588M</td>
+                <td><span class="tag tag-convicted">Convicted</span></td>
+                <td>Conflict-of-interest detection, cross-referencing company directors against officer records, flags the connection at award.</td>
+              </tr>
+              <tr>
+                <td><strong>Traffic police bribery</strong> (systemic, ongoing). EACC estimates roughly KSh 3 billion is paid in small bribes to traffic officers every month nationwide.</td>
+                <td class="num">≈KSh 36B / yr</td>
+                <td><span class="tag tag-active">Ongoing</span></td>
+                <td>Outside UWAZI's direct procurement scope, but illustrates why deterrence through visibility, not detection after the fact, is the only model that scales.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="font-size:.84rem;color:var(--ink-faint);">Sources: Office of the Auditor-General special audit reports (2025–2026); EACC Annual Report FY2024/25 and FY2023/24; Ministry of Health and Gazette notices on SHA suspensions; National Assembly Public Accounts Committee proceedings (Mar–May 2026); Daily Nation, The Standard, Citizen Digital, Capital FM, and EACC case bulletins, 2025–2026.</p>
+
+        <h3 class="with-rule">Why Existing Systems Are Failing</h3>
+        <div class="grid-2">
+          <div class="card"><h4>Ghost IDs and duplicate vendors</h4><p>Duplicate vendor records inside IFMIS enable payments to non-existent companies, typically detected only when auditors investigate, years after the money has moved.</p></div>
+          <div class="card"><h4>Remote authorisation gap</h4><p>Transactions can be approved without anyone being reliably tied to a specific person at a specific location.</p></div>
+          <div class="card"><h4>Non-competitive procurement</h4><p>Roughly a third of government contracts have historically bypassed open tendering, representing hundreds of billions of shillings a year with no competitive check.</p></div>
+          <div class="card"><h4>Years-long detection lag</h4><p>Average time to detect and prosecute fraud has run three to five years; by then funds are laundered and companies dissolved.</p></div>
+          <div class="card"><h4>Prosecution bottleneck</h4><p>In one recent quarter, only 12 of 58 EACC corruption cases were cleared for prosecution by the DPP, an 80% bottleneck that lets most flagged fraud go unpunished.</p></div>
+          <div class="card"><h4>No external lending programme as anchor</h4><p>Kenya's prior IMF-supported programme expired in April 2025 without a successor agreed as of mid-2026, removing one of the strongest external pressure points for governance reform.</p></div>
+        </div>
+        <p class="lead-quote">"The problem is not the absence of digital systems. Kenya already has IFMIS, eCitizen, and PPRA's portal. The problem is that each of these systems is controlled by the same institutions whose financial conduct it is meant to record. UWAZI distributes control across independent nodes that no single government entity can suppress."</p>
+
+        <h3 class="with-rule">The Structural Gaps UWAZI Closes</h3>
+        <p>These are not aspirational improvements; they are specific, documented failures in Kenya's current oversight architecture, each with a direct UWAZI solution.</p>
+        <div class="table-wrap">
+          <table class="uwazi-table">
+            <thead><tr><th>Gap</th><th>Current state in Kenya</th><th>UWAZI solution</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><strong>Data fragmentation</strong></td>
+                <td>Seven or more disconnected systems (IFMIS, PPRA, CBK, KRA, BRS, NLC, eCitizen) with no single view of the full financial flow</td>
+                <td>One integrated real-time view: all data sources connected progressively by phase, with a public dashboard any Kenyan can use at zero cost</td>
+              </tr>
+              <tr>
+                <td><strong>Time lag</strong></td>
+                <td>Fraud detected 2–5 years after the fact; by then funds are laundered, companies dissolved, and evidence trails cold</td>
+                <td>Rule-based detection within hours on PPRA public data (Phase 1); real-time detection on fully integrated data (Phase 3)</td>
+              </tr>
+              <tr>
+                <td><strong>Officer anonymity</strong></td>
+                <td>Payments authorised by a department code or a system login, with no public record of who specifically approved what, with what outcome</td>
+                <td>Every payment permanently linked to a named, photographed, publicly accountable officer with a full transaction history and Integrity Score</td>
+              </tr>
+              <tr>
+                <td><strong>Evidence loss</strong></td>
+                <td>Documents can be altered, lost, or suppressed; IFMIS records have been directly manipulated, as documented by OCCRP and the Auditor-General</td>
+                <td>Cryptographic immutability: once a record is confirmed across multiple independent nodes, it is mathematically impossible for any single party to alter it</td>
+              </tr>
+              <tr>
+                <td><strong>Enforcement bottleneck</strong></td>
+                <td>Manual reporting is easily buried; 80% of EACC cases recently failed to reach DPP; cases take years to process with no public visibility of where they stand</td>
+                <td>Automatic simultaneous filing to EACC, ODPP, FRC, and PSC following human confirmation (Phase 3); the Integrity Clock makes agency inaction publicly visible</td>
+              </tr>
+              <tr>
+                <td><strong>Citizen exclusion</strong></td>
+                <td>No public access to government financial data; citizens have no visibility into how their taxes are spent and no formal channel to report what they see on the ground</td>
+                <td>Any citizen, any phone, free, in Kiswahili or English; proposed USSD access for feature phones; citizen photo uploads become part of the official public record</td>
+              </tr>
+              <tr>
+                <td><strong>Ghost projects</strong></td>
+                <td>Payments certified without physical verification; contractors paid in full for work never done (Arror and Kimwarer dams: KSh 65 billion)</td>
+                <td>Smart-contract escrow releases funds only after verified milestone completion: licensed engineer inspection plus citizen photo verification plus satellite cross-check (Phase 3)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 class="with-rule">What International Systems Achieved, and Where They Fell Short</h3>
+        <p>An honest comparison, including real achievements and remaining limitations, not a cherry-picked success story.</p>
+        <div class="grid-3">
+          <div class="card">
+            <h4>Brazil: Portal da Transparência</h4>
+            <p><strong>Achieved:</strong> 40 million users; measurable fraud reduction in monitored sectors.<br><strong>Fell short:</strong> meaningful impact took 8–10 years; data published retrospectively; no automated enforcement filing.<br><strong>UWAZI adds:</strong> real-time tracking, automated detection, officer-level naming.</p>
+          </div>
+          <div class="card">
+            <h4>Estonia: e-Estonia</h4>
+            <p><strong>Achieved:</strong> highly digitised government services and strong digital identity infrastructure.<br><strong>Fell short:</strong> built for a country of 1.3 million people without Kenya's scale of devolved-government corruption; the model does not directly translate.<br><strong>UWAZI adds:</strong> a design built specifically for Kenya's 47-county financial architecture.</p>
+          </div>
+          <div class="card">
+            <h4>Mexico: CompraNet</h4>
+            <p><strong>Achieved:</strong> a searchable public procurement portal.<br><strong>Fell short:</strong> procurement data only, no officer accountability, and Mexico's corruption ranking has not improved significantly since launch.<br><strong>UWAZI adds:</strong> end-to-end tracking from tax collection to verified delivery.</p>
+          </div>
+        </div>
+        <p class="lead-quote">"These systems digitised transparency. UWAZI is designed to enforce it. Showing citizens that corruption happened is necessary but not sufficient; the goal is to make corruption structurally difficult to execute in the first place."</p>
+      </section>
+      <!-- ============================================================ -->
+      <!-- PART 03 — TECHNICAL ARCHITECTURE -->
+      <!-- ============================================================ -->
+      <section class="part" id="architecture">
+        <div class="part-header">
+          <span class="part-tag"><span class="line"></span>Part 03 of 11</span>
+          <h2>Technical Architecture &amp; System Design</h2>
+          <p class="part-sub">A layered, modular platform where each layer has one responsibility and communicates only through defined interfaces, so components can be upgraded without disrupting the whole system.</p>
+        </div>
+
+        <h3 class="with-rule">System Architecture Overview</h3>
+        <div class="arch-stack">
+          <div class="arch-layer l9"><span class="name">Citizen Access Layer</span><span class="detail">Web (React/Next.js) · Mobile (iOS/Android) · Proposed USSD · Open API · English + Kiswahili</span></div>
+          <div class="arch-layer l7"><span class="name">API Gateway</span><span class="detail">JWT / OAuth 2.0 · Rate limiting · Request routing · Partner API keys</span></div>
+          <div class="arch-layer l3"><span class="name">Core Microservices</span><span class="detail">Transaction · Contract · Project · Officer · Alert · Evidence · Verification · Score</span></div>
+          <div class="arch-layer l4"><span class="name">Fraud Detection Engine</span><span class="detail">Phase 1–2: rule-based only · Phase 3+: ML models + image analysis</span></div>
+          <div class="arch-layer l5"><span class="name">Data Layer</span><span class="detail">PostgreSQL · Redis · Elasticsearch · BigQuery · Object storage</span></div>
+          <div class="arch-layer l6"><span class="name">Immutability Layer</span><span class="detail">Phase 1: public blockchain timestamping · Phase 2: append-only log · Phase 3: Hyperledger Fabric</span></div>
+          <div class="arch-layer l1"><span class="name">Data Ingestion Layer</span><span class="detail">Phase 1: batch (cron) · Phase 2: message queue · Phase 3: Apache Kafka</span></div>
+          <div class="arch-layer l2"><span class="name">Integration Layer</span><span class="detail">Phase 1: PPRA, KRA releases, CBK bulletins · Phase 3: iTax, KEPSS, IFMIS, BRS, NLC, EACC/ODPP/FRC/PSC APIs</span></div>
+          <div class="arch-layer l8"><span class="name">Security Layer</span><span class="detail">Zero trust · IAM · AES-256 · TLS 1.3 · WAF · SIEM · HSM</span></div>
+        </div>
+
+        <h3 class="with-rule">Immutability Approach, by Phase</h3>
+        <div class="grid-3">
+          <div class="card">
+            <span class="card-eyebrow"><span class="phase-pill phase-1">Phase 1 · Months 1–12</span></span>
+            <h4>Public Blockchain Timestamping</h4>
+            <p>Each batch of records is hashed and the hash is recorded on a public notarisation service. Minimal cost, low complexity, legally tamper-evident under Section 106B of the Kenya Evidence Act.</p>
+          </div>
+          <div class="card">
+            <span class="card-eyebrow"><span class="phase-pill phase-2">Phase 2 · Months 12–24</span></span>
+            <h4>Multi-Party Append-Only Log</h4>
+            <p>Nothing can be deleted or edited, only added. Multiple independent parties hold full copies, and cryptographic signatures from multiple institutions add authority to each batch.</p>
+          </div>
+          <div class="card">
+            <span class="card-eyebrow"><span class="phase-pill phase-3">Phase 3 · Months 18–36+</span></span>
+            <h4>Hyperledger Fabric Consortium</h4>
+            <p>Permissioned nodes: Office of the Auditor-General, Central Bank of Kenya (read-only), Transparency International Kenya, a partner university, Mzalendo Trust, EACC's research centre. No public cryptocurrency token, no associated regulatory risk.</p>
+          </div>
+        </div>
+
+        <h3 class="with-rule">Data Ingestion, by Phase</h3>
+        <p>Each phase uses the ingestion tool that fits the actual data volume at that stage, rather than over-building early.</p>
+        <div class="callout navy">
+          <span class="callout-label">Why not Apache Kafka in Phase 1</span>
+          <p>Kafka is enterprise event-streaming infrastructure built for millions of events per second from multiple live government systems. In Phase 1, UWAZI ingests weekly CBK bulletins and monthly KRA press releases. Introducing Kafka at that stage would consume budget and engineering time with no proportionate benefit, and would be read by any experienced technical reviewer as poor judgment rather than rigour. Kafka becomes the correct tool only once IFMIS, KRA iTax, and KEPSS integrations are live and generating continuous, high-volume real-time data (Phase 3).</p>
+        </div>
+
+        <h3 class="with-rule">Government System Integrations, by Phase</h3>
+        <div class="table-wrap">
+          <table class="uwazi-table">
+            <thead><tr><th>System</th><th>Phase</th><th>What is captured</th><th>Method</th></tr></thead>
+            <tbody>
+              <tr><td>PPRA e-Procurement Portal</td><td><span class="phase-pill phase-1">Phase 1</span></td><td>Tender number, contractor, amount, award date, tender type</td><td>Automated daily scraping of public data; PPRA's own Circular 02/2025 already mandates full e-Government Procurement System (E-GPS) registration for all procuring entities, with procuring responsibility transferable away from entities that fail to register</td></tr>
+              <tr><td>KRA iTax</td><td><span class="phase-pill phase-1">Partial P1</span> / <span class="phase-pill phase-3">Full P3</span></td><td>Category totals (VAT, PAYE, excise, customs, corporation tax)</td><td>P1: public press-release parsing. P3: formal API</td></tr>
+              <tr><td>CBK Consolidated Fund</td><td><span class="phase-pill phase-1">Weekly P1</span> / <span class="phase-pill phase-3">Live P3</span></td><td>P1: most recent published weekly bulletin, explicitly labelled as such, not a live balance. P3: real-time via KEPSS</td><td>P1: bulletin parsing. P3: CBK API</td></tr>
+              <tr><td>BRS (Business Registration)</td><td><span class="phase-pill phase-2">Phase 2</span> manual / <span class="phase-pill phase-3">P3</span> API</td><td>Registration date, directors, shareholders, address</td><td>P2: manual cross-reference on flagged transactions. P3: formal API</td></tr>
+              <tr><td>IFMIS</td><td><span class="phase-pill phase-3">Phase 3</span></td><td>AIE holder, amount, vote head, supplier, invoice reference</td><td>Most complex integration: legacy system, no public API, requires PS-level agreement and a security audit; budgeted 18–36 months to live</td></tr>
+              <tr><td>KEPSS / CBK</td><td><span class="phase-pill phase-3">Phase 3</span></td><td>Every RTGS transfer: amount, sender, receiver, timestamp</td><td>CBK API + Kafka, requires CBK cooperation</td></tr>
+              <tr><td>NLC Registry</td><td><span class="phase-pill phase-2">Phase 2</span> request / <span class="phase-pill phase-3">P3</span> API</td><td>Parcel numbers, title holders, transfer dates, officers</td><td>P2: formal request under the Access to Information Act 2016. P3: API</td></tr>
+              <tr><td>EACC, ODPP, FRC, PSC</td><td><span class="phase-pill phase-3">Phase 3</span> API</td><td>Court-ready evidence packages</td><td>P1–2: standard formal reporting channels. P3: agency APIs</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 class="with-rule">Technology Stack, With Justification</h3>
+        <div class="table-wrap">
+          <table class="uwazi-table">
+            <thead><tr><th>Layer</th><th>Technology</th><th>Why, in the Kenyan context</th></tr></thead>
+            <tbody>
+              <tr><td>Frontend</td><td>React / Next.js</td><td>Server-side rendering for low-bandwidth rural connections; offline-capable PWA mode; large Nairobi developer talent pool</td></tr>
+              <tr><td>Backend API</td><td>Node.js</td><td>Event-driven, non-blocking I/O suited to many concurrent government-system integrations; wide local hiring pool</td></tr>
+              <tr><td>Data &amp; AI</td><td>Python</td><td>Mature data-science ecosystem (Pandas, scikit-learn, TensorFlow); same language for Phase 1 rule engine and Phase 3 ML, avoiding a rewrite</td></tr>
+              <tr><td>Primary database</td><td>PostgreSQL</td><td>ACID compliance for financial integrity; open source, no licence cost; proven at national scale elsewhere</td></tr>
+              <tr><td>Cache</td><td>Redis</td><td>Sub-millisecond dashboard performance; pub/sub for live fraud-alert delivery</td></tr>
+              <tr><td>Search</td><td>Elasticsearch</td><td>Full-text search across millions of transactions for journalist and researcher API use</td></tr>
+              <tr><td>Cloud</td><td>AWS (primary), GCP (secondary)</td><td>Multi-cloud avoids vendor lock-in; both offer Kenya data-residency options and civic-tech credit programmes</td></tr>
+              <tr><td>Streaming</td><td>Apache Kafka (Phase 3 only)</td><td>Introduced only once IFMIS, KRA iTax, and KEPSS integrations generate continuous high-volume data</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 class="with-rule">Zero-Trust Security</h3>
+        <p>No user, device, or service is implicitly trusted by virtue of network location; every access request is authenticated and authorised explicitly, every time.</p>
+        <div class="grid-2">
+          <div class="card"><h4>Microservice authentication</h4><p>Every microservice authenticates every other microservice on every request; there is no standing internal trust, even within the same platform.</p></div>
+          <div class="card"><h4>Separation of admin and data</h4><p>A system administrator managing infrastructure has zero architectural ability to alter transaction records.</p></div>
+          <div class="card"><h4>Blockchain consensus protection</h4><p>No single node operator can alter records; consensus across the full consortium is required for any new block.</p></div>
+          <div class="card"><h4>Separation of duties</h4><p>No individual has sufficient access both to alter data and to cover their tracks, enforced by design rather than by policy alone.</p></div>
+        </div>
+        <p>Supporting controls: AES-256 encryption at rest, TLS 1.3 in transit, a Web Application Firewall, 24/7 SIEM monitoring, Hardware Security Modules for blockchain keys, quarterly independent penetration testing, a public bug-bounty programme, and cyber liability insurance from launch.</p>
+
+        <h3 class="with-rule">Data Model, Governance, and Access Levels</h3>
+        <div class="table-wrap">
+          <table class="uwazi-table">
+            <thead><tr><th>Level</th><th>Who</th><th>Access</th></tr></thead>
+            <tbody>
+              <tr><td>1 · Public</td><td>Any Kenyan, no registration</td><td>Dashboard, project data, all contracts, officer profiles, fraud alerts</td></tr>
+              <tr><td>2 · Registered</td><td>Journalists, CSOs, researchers</td><td>Raw data API, bulk downloads, advanced search, historical exports</td></tr>
+              <tr><td>3 · Partner agency</td><td>EACC, ODPP, FRC, PSC</td><td>Investigation data, full evidence packages, confidential case materials</td></tr>
+              <tr><td>4 · System admin</td><td>Technical operations only</td><td>Infrastructure configuration only, with zero architectural ability to alter any transaction record</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout success">
+          <span class="callout-label">Privacy, under the Data Protection Act 2019</span>
+          <p>UWAZI publishes only professional conduct connected to public funds. Never published, under any circumstances: home addresses, family details, personal financial data, or medical information. Citizen whistleblowers are fully protected; only GPS coordinates and a timestamp are recorded, never personal identity. A Privacy Impact Assessment is completed before any public launch.</p>
+        </div>
+      </section>
+      <!-- ============================================================ -->
+      <!-- PART 04 — FRAUD DETECTION & ACCOUNTABILITY -->
+      <!-- ============================================================ -->
+      <section class="part" id="fraud-detection">
+        <div class="part-header">
+          <span class="part-tag"><span class="line"></span>Part 04 of 11</span>
+          <h2>Fraud Detection, Public Dashboard &amp; Officer Accountability</h2>
+          <p class="part-sub">Detection that is explainable, auditable, and always reviewed by a qualified human before any public alert or enforcement filing.</p>
+        </div>
+
+        <div class="callout gold">
+          <span class="callout-label">Human oversight: non-negotiable at every phase</span>
+          <p>Every fraud flag, whether rule-based or ML-generated, is reviewed by a qualified human analyst before any public alert is published or enforcement filing is made. This protects against false positives that could unfairly damage an officer's reputation, keeps every evidence package legally defensible, and is consistent with Kenya's broader Digital Justice reform agenda, which expects human expert review of AI-assisted findings before judicial use.</p>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <span class="card-eyebrow"><span class="phase-pill phase-1">Phase 1–2</span></span>
+            <h4>Rule-Based Detection</h4>
+            <p>Explicit, auditable rules with no machine learning required. Faster to build, easier to explain in court (every flag traces to a named rule), fully transparent (UWAZI publishes the rules), and useful from day one without historical training data.</p>
+          </div>
+          <div class="card">
+            <span class="card-eyebrow"><span class="phase-pill phase-3">Phase 3+</span></span>
+            <h4>Machine-Learning Models</h4>
+            <p>ML requires substantial historical data to avoid high false-positive rates; training on under 18 months of data is unreliable. By Month 18, UWAZI has enough volume for meaningful anomaly detection, adding the ability to catch novel fraud patterns explicit rules would miss.</p>
+          </div>
+        </div>
+
+        <h3 class="with-rule">The Nine Rule-Based Fraud Patterns</h3>
+        <div class="table-wrap">
+          <table class="uwazi-table">
+            <thead><tr><th>#</th><th>Pattern</th><th>Rule</th><th>Phase</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>Ghost company</td><td>Flag any contractor whose BRS registration date is within 180 days of their first government contract award</td><td><span class="phase-pill phase-1">P1 partial</span></td></tr>
+              <tr><td>2</td><td>Duplicate payment</td><td>Flag any invoice number, amount, and supplier combination appearing more than once within 12 months</td><td><span class="phase-pill phase-3">P3 (needs IFMIS)</span></td></tr>
+              <tr><td>3</td><td>Inflated pricing</td><td>Flag any contract priced over 30% above the PPRA benchmark for that category</td><td><span class="phase-pill phase-1">Phase 1</span></td></tr>
+              <tr><td>4</td><td>Split purchasing</td><td>Flag 3 or more purchase orders below the PPRA threshold, to the same supplier, within 30 days</td><td><span class="phase-pill phase-1">Phase 1</span></td></tr>
+              <tr><td>5</td><td>Conflict of interest</td><td>Flag any payment to a company whose directors share identity with the authorising officer or appear in the PSC HR database</td><td><span class="phase-pill phase-2">P2 manual / P3 auto</span></td></tr>
+              <tr><td>6</td><td>No-tender procurement</td><td>Flag any IFMIS payment with no matching PPRA tender record above threshold</td><td><span class="phase-pill phase-3">P3 (needs IFMIS)</span></td></tr>
+              <tr><td>7</td><td>Ghost workers</td><td>Flag any salary payment where the employee's ID does not appear in biometric attendance for that pay period</td><td><span class="phase-pill phase-3">P3 (needs IFMIS+HR)</span></td></tr>
+              <tr><td>8</td><td>Round-number anomaly</td><td>Flag payment batches where over 40% of transactions are exact round figures. <strong>Supporting signal only</strong>, never standalone evidence</td><td><span class="phase-pill phase-2">P2+</span></td></tr>
+              <tr><td>9</td><td>Payment gateway diversion</td><td>Flag any payment gateway where destination accounts do not match registered government accounts, or where unauthorised convenience fees are collected</td><td><span class="phase-pill phase-3">P3 (needs KEPSS/CBK)</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="font-size:.88rem;color:var(--ink-soft);">Pattern 9 is precisely the failure mode documented in the 2025–26 eCitizen audit: funds routed to an account never approved as a Treasury collection point.</p>
+
+        <h3 class="with-rule">Machine-Learning Layer (Phase 3+)</h3>
+        <div class="grid-3">
+          <div class="card"><h4>Isolation Forest</h4><p>Unsupervised anomaly detection across the full dataset, finding deviations without needing labelled fraud examples.</p></div>
+          <div class="card"><h4>Graph Neural Networks</h4><p>Maps relationships across contractor, officer, and company networks to catch multi-hop conflict-of-interest patterns too complex for simple matching rules.</p></div>
+          <div class="card"><h4>Computer Vision</h4><p>Compares citizen-uploaded project photos against satellite imagery to flag gaps between claimed and actual construction progress.</p></div>
+        </div>
+        <p>Every model output is a supporting signal for a human analyst; no public alert and no agency referral is generated from ML output alone.</p>
+
+        <h3 class="with-rule">The Public Dashboard by Phase</h3>
+        <p>This is what a Kenyan citizen, journalist, or researcher can actually see and access at each stage, and what is not yet available. Honesty about Phase 1 limitations is as important as the Phase 3 ambition.</p>
+
+        <h4>Phase 1 Dashboard (Months 1–12): Public Data Only, No Government Cooperation Required</h4>
+        <div class="table-wrap">
+          <table class="uwazi-table">
+            <thead><tr><th>Data shown</th><th>Frequency</th><th>Source</th><th>Limitations to communicate clearly</th></tr></thead>
+            <tbody>
+              <tr><td>KRA monthly tax collection by category (VAT, PAYE, excise, customs, corporation tax)</td><td>Monthly (on KRA publication)</td><td>KRA public press releases</td><td>Category totals only, not individual taxpayer data; updated monthly, not daily</td></tr>
+              <tr><td>Consolidated Fund balance</td><td>Weekly (on CBK publication)</td><td>CBK Weekly Bulletin</td><td><strong>Clearly labelled as last published weekly figure, not a live balance.</strong> Do not overstate this.</td></tr>
+              <tr><td>PPRA contract awards: searchable by county, ministry, contractor, amount</td><td>Daily</td><td>PPRA public portal</td><td>Only contracts published by PPRA; contracts awarded outside the portal are not yet visible</td></tr>
+              <tr><td>Active fraud flags (after human analyst confirmation)</td><td>As they arise</td><td>Rule-based detection on PPRA data</td><td>Rule-based only; ML detection not yet operational; flags only on procurements PPRA has published</td></tr>
+              <tr><td>Basic officer profiles: name and title linked to PPRA contracts</td><td>Live</td><td>PPRA data + PSC payroll</td><td>Photographs added from Phase 2; full transaction history only from Phase 3</td></tr>
+              <tr><td>Pilot county project map and citizen photo uploads</td><td>Live</td><td>Citizen submissions + PPRA</td><td>One county initially; expanded county by county through Phase 2</td></tr>
+              <tr><td>Historical Auditor-General and EACC reports, digitised and searchable</td><td>As digitised (10-year archive)</td><td>AG and EACC published reports</td><td>Historical only; not real-time</td></tr>
+              <tr><td>Open API: machine-readable access to all public data</td><td>Same as above</td><td>All Phase 1 sources</td><td>Phase 1 data scope only; no government-integration data until Phase 3</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>Phase 3 Dashboard (Month 18+): Full National Integration, All Government Systems Live</h4>
+        <div class="table-wrap">
+          <table class="uwazi-table">
+            <thead><tr><th>Data shown</th><th>Frequency</th><th>What it enables</th></tr></thead>
+            <tbody>
+              <tr><td>Real-time Consolidated Fund balance via KEPSS</td><td>Live (every RTGS transaction)</td><td>Every Kenyan can see the national account balance updating in real time</td></tr>
+              <tr><td>Live tax collection by category as KRA processes each transaction</td><td>Live</td><td>See how much revenue Kenya collected today, broken down by tax type</td></tr>
+              <tr><td>Every fund release to every ministry and county as IFMIS processes it</td><td>Live</td><td>Precise, immediate visibility of where budget is going; named authorising officer on every release</td></tr>
+              <tr><td>Full contract registry: every government contract, nationwide</td><td>Live on award</td><td>Contractor identity, registration number, directors, amount, tender reference: all public at point of signing</td></tr>
+              <tr><td>Full officer profiles: name, official photo, full authorisation history, Integrity Score</td><td>Updated continuously</td><td>Every officer who handles public funds is publicly identifiable and accountable</td></tr>
+              <tr><td>Active fraud alerts with full public evidence chain</td><td>Live (post human confirmation)</td><td>Confirmed fraud visible to every Kenyan in hours, not years</td></tr>
+              <tr><td>Budget vs actual spending: real-time, ward by ward, county by county</td><td>Live</td><td>Gap between what was budgeted and what has actually been spent, at the most granular level</td></tr>
+              <tr><td>Interactive GPS map: all government projects, all 47 counties</td><td>Live</td><td>Click any project anywhere in Kenya to see its full lifecycle, funding, contractor, and completion status</td></tr>
+              <tr><td>USSD access: same data on any basic phone without internet</td><td>Live (subject to CA Kenya approval)</td><td>A Turkana farmer with a KSh 1,500 feature phone has the same access as a Nairobi lawyer with a smartphone</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 class="with-rule">Officer Accountability</h3>
+        <p>For every government payment, any citizen can see the full name, official photograph, job title, ministry or county office, authorisation history, investigation status, and Integrity Score of the officer who approved it.</p>
+        <div class="grid-2">
+          <div class="card"><h4>Legal basis</h4><p>Article 35 of the Constitution and the Access to Information Act 2016 establish the right to publish names and professional information of officers authorising public spending; a public officer spending public money does so in a public capacity.</p></div>
+          <div class="card"><h4>Privacy protections</h4><p>Never published: home address, family identities, personal financial data unrelated to the public role, or medical information. Only professional conduct connected to public funds is shown.</p></div>
+        </div>
+
+        <h3 class="with-rule">The Integrity Score</h3>
+        <p>Every officer handling public funds receives an automatically updated, data-backed public score, based on verifiable facts rather than opinion.</p>
+        <div class="score-bars">
+          <div class="score-row"><span>Transaction volume &amp; value</span><div class="score-track"><div class="score-fill" style="width:70%"></div></div></div>
+          <div class="score-row"><span>Confirmed fraud flags</span><div class="score-track"><div class="score-fill" style="width:95%"></div></div></div>
+          <div class="score-row"><span>Project completion rate</span><div class="score-track"><div class="score-fill" style="width:80%"></div></div></div>
+          <div class="score-row"><span>Procurement compliance</span><div class="score-track"><div class="score-fill" style="width:65%"></div></div></div>
+          <div class="score-row"><span>Auditor-General findings</span><div class="score-track"><div class="score-fill" style="width:55%"></div></div></div>
+        </div>
+        <p style="font-size:.84rem;color:var(--ink-faint);">Illustrative weighting; each confirmed fraud flag (after human confirmation) causes a significant, permanent reduction. Unconfirmed flags do not affect the score.</p>
+        <p class="lead-quote">"Before the 2027 general election, every voter would be able to see the verified Integrity Score of every elected and appointed official who has handled public money, including every MP's NG-CDF spending and every governor's county budget."</p>
+
+        <h3 class="with-rule">Smart Contract Milestone Payments (Phase 3)</h3>
+        <p>Funds are held in digital escrow and released only against confirmed physical evidence of milestone completion.</p>
+        <div class="stage-row">
+          <div class="stage"><div class="pct">20%</div><div class="label">Contract signed</div><div class="verify">Open tender confirmed + performance bond filed</div></div>
+          <div class="stage"><div class="pct">20%</div><div class="label">Foundation complete</div><div class="verify">Engineer inspection + citizen photo + satellite cross-match</div></div>
+          <div class="stage"><div class="pct">25%</div><div class="label">Superstructure complete</div><div class="verify">Engineer + citizen + GPS photo confirms contract spec</div></div>
+          <div class="stage"><div class="pct">25%</div><div class="label">Fitting &amp; finishing</div><div class="verify">Engineer + county official + community sign-off</div></div>
+          <div class="stage"><div class="pct">10%</div><div class="label">Completion &amp; handover</div><div class="verify">Independent audit + 12-month defects liability</div></div>
+        </div>
+        <div class="callout danger">
+          <span class="callout-label">Arror &amp; Kimwarer case study</span>
+          <p>Had this system been operational, the KSh 65 billion paid for the dams would never have left escrow: zero verified construction progress would have meant zero payment released.</p>
+        </div>
+
+        <h3 class="with-rule">Citizen Verification</h3>
+        <p>Technology can track money on paper; only people on the ground can confirm whether the road was actually built. UWAZI turns every citizen into a real-time observer of public projects near them.</p>
+        <div class="flow">
+          <div class="flow-step"><div class="flow-num">1</div><div><b>Visit the site</b><span class="detail">Road, school, hospital, borehole, market</span></div></div>
+          <div class="flow-step"><div class="flow-num">2</div><div><b>Photo + comment</b><span class="detail">Automatic GPS stamp and timestamp, with a written note on actual status</span></div></div>
+          <div class="flow-step"><div class="flow-num">3</div><div><b>AI cross-reference (Phase 3)</b><span class="detail">Photo checked against satellite imagery and the contract specification</span></div></div>
+          <div class="flow-step"><div class="flow-num">4</div><div><b>Human review (every phase)</b><span class="detail">An analyst reviews all evidence before any flag is published; this step cannot be skipped</span></div></div>
+          <div class="flow-step"><div class="flow-num">5</div><div><b>Action</b><span class="detail">Public record updated; an EACC referral is filed only once the analyst confirms the discrepancy is credible and material</span></div></div>
+        </div>
+        <div class="callout">
+          <span class="callout-label">Important legal distinction</span>
+          <p>When five or more citizens report the same discrepancy on the same project, this triggers <strong>priority human review</strong>, not automatic agency filing. A human analyst confirms credibility and materiality first. This protects against coordinated false reporting and keeps every referral legally defensible.</p>
+        </div>
+
+        <h3 class="with-rule">Proposed USSD and SMS Access</h3>
+        <p>A proposed USSD short code, accessible on any Safaricom, Airtel, or Telkom line without internet, is subject to three prerequisites: Communications Authority of Kenya short-code approval, carrier agreements, and gateway infrastructure (budgeted in Phase 2/3). Application would be initiated early in Phase 1 to allow time for approval. Proposed menu: check county fund balance; see active fraud alerts nearby; check project status in your ward; report a problem; subscribe to SMS alerts.</p>
+      </section>
+      <!-- ============================================================ -->
+      <!-- PART 05 — ENFORCEMENT & LEGAL FRAMEWORK -->
+      <!-- ============================================================ -->
+      <section class="part" id="enforcement">
+        <div class="part-header">
+          <span class="part-tag"><span class="line"></span>Part 05 of 11</span>
+          <h2>Enforcement Workflow &amp; Legal Framework</h2>
+          <p class="part-sub">Detecting fraud only matters if it leads to consequences. Once a flag is confirmed, a structured sequence is triggered automatically, making it harder for a case to be quietly shelved.</p>
+        </div>
+
+        <h3 class="with-rule">From Detection to Legal Action</h3>
+        <div class="flow">
+          <div class="flow-step"><div class="flow-num">1</div><div><b>Detection</b><span class="detail">A rule-based (P1–2) or ML (P3+) flag is logged and queued for human review; no public alert yet</span></div></div>
+          <div class="flow-step"><div class="flow-num">2</div><div><b>Human review + evidence package</b><span class="detail">An analyst reviews all evidence. If confirmed, a court-ready package is generated. If not, the flag is closed and the reason logged publicly</span></div></div>
+          <div class="flow-step"><div class="flow-num">3</div><div><b>Multi-agency notification</b><span class="detail">Phase 3: EACC, ODPP, FRC, and PSC notified simultaneously via formal API. Phase 1–2: standard reporting channels</span></div></div>
+          <div class="flow-step"><div class="flow-num">4</div><div><b>Public alert published</b><span class="detail">Officer named, amount flagged, agencies confirmed notified, the Integrity Clock starts</span></div></div>
+          <div class="flow-step"><div class="flow-num">5</div><div><b>Legal and administrative process</b><span class="detail">EACC investigates; ODPP decides on prosecution under its own constitutional independence; FRC and the courts handle asset recovery; PSC takes administrative action under its own authority</span></div></div>
+        </div>
+
+        <h3 class="with-rule">The Court-Admissible Evidence Package: 7 Items</h3>
+        <div class="grid-2">
+          <div class="card"><h4>1. Cryptographic record</h4><p>The full transaction record with a hash proving it has not been altered since first recorded.</p></div>
+          <div class="card"><h4>2. Digital signature of the authorising officer</h4><p>Legally equivalent to a written signature under the Kenya Information and Communications Act.</p></div>
+          <div class="card"><h4>3. Multi-node timestamps</h4><p>Timing verified across every node holding a copy of the record.</p></div>
+          <div class="card"><h4>4. Beneficial ownership data</h4><p>From BRS, proving any ownership link between the approving officer and the paid company.</p></div>
+          <div class="card"><h4>5. Comparative market data</h4><p>Benchmark pricing showing the amount paid exceeded market rate, with the excess quantified.</p></div>
+          <div class="card"><h4>6. Complete chain of approvals</h4><p>Every officer who touched the transaction, in sequence, with names, roles, and timestamps.</p></div>
+        </div>
+        <div class="callout gold">
+          <span class="callout-label">7. Human expert verification statement (the critical safeguard)</span>
+          <p>No evidence package is finalised, published, or filed with any agency without this human confirmation step. It is enforced architecturally; it cannot be bypassed by any user, administrator, or automated process.</p>
+        </div>
+
+        <h3 class="with-rule">Multi-Agency Notification</h3>
+        <div class="grid-2">
+          <div class="card"><h4>EACC</h4><p>Direct e-filing into EACC's case management system (Phase 3); standard public reporting channels in Phase 1–2.</p></div>
+          <div class="card"><h4>ODPP</h4><p>Receives a court-ready file. <strong>UWAZI does not dictate prosecution decisions or timelines</strong>; the DPP's independence is constitutionally protected under Article 157.</p></div>
+          <div class="card"><h4>FRC</h4><p>A Suspicious Activity Report under the Proceeds of Crime and Anti-Money Laundering Act. <strong>UWAZI cannot freeze accounts directly</strong>; only FRC has that authority.</p></div>
+          <div class="card"><h4>PSC</h4><p>Notified with the full package; PSC alone decides on suspension of IFMIS access or salary review, under the Anti-Corruption and Economic Crimes Act and the Conflict of Interest Act, 2025.</p></div>
+        </div>
+
+        <h3 class="with-rule">The Integrity Clock</h3>
+        <div class="callout danger">
+          <span class="callout-label">Critical legal distinction</span>
+          <p>The Integrity Clock is a public transparency mechanism, <strong>not a legal deadline imposed on any agency</strong>. UWAZI cannot lawfully impose investigation or prosecution timelines on EACC, ODPP, or any constitutional body; prosecutorial independence is protected under Article 157. The Clock shows the filing date, days elapsed, and the agency's current stated status, all updated publicly. If an agency provides no update within 30 days, UWAZI publishes a neutral factual statement noting that no update has been received, without alleging wrongdoing or imposing a deadline.</p>
+        </div>
+
+        <h3 class="with-rule">What UWAZI Does, and What Authorities Do</h3>
+        <div class="table-wrap">
+          <table class="uwazi-table">
+            <thead><tr><th>UWAZI does directly</th><th>The relevant authority decides, under its own legal mandate</th></tr></thead>
+            <tbody>
+              <tr><td>Publishes the fraud flag and full evidence chain after human confirmation</td><td><strong>EACC</strong> investigates and refers for prosecution</td></tr>
+              <tr><td>Notifies EACC, ODPP, FRC, and PSC simultaneously with a complete package</td><td><strong>ODPP</strong> makes the final prosecution decision (Article 157)</td></tr>
+              <tr><td>Adds the officer and linked companies to a public High-Risk Watchlist</td><td><strong>FRC</strong> decides on account monitoring or freezing</td></tr>
+              <tr><td>Keeps a permanent public record of the allegation, process, and outcome, even if the officer is later cleared</td><td><strong>PSC</strong> decides on suspension or salary review</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 class="with-rule">Legal and Constitutional Basis</h3>
+        <div class="table-wrap">
+          <table class="uwazi-table">
+            <thead><tr><th>Provision</th><th>Relevance</th></tr></thead>
+            <tbody>
+              <tr><td>Constitution, Article 201</td><td>Requires transparency and accountability in all matters involving public funds</td></tr>
+              <tr><td>Constitution, Article 35</td><td>Guarantees every Kenyan the right to access information held by the state</td></tr>
+              <tr><td>Constitution, Article 62</td><td>All natural resources belong to all Kenyans</td></tr>
+              <tr><td>Constitution, Article 157</td><td>Protects DPP independence; UWAZI files evidence but makes no claim on prosecution timelines</td></tr>
+              <tr><td>PFM Act 2012, s.194(3)</td><td>Requires all public entities to publish financial information; UWAZI makes this real-time rather than retroactive</td></tr>
+              <tr><td>Access to Information Act 2016</td><td>Legal basis for publishing officer names and professional information</td></tr>
+              <tr><td>Conflict of Interest Act, 2025 (Act No. 11 of 2025)</td><td>Signed 30 July 2025, in force 19 August 2025; consolidates conflict-of-interest law under EACC's supervision and empowers asset-forfeiture action; UWAZI's conflict detection is built to feed directly into this framework</td></tr>
+              <tr><td>Anti-Corruption and Economic Crimes Act</td><td>Legal basis for PSC suspension of officers charged with corruption</td></tr>
+              <tr><td>Kenya Evidence Act, Cap. 80, s.106B</td><td>Electronic records with a certificate of authenticity are court-admissible</td></tr>
+              <tr><td>Computer Misuse and Cybercrimes Act 2018</td><td>Digital forensic evidence requirements UWAZI's packages are structured to meet</td></tr>
+              <tr><td>Data Protection Act 2019</td><td>Governs collection and publication of personal data; only professional conduct is published</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="lead-quote">"UWAZI is not a radical proposal. It is what the law already requires, enforced by technology rather than left to bureaucratic discretion."</p>
+      </section>
+      <!-- ============================================================ -->
+      <!-- PART 06 — MODULES A -->
+      <!-- ============================================================ -->
+      <section class="part" id="modules-a">
+        <div class="part-header">
+          <span class="part-tag"><span class="line"></span>Part 06 of 11</span>
+          <h2>Modules, Part A: Core System, Debt, Natural Resources, Parliamentary Funds</h2>
+          <p class="part-sub">Twenty modules in total. This part covers the core system and the first group of specialised trackers.</p>
+        </div>
+
+        <h3 class="with-rule">Master Module Summary</h3>
+        <div class="table-wrap">
+          <table class="uwazi-table">
+            <thead><tr><th>#</th><th>Module</th><th>What it does</th><th>Phase</th></tr></thead>
+            <tbody>
+              <tr><td>1–11</td><td>Core System</td><td>Tax tracking, Consolidated Fund visibility, officer profiles, fraud detection, blockchain evidence, enforcement pipeline, smart-contract payments</td><td><span class="phase-pill phase-1">P1 partial</span> <span class="phase-pill phase-3">P3 full</span></td></tr>
+              <tr><td>12</td><td>Debt Tracker</td><td>Every loan: lender, amount, purpose, completion, repayment; daily interest accumulation</td><td><span class="phase-pill phase-1">P1 partial</span> <span class="phase-pill phase-3">P3 full</span></td></tr>
+              <tr><td>13</td><td>Natural Resources Tracker</td><td>Mining, oil, gas, forest, water and land extraction licences; royalties; community benefit funds</td><td><span class="phase-pill phase-2">P2–P3</span></td></tr>
+              <tr><td>14</td><td>Parliamentary &amp; County Assembly Funds</td><td>NG-CDF, Ward Development Fund, Senate, bursary, and Women Representative funds, fully visible to constituents</td><td><span class="phase-pill phase-1">P1–P2</span></td></tr>
+              <tr><td>15–19e</td><td>See Part 07</td><td>Citizen verification, assets registry, donor funds, infrastructure, and supporting modules</td><td>Various</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 class="with-rule">Modules 1–11: The Core System</h3>
+        <p>The foundation that every other module depends on, delivered in phases so each stage provides public value on its own while preparing for the next.</p>
+        <div class="grid-2">
+          <div class="card"><h4>Tax Inflow Tracking</h4><p><span class="phase-pill phase-1">P1</span> Monthly KRA category totals (VAT, PAYE, excise, customs, corporation tax), not individual taxpayer data. <span class="phase-pill phase-3">P3</span> Real-time category data via formal iTax API.</p></div>
+          <div class="card"><h4>Consolidated Fund Visibility</h4><p><span class="phase-pill phase-1">P1</span> Most recent published CBK weekly bulletin, clearly labelled as weekly, not live. <span class="phase-pill phase-3">P3</span> Real-time balance via KEPSS.</p></div>
+          <div class="card"><h4>Officer Accountability Profiles</h4><p><span class="phase-pill phase-1">P1</span> Name and title linked to PPRA awards. <span class="phase-pill phase-3">P3</span> Full profile: photo, transaction history, Integrity Score.</p></div>
+          <div class="card"><h4>Fraud Detection</h4><p><span class="phase-pill phase-1">P1–2</span> Rule-based on public PPRA data. <span class="phase-pill phase-3">P3+</span> ML-enhanced on fully integrated data.</p></div>
+          <div class="card"><h4>Court-Admissible Evidence</h4><p><span class="phase-pill phase-1">P1–2</span> Cryptographic timestamping, standard EACC reporting. <span class="phase-pill phase-3">P3</span> Full 7-item packages auto-filed to all four agencies.</p></div>
+          <div class="card"><h4>Smart Contract Payments</h4><p>Not available P1–2 (requires IFMIS). <span class="phase-pill phase-3">P3</span> Escrowed funds released only against verified milestones.</p></div>
+        </div>
+
+        <h3 class="with-rule">Module 12: Debt Tracker</h3>
+        <div class="callout danger">
+          <span class="callout-label">Current data, mid-2026</span>
+          <p>Kenya's <strong>gross public debt stock stood at KSh 14.12 trillion</strong> in the National Treasury's April 2026 Budget Summary, with domestic debt of roughly KSh 8.3 trillion (≈40% of GDP) and the remainder external. Net public debt crossed <strong>KSh 13 trillion</strong> in May 2026 (CBK). The Controller of Budget put the debt-to-GDP ratio at roughly 70% in March 2026; the IMF projects it rising to <strong>71.6% in 2026 and 72.4% in 2027</strong>. Debt servicing consumed approximately <strong>KSh 1.35 trillion, about 42% of revenue</strong>, in the first nine months of FY2025/26, and the FY2026/27 budget allocates <strong>KSh 1.50 trillion (31.2% of the entire budget)</strong> to Consolidated Fund Services, mostly interest and pensions. Domestic interest alone now exceeds Kenya's full education budget.</p>
+        </div>
+        <p>What the Debt Tracker shows citizens: every loan's lender, amount, date, interest rate, and the named officials who signed it; the project or purpose each loan funded, and whether that project was actually completed (verified by citizen photos, satellite imagery, and independent engineer sign-off); how much of each loan has been repaid; daily interest accumulation in real terms; and a side-by-side comparison of what was promised against what was delivered.</p>
+        <div class="table-wrap">
+          <table class="uwazi-table">
+            <thead><tr><th>Creditor category</th><th class="num">Approx. amount</th><th>% of external</th><th>What UWAZI specifically tracks</th></tr></thead>
+            <tbody>
+              <tr><td>World Bank (multilateral)</td><td class="num">KSh 2.9T</td><td>≈54%</td><td>Disbursement to project, implementation progress, citizen delivery verification; many projects show disbursement with delayed or absent delivery on the ground</td></tr>
+              <tr><td>China Exim Bank (bilateral)</td><td class="num">KSh 955B</td><td>≈17.5%</td><td>Payment trail, physical construction progress, officer sign-off at each stage; Standard Gauge Railway: KSh 500B+ borrowed, ongoing Treasury subsidies eroding the fiscal position</td></tr>
+              <tr><td>Commercial / Eurobonds</td><td class="num">KSh 1.27T</td><td>≈23%</td><td>Refinancing risk on outstanding commercial debt; the 2024 Eurobond buyback reduced immediate rollover risk but did not reduce the principal</td></tr>
+              <tr><td>Domestic T-bills and bonds</td><td class="num">KSh 8.3T</td><td>≈56% of total debt</td><td>Interest on domestic debt alone now exceeds Kenya's entire education budget annually; crowding out private-sector borrowing and slowing growth</td></tr>
+              <tr><td>IMF facilities</td><td class="num">Variable concessional</td><td>Concessional</td><td>Kenya's $3.6B programme expired April 2025 without a successor; no new arrangement as of mid-2026; Governance Diagnostic report due before end-2025</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout">
+          <span class="callout-label">On the IMF relationship</span>
+          <p>Kenya's previous $3.6 billion IMF Extended Fund Facility / Extended Credit Facility arrangement expired in April 2025 after the ninth review did not proceed; Kenya requested a successor programme, and an IMF technical mission visited Nairobi in early 2026, but no new financing arrangement had been agreed as of mid-2026. The IMF's Governance Diagnostic mission (completed June 2025) was due to share a draft findings report with the authorities before the end of 2025.</p>
+        </div>
+
+        <h3 class="with-rule">Module 13: Natural Resources &amp; Revenue Tracker</h3>
+        <p>Under Article 62, Kenya's natural resources belong to all Kenyans, yet revenue from oil, gas, mining, forestry, sand harvesting, and water extraction remains largely invisible to the public. The module tracks licences, extraction volumes against limits, royalties collected against royalties owed, the legally required community benefit share, environmental compliance, and any change to forest or public land boundaries (immediately flagged with the authorising officer named).</p>
+        <div class="callout danger">
+          <span class="callout-label">The accountability gap in plain numbers</span>
+          <p>Communities near Kenya's Turkana oil fields remain among the poorest in the country: no piped water, few functional schools, no paved roads, despite billions in oil revenue extracted from under their land since 2019. The legally required community development share has not been demonstrably received.</p>
+        </div>
+        <div class="table-wrap">
+          <table class="uwazi-table">
+            <thead><tr><th>Resource</th><th class="num">Annual revenue (est.)</th><th>Documented problem</th><th>Documented example</th></tr></thead>
+            <tbody>
+              <tr><td>Oil &amp; gas (Turkana)</td><td class="num">KSh 12B+</td><td>Revenue not fully published; legally required 5% community share not demonstrably disbursed</td><td>Tullow Oil / CNOOC: KSh 12B+ in annual revenue; host communities report zero development benefit received</td></tr>
+              <tr><td>Mining licences</td><td class="num">KSh 4.2B</td><td>Licences awarded to connected individuals at below-market royalty rates; artisanal miners excluded</td><td>Gold mining in Migori: licences at 1% royalty rate; artisanal miners locked out of legal operations</td></tr>
+              <tr><td>Forest allocation</td><td class="num">KSh 890M</td><td>Illegal logging; land excised for private development without transparent process</td><td>Mau Forest: over 40,000 hectares lost over a decade; authorisations not publicly documented</td></tr>
+              <tr><td>Sand harvesting</td><td class="num">KSh 2.1B</td><td>Unregulated extraction; revenue not fully reaching county treasuries</td><td>Machakos and Kitui: billions extracted annually, counties receive a fraction of owed royalties</td></tr>
+              <tr><td>Water resources</td><td class="num">KSh 1.4B</td><td>Private companies extracting billions of litres at minimal royalties; lakes declining</td><td>Naivasha flower farms: Lake Naivasha water level declining, extraction licences underpriced relative to volume</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Phase 2–3, pending NLC and mining-registry data access agreements.</p>
+
+        <h3 class="with-rule">Module 14: Parliamentary &amp; County Assembly Funds Tracker</h3>
+        <div class="callout danger">
+          <span class="callout-label">The visibility gap (Institute of Public Finance Kenya)</span>
+          <p>Only <strong>11% of Kenyans</strong> know how much NG-CDF their constituency receives. Of those, only <strong>3% have ever seen a detailed breakdown</strong> of how it was spent. Zero percent can name every project funded in their constituency in the past year. Yet MPs and MCAs collectively control over <strong>KSh 70 billion</strong> in public funds annually.</p>
+        </div>
+        <div class="table-wrap">
+          <table class="uwazi-table">
+            <thead><tr><th>Fund</th><th class="num">Annual allocation</th><th>Recipients</th><th>Current visibility</th><th>What UWAZI adds</th><th>Phase</th></tr></thead>
+            <tbody>
+              <tr><td>NG-CDF (Constituencies)</td><td class="num">KSh 42B</td><td>290 MPs</td><td>PDFs buried on the NG-CDF website, rarely updated</td><td>Live balance, every project, every bursary recipient (privacy-protected), full contractor details, MP name on every authorisation</td><td><span class="phase-pill phase-1">P1+</span></td></tr>
+              <tr><td>Ward Development Fund</td><td class="num">KSh 17B</td><td>1,450 MCAs</td><td>No national public portal currently exists</td><td>Every ward project, contractor details, MCA authorisation on every payment</td><td><span class="phase-pill phase-1">P1+</span></td></tr>
+              <tr><td>Senate Oversight Fund</td><td class="num">KSh 2.1B</td><td>67 Senators</td><td>Minimal; no standardised reporting</td><td>Full expenditure trail linked to outcomes and Senate committee work</td><td><span class="phase-pill phase-2">P2+</span></td></tr>
+              <tr><td>County Bursary Fund</td><td class="num">KSh 8.4B</td><td>47 county governments</td><td>Many counties never publish beneficiary lists</td><td>Student recipients confirmed (privacy-protected), institutions verified as operational, amounts confirmed as actually transferred</td><td><span class="phase-pill phase-2">P2+</span></td></tr>
+              <tr><td>Women Representative Fund</td><td class="num">KSh 2.3B</td><td>47 Women Reps</td><td>Minimal; no standardised national reporting</td><td>Project tracking and direct beneficiary confirmation by citizens</td><td><span class="phase-pill phase-2">P2+</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Before the 2027 general elections, every voter would be able to see the verified, data-backed record of exactly what their MP did with KSh 42 billion of public money; and what their MCA did with KSh 17 billion more. Bursary fraud specifically (phantom students, non-existent schools) would be caught at the point of payment rather than at an audit two years later.</p>
+      </section>
+      <!-- ============================================================ -->
+      <!-- PART 07 — MODULES B -->
+      <!-- ============================================================ -->
+      <section class="part" id="modules-b">
+        <div class="part-header">
+          <span class="part-tag"><span class="line"></span>Part 07 of 11</span>
+          <h2>Modules, Part B: Citizen Verification, Assets, Donor Funds, Infrastructure &amp; Supporting Modules</h2>
+          <p class="part-sub">Modules 15 through 19e, completing the full set of 20.</p>
+        </div>
+
+        <h3 class="with-rule">Module 15: Citizen Verification</h3>
+        <p>The integration of physical citizen verification with AI satellite cross-referencing as an official part of the public accountability record has no direct equivalent in any existing transparency platform globally. <span class="phase-pill phase-1">P1+</span> basic upload, GPS stamp, and community comments; <span class="phase-pill phase-3">P3</span> adds AI satellite cross-referencing.</p>
+        <div class="callout">
+          <span class="callout-label">Worked example</span>
+          <p>A laboratory block at a secondary school is reported as 100% complete and fully paid. Parents upload photos showing an unfinished foundation; 47 community members confirm "not complete." A human analyst reviews the evidence against the contract and satellite imagery, confirms the discrepancy, and EACC receives a formal referral. The authorising officer is named publicly, and the Integrity Clock starts.</p>
+        </div>
+        <h4>Community Comment System</h4>
+        <div class="table-wrap">
+          <table class="uwazi-table">
+            <thead><tr><th>Feature</th><th>How it works</th></tr></thead>
+            <tbody>
+              <tr><td>Permanent searchable record</td><td>Every photo, comment, video, and document uploaded by citizens is permanently stored and publicly searchable; no officer can delete it</td></tr>
+              <tr><td>Officer response obligation</td><td>Questions posed publicly on any project page must be answered by the responsible officer within 14 days, under the Access to Information Act 2016</td></tr>
+              <tr><td>Irregularity flagging</td><td>Citizens can specifically flag: wrong contractor on site; work stopped without explanation; substandard materials; project does not match the signed contract specification</td></tr>
+              <tr><td>Community vote</td><td>Citizens vote on whether a project meets the specification stated in the signed contract; the vote is publicly visible to all Kenyans and forms part of the completion verification record</td></tr>
+              <tr><td>Whistleblower protection</td><td>Citizen identities are never published; only GPS coordinates and a timestamp are recorded. Full protection under the Whistleblower Protection Act and the Data Protection Act 2019</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 class="with-rule">Module 16: Government Assets Registry</h3>
+        <p>The National Land Commission has documented over 200 cases of government land illegally converted to private ownership between 2018 and 2024, often through forged documents with no investigation. No single authoritative, verified public valuation of Kenya's government-owned land, buildings, vehicles, equipment, and state-corporation stakes currently exists; estimates put total value above KSh 8 trillion, but these figures are working estimates, not verified data. Establishing the first comprehensive, verified, public assets register is itself one of UWAZI's specific objectives. Phase 2–3, pending NLC and registry data access.</p>
+
+        <h3 class="with-rule">Module 17: Foreign Aid &amp; Donor Fund Tracker</h3>
+        <p>Tracks every donor disbursement from receipt to verified delivery: amount, donor, stated purpose, receiving ministry, GPS-tracked project-level implementation progress, reporting-deadline compliance, conditionality tracking, and an early alert when donor funds approach expiry unused.</p>
+        <h4>The Virtuous Cycle UWAZI Creates for Kenya's Financing</h4>
+        <div class="flow">
+          <div class="flow-step"><div class="flow-num">1</div><div><b>Donor disburses funds for a specific purpose</b><span class="detail">Clearly documented in UWAZI at the moment of disbursement: amount, donor, ministry, stated purpose, conditionalities</span></div></div>
+          <div class="flow-step"><div class="flow-num">2</div><div><b>UWAZI tracks every shilling from receipt to delivery</b><span class="detail">Publicly visible in real time: which ministry, which project, which officer, in what amounts</span></div></div>
+          <div class="flow-step"><div class="flow-num">3</div><div><b>Citizens verify on the ground</b><span class="detail">GPS-stamped photos of funded projects become part of the permanent public record, independently, without government involvement</span></div></div>
+          <div class="flow-step"><div class="flow-num">4</div><div><b>Donor receives a verified accountability report automatically</b><span class="detail">Blockchain-backed, citizen-confirmed, no manual preparation required; the record is already there, already public, already verified</span></div></div>
+          <div class="flow-step"><div class="flow-num">5</div><div><b>Donor has full, independently verifiable confidence in accountability</b><span class="detail">This is what no existing system currently offers: not a self-report, not a field visit, but a continuous, tamper-proof, publicly accessible record</span></div></div>
+          <div class="flow-step"><div class="flow-num">6</div><div><b>Kenya secures more financing at better terms</b><span class="detail">Demonstrated accountability attracts concessional financing. The difference between 1–2% concessional and 7–9% commercial rates on KSh 500B of annual new borrowing is conservatively KSh 25–30B a year: more than 16 times UWAZI's Phase 1 cost</span></div></div>
+        </div>
+        <p>Phase 2–3. Directly relevant given that Kenya's prior IMF-supported programme expired without a successor agreed as of mid-2026, and that every future financing arrangement will carry stronger governance conditionalities than before.</p>
+
+        <h3 class="with-rule">Module 18: Infrastructure &amp; Development Tracker</h3>
+        <p>Every road, school, hospital, market, water system, and public building, from budget allocation to verified completion. Each project page would show: full specification and scope; GPS location; budget allocated and funds disbursed to date; contractor details and history; the named authorising officer for every payment; the contracted timeline and any extensions, with stated reasons; official and citizen-uploaded progress photos side by side; community comments; live fraud status; and an independent completion certificate before any final retention payment (Phase 3). <span class="phase-pill phase-1">P1 partial</span> on PPRA public data; <span class="phase-pill phase-3">P3 full</span> with smart-contract escrow and a national GPS map.</p>
+
+        <h3 class="with-rule">Modules 19a–19e: Supporting Modules</h3>
+        <div class="grid-2">
+          <div class="card"><span class="card-eyebrow">19a · <span class="phase-pill phase-1">P1+</span></span><h4>Historical Data Archive</h4><p>Ten or more years of Auditor-General reports, EACC outcomes, and Controller of Budget reports digitised and searchable, enabling pattern detection across administrations and verification of whether past reform promises were kept.</p></div>
+          <div class="card"><span class="card-eyebrow">19b · <span class="phase-pill phase-2">Proposed, P2–P3</span></span><h4>USSD / SMS Access</h4><p>Same data as the web dashboard on any basic phone, subject to CA Kenya approval and carrier agreements.</p></div>
+          <div class="card"><span class="card-eyebrow">19c · <span class="phase-pill phase-2">P2+</span></span><h4>Integrity Score</h4><p>A published, publicly auditable scoring methodology with a formal dispute and review process, targeted to be live and verified before the 2027 general election.</p></div>
+          <div class="card"><span class="card-eyebrow">19d · <span class="phase-pill phase-1">P1+</span></span><h4>Open API</h4><p>Free, machine-readable access for media, civil society, academia, and international organisations, with no government gatekeeping.</p></div>
+          <div class="card"><span class="card-eyebrow">19e · <span class="phase-pill phase-3">P3+</span></span><h4>Annual Corruption Cost Report</h4><p>Published every 9 December (International Anti-Corruption Day): total confirmed losses by case, top ministries and counties by detected fraud rate, money recovered, and Kenya's year-on-year CPI position against comparable countries.</p></div>
+        </div>
+      </section>
+      <!-- ============================================================ -->
+      <!-- PART 08 — ROADMAP & ORGANISATION -->
+      <!-- ============================================================ -->
+      <section class="part" id="roadmap">
+        <div class="part-header">
+          <span class="part-tag"><span class="line"></span>Part 08 of 11</span>
+          <h2>Implementation Roadmap &amp; Organisational Structure</h2>
+          <p class="part-sub">How UWAZI is structured to be built, who it is built with, and what is delivered in each of the first twelve months.</p>
+        </div>
+
+        <h3 class="with-rule">Organisational Structure</h3>
+        <p>UWAZI is led by its originator, with delivery built around a small core engineering team, a legal and compliance function, and a dedicated civil-society and partnerships function from the outset. The structure is intentionally lean in Phase 1: a Chief Technology Officer leading all architecture and delivery decisions, a data engineering lead responsible for the ingestion pipeline and rule-based detection, two full-stack developers building the public dashboard and citizen-upload system, a legal counsel retainer engaged before any external document is shared, and a civil-society liaison responsible for coalition building from Month 2. Full role-by-role cost assumptions are set out in Part 9.</p>
+
+        <h3 class="with-rule">Coalition &amp; Partnership Model</h3>
+        <p>UWAZI's credibility and durability depend on partnerships across four categories, sequenced to match what each partner needs from the platform at each stage.</p>
+        <div class="grid-2">
+          <div class="card"><h4>Civil society</h4><p>Mzalendo Trust (parliamentary monitoring and an existing audience of millions), Transparency International Kenya (international credibility and the CPI link), the Kenya Human Rights Commission (constitutional litigation capacity), and the Institute of Public Finance Kenya (NG-CDF and county-budget expertise) are the natural first coalition partners, engaged from Phase 1.</p></div>
+          <div class="card"><h4>Regulatory champions</h4><p>EACC, the Controller of Budget, the Office of the Auditor-General, and PPRA each have a direct legal mandate that aligns with a specific UWAZI module; engagement with these institutions follows demonstrated Phase 1 proof of concept.</p></div>
+          <div class="card"><h4>Funding partners</h4><p>World Bank Kenya's Governance, Accountability and Decentralization programme; USAID Kenya's Democracy, Rights and Governance programme; the IMF's Governance Diagnostic process; the Gates Foundation's open-data programmes; Open Society Foundation; and the EU Kenya governance programme are the realistic Phase 1 funding sources, each approached with a proposal matched to its own criteria.</p></div>
+          <div class="card"><h4>Academic partners</h4><p>A university partner (for example, University of Nairobi or Strathmore University, including @iLabAfrica) provides both a Phase 3 blockchain consortium node and independent research credibility on governance impact.</p></div>
+        </div>
+
+        <h3 class="with-rule">Phase 1 Milestones, Month by Month</h3>
+        <div class="table-wrap">
+          <table class="uwazi-table">
+            <thead><tr><th>Month</th><th>Milestone</th><th>What it delivers</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>Legal &amp; technical foundation</td><td>Legal entity, IP registration, technical repository, and CTO in place; UWAZI exists as a protected legal entity</td></tr>
+              <tr><td>2</td><td>Data infrastructure</td><td>Automated daily/weekly ingestion of CBK bulletins, KRA releases, and PPRA tender data; the database holds real Kenyan government data</td></tr>
+              <tr><td>3</td><td>Public dashboard (alpha)</td><td>CBK, KRA, and PPRA data live; bilingual, mobile-responsive interface; any Kenyan can open the dashboard and see real data with no registration required</td></tr>
+              <tr><td>4</td><td>Citizen verification (beta)</td><td>Photo upload with GPS stamping, community comments, and a pilot county project map live; first citizen reports reviewed by an analyst</td></tr>
+              <tr><td>6</td><td>Rule-based fraud detection (alpha)</td><td>Ghost-company, inflated-pricing, split-purchasing, and no-tender detection live on PPRA data; first validated, human-confirmed, publicly published fraud flag</td></tr>
+              <tr><td>7–8</td><td>Pilot completion &amp; funding push</td><td>Full proof of concept demonstrated publicly; pilot evaluation report published; funding applications submitted to at least three donors; at least one civil-society partner formally signed</td></tr>
+              <tr><td>9–12</td><td>Consolidation &amp; Phase 2 preparation</td><td>Detection expanded; a second county added; USSD short-code application submitted; carrier negotiations begun; Phase 2 architecture and hiring plan finalised; Phase 2 funding secured or at final stage from at least two sources</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 class="with-rule">Full Implementation Timeline</h3>
+        <div class="table-wrap">
+          <table class="uwazi-table">
+            <thead><tr><th>Phase</th><th>Timeline</th><th>Key deliverables</th><th class="num">Budget</th></tr></thead>
+            <tbody>
+              <tr><td>Phase 1 (MVP)</td><td>Months 1–12</td><td>Public dashboard live; one pilot county with citizen verification; rule-based detection alpha; Phase 2 coalition assembled</td><td class="num">KSh 53M</td></tr>
+              <tr><td>Phase 2 (Growth)</td><td>Months 12–36</td><td>All 47 counties connected; civil-society coalition formalised; full Hyperledger Fabric deployed; ML training begins; USSD operational (subject to approval)</td><td class="num">KSh 410M</td></tr>
+              <tr><td>Phase 3 (National Integration)</td><td>Months 18–36+</td><td>Full government integration (IFMIS, KRA iTax, KEPSS, BRS, NLC, agency auto-filing); Kafka streaming; ML models fully operational; smart-contract payments live</td><td class="num">KSh 791M – 1.069B</td></tr>
+              <tr><td>Annual operations (Year 3+)</td><td>Ongoing</td><td>45–60 person national operation; full security stack; Annual Corruption Cost Report; Integrity Scores updated before each election cycle</td><td class="num">KSh 370–528M / yr</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <!-- ============================================================ -->
+      <!-- PART 09 — BUDGET & FUNDING -->
+      <!-- ============================================================ -->
+      <section class="part" id="budget">
+        <div class="part-header">
+          <span class="part-tag"><span class="line"></span>Part 09 of 11</span>
+          <h2>Budget &amp; Funding Strategy</h2>
+          <p class="part-sub">A bottom-up budget with assumptions stated plainly, and a realistic, phased funding model.</p>
+        </div>
+
+        <div class="callout navy">
+          <span class="callout-label">Framing</span>
+          <p>In its early phases, UWAZI is a grant-funded public-interest project, not a commercial product. This is the correct and credible model for national transparency infrastructure: roads, courts, and public-health systems are not expected to turn a profit during construction. Commercial sustainability is a Phase 3+ objective, following demonstrated public impact.</p>
+        </div>
+
+        <h3 class="with-rule">Budget Assumptions</h3>
+        <div class="grid-2">
+          <div class="card"><h4>Salary benchmarks</h4><p>Based on current Nairobi market rates (BrighterMonday, Andela Kenya compensation data, iHub market intelligence); senior engineers with blockchain, AI/ML, and distributed-systems experience command roughly KSh 380,000–650,000 per month. Budgeting below market produces an unexecutable plan.</p></div>
+          <div class="card"><h4>Statutory contributions</h4><p>All personnel costs include an additional 18% for NSSF, NHIF/SHIF, NITA levy, and the Affordable Housing Levy; these are legal obligations, not optional line items.</p></div>
+          <div class="card"><h4>Government integration complexity</h4><p>Based on documented Kenyan precedents (Huduma Namba, the original IFMIS rollout, eCitizen), where government IT integrations have historically exceeded initial estimates by 2–4×.</p></div>
+          <div class="card"><h4>Contingency</h4><p>25% across every phase, the professional standard for complex government technology projects; a 10% contingency would not be credible to an experienced funder.</p></div>
+        </div>
+
+        <h3 class="with-rule">Phase 1 Budget: Line-Item Breakdown (Months 1–12)</h3>
+        <p>This is where the KSh 53 million goes. Every line item has a named justification; funders can interrogate any of them.</p>
+        <div class="table-wrap">
+          <table class="uwazi-table">
+            <thead><tr><th>Category</th><th>Item</th><th class="num">Amount (KSh)</th></tr></thead>
+            <tbody>
+              <tr><td rowspan="7"><strong>Personnel</strong> (gross + 18% statutory)</td><td>Founding Director / CEO (KSh 220K gross × 1.18 × 12)</td><td class="num">3,115,200</td></tr>
+              <tr><td>Chief Technology Officer (most critical hire (KSh 480K gross × 1.18 × 12)</td><td class="num">6,796,800</td></tr>
+              <tr><td>Senior Full-Stack Developers ×2 (KSh 250K × 1.18 × 2 × 12)</td><td class="num">7,080,000</td></tr>
+              <tr><td>Lead Data Engineer (KSh 280K × 1.18 × 12)</td><td class="num">3,964,800</td></tr>
+              <tr><td>UI/UX Designer, contract (KSh 160K × 1.18 × 6 months)</td><td class="num">1,132,800</td></tr>
+              <tr><td>Legal counsel retainer (KSh 120K × 12)</td><td class="num">1,440,000</td></tr>
+              <tr><td>Civil society liaison, contract (KSh 150K × 6 months)</td><td class="num">900,000</td></tr>
+              <tr><td><strong>Staff benefits</strong></td><td>Group medical insurance + professional development</td><td class="num">710,000</td></tr>
+              <tr><td rowspan="6"><strong>Cloud infrastructure</strong></td><td>Primary cloud hosting, production-grade security-hardened (KSh 280K × 12)</td><td class="num">3,360,000</td></tr>
+              <tr><td>Redis cache (KSh 35K × 12)</td><td class="num">420,000</td></tr>
+              <tr><td>Elasticsearch cluster (KSh 45K × 12)</td><td class="num">540,000</td></tr>
+              <tr><td>Backup and disaster recovery (KSh 40K × 12)</td><td class="num">480,000</td></tr>
+              <tr><td>Public blockchain notarisation (Phase 1 only, KSh 15K × 12)</td><td class="num">180,000</td></tr>
+              <tr><td>Domain, DNS, SSL</td><td class="num">12,000</td></tr>
+              <tr><td rowspan="5"><strong>Security</strong></td><td>Web Application Firewall (KSh 85K × 12)</td><td class="num">1,020,000</td></tr>
+              <tr><td>SIEM 24/7 threat monitoring (KSh 120K × 12)</td><td class="num">1,440,000</td></tr>
+              <tr><td>Penetration testing ×2 (KSh 750K × 2)</td><td class="num">1,500,000</td></tr>
+              <tr><td>Bug bounty programme setup, Year 1</td><td class="num">500,000</td></tr>
+              <tr><td>Cyber liability insurance (annual)</td><td class="num">900,000</td></tr>
+              <tr><td><strong>Legal and IP</strong></td><td>KIPI registration + legal entity + Data Protection Act compliance review</td><td class="num">470,000</td></tr>
+              <tr><td rowspan="5"><strong>Data and operations</strong></td><td>Historical data digitisation (10-year Auditor-General and EACC archive)</td><td class="num">600,000</td></tr>
+              <tr><td>Satellite imagery subscription (Copernicus + Planet Labs)</td><td class="num">350,000</td></tr>
+              <tr><td>Enterprise fibre internet (KSh 28K × 12)</td><td class="num">336,000</td></tr>
+              <tr><td>Co-working space / iHub equivalent (KSh 90K × 12)</td><td class="num">1,080,000</td></tr>
+              <tr><td>Equipment (laptops ×8, servers, peripherals) + dev tools (GitHub, Figma, Jira)</td><td class="num">1,620,000</td></tr>
+              <tr><td rowspan="4"><strong>Civil society and outreach</strong></td><td>Civil society partner engagement</td><td class="num">400,000</td></tr>
+              <tr><td>Pilot county launch and community engagement</td><td class="num">350,000</td></tr>
+              <tr><td>Media and public communications</td><td class="num">500,000</td></tr>
+              <tr><td>Kiswahili translation, localisation, and stakeholder travel</td><td class="num">650,000</td></tr>
+              <tr><td colspan="2"><strong>Subtotal before contingency</strong></td><td class="num"><strong>42,507,600</strong></td></tr>
+              <tr><td colspan="2"><strong>25% contingency</strong></td><td class="num"><strong>10,626,900</strong></td></tr>
+              <tr style="background:var(--warn-bg);"><td colspan="2"><strong>Phase 1 Total</strong></td><td class="num"><strong>KSh 53,134,500 (≈ USD 408K)</strong></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 class="with-rule">Budget Summary by Phase</h3>
+        <div class="table-wrap">
+          <table class="uwazi-table">
+            <thead><tr><th>Phase</th><th>Period</th><th>Covers</th><th class="num">Total (incl. 25% contingency)</th></tr></thead>
+            <tbody>
+              <tr><td>Phase 1</td><td>Months 1–12</td><td>Personnel, cloud and security infrastructure, legal/IP setup, historical data digitisation, civil-society outreach, Machakos pilot launch</td><td class="num">KSh 53.1M (≈ USD 408K)</td></tr>
+              <tr><td>Phase 2</td><td>Months 12–36</td><td>Expanded engineering team (blockchain, AI/ML, DevOps, mobile), multi-region cloud, blockchain node hardware, legislative drafting support, 47-county engagement</td><td class="num">KSh 409.0M (≈ USD 3.15M)</td></tr>
+              <tr><td>Phase 3</td><td>Months 18–36+</td><td>One-time government integration costs (KEPSS, IFMIS, KRA iTax, BRS, NLC, EACC/ODPP/FRC/PSC auto-filing) and 47-county rollout at roughly KSh 8M per county</td><td class="num">KSh 791M – 1.069B (≈ USD 6.1M–8.2M)</td></tr>
+              <tr><td>Annual operations</td><td>Year 3+ ongoing</td><td>45–60 staff, multi-region cloud, full security operations, annual independent audit, civil-society and outreach programme</td><td class="num">KSh 370M – 528M / yr (≈ USD 2.85M–4.06M)</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="stat-strip">
+          <div class="stat-box"><div class="v">KSh 1.25B–1.53B</div><div class="l">total 3-year build cost</div></div>
+          <div class="stat-box"><div class="v">0.21%–0.25%</div><div class="l">of one year's documented corruption loss</div></div>
+          <div class="stat-box"><div class="v">&lt; 19 days</div><div class="l">to recover build cost at conservative impact</div></div>
+          <div class="stat-box"><div class="v">67:1–82:1</div><div class="l">conservative combined return ratio, Year 3</div></div>
+        </div>
+
+        <h4>Why a Blockchain Node Costs What It Does</h4>
+        <p>Phase 2 budgets roughly KSh 8 million per enterprise-grade node (server, Hardware Security Module, and installation) for nodes holding court-admissible records, not the roughly KSh 2 million a basic server would cost; the difference reflects what is actually required to make a record stand up in court. The same realism applies to county rollout: roughly KSh 8 million per county, covering technical integration, local training, hardware, travel, stakeholder engagement, first-year support, and change management, rather than an unrealistic flat per-county estimate.</p>
+
+        <h3 class="with-rule">Phase 1 Funding Sources</h3>
+        <div class="table-wrap">
+          <table class="uwazi-table">
+            <thead><tr><th>Source</th><th class="num">Realistic range</th><th>Timeline</th></tr></thead>
+            <tbody>
+              <tr><td>World Bank Kenya Governance Portfolio</td><td class="num">$150K–$500K</td><td>6–18 months</td></tr>
+              <tr><td>USAID Kenya DRG Programme</td><td class="num">$100K–$300K</td><td>3–12 months</td></tr>
+              <tr><td>IMF Governance Diagnostic-linked funding</td><td class="num">$50K–$200K</td><td>Linked to the ongoing diagnostic process</td></tr>
+              <tr><td>Gates Foundation (open data / civic accountability)</td><td class="num">$100K–$500K</td><td>6–12 months</td></tr>
+              <tr><td>Open Society Foundation</td><td class="num">$50K–$250K</td><td>6–12 months</td></tr>
+              <tr><td>EU Kenya Democratic Governance Programme</td><td class="num">€100K–€500K</td><td>Tied to EU programme cycles</td></tr>
+              <tr><td>Kenyan diaspora impact capital</td><td class="num">$20K–$100K</td><td>3–6 months</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Combined realistic Phase 1 funding potential: <strong>$320,000–$1.35 million</strong>, comfortably covering Phase 1 with diversification across at least three donors; no single source is intended to exceed 30% of total Phase 1 funding, to preserve editorial and operational independence.</p>
+
+        <h3 class="with-rule">Phase 3+ Sustainable Revenue Model</h3>
+        <p>Commercial sustainability is approached with honest timelines, not optimistic projections assumed before they are earned.</p>
+        <div class="grid-2">
+          <div class="card"><h4>Government SaaS contracts (Year 3+)</h4><p>Highest risk: requires political support, proven impact, and enabling legislation. At full 47-county adoption, roughly KSh 188M/year; a national contract could reach KSh 150–400M/year. Not projected before Year 3 without confirmed agreements.</p></div>
+          <div class="card"><h4>Institutional subscriptions (Year 2+)</h4><p>Medium risk: banks (KYC and procurement screening), law firms (evidence packages), insurers. Realistic Year 2 range KSh 8–25M, growing to KSh 25–60M by Year 3.</p></div>
+          <div class="card"><h4>Data analytics services (Year 2+)</h4><p>Procurement analytics for development partners and academic licensing; realistic Year 3 total KSh 10–30M.</p></div>
+          <div class="card"><h4>International licensing (Year 5+)</h4><p>Lowest near-term likelihood: realistic only once the Kenya deployment is fully proven. See Part 10 for the global expansion model.</p></div>
+        </div>
+        <h3 class="with-rule">Revenue Sustainability Projection</h3>
+        <p>These are realistic ranges, not optimistic targets. Government SaaS revenue is treated as contingent on confirmed contracts, not assumed before they exist.</p>
+        <div class="table-wrap">
+          <table class="uwazi-table">
+            <thead><tr><th>Year</th><th class="num">Grant funding</th><th class="num">Commercial revenue</th><th class="num">Total</th></tr></thead>
+            <tbody>
+              <tr><td>Year 1</td><td class="num">KSh 40–70M</td><td class="num">KSh 0</td><td class="num">KSh 40–70M</td></tr>
+              <tr><td>Year 2</td><td class="num">KSh 150–250M</td><td class="num">KSh 8–25M</td><td class="num">KSh 158–275M</td></tr>
+              <tr><td>Year 3</td><td class="num">KSh 100–200M</td><td class="num">KSh 50–120M</td><td class="num">KSh 150–320M</td></tr>
+              <tr><td>Year 4</td><td class="num">KSh 50–100M</td><td class="num">KSh 200–400M</td><td class="num">KSh 250–500M</td></tr>
+              <tr><td>Year 5+</td><td class="num">KSh 20–50M</td><td class="num">KSh 400–700M</td><td class="num">KSh 420–750M</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout gold">
+          <span class="callout-label">Honest planning note</span>
+          <p>Year 4–5 commercial revenue assumes government SaaS contracts materialise. If political resistance delays this, grant funding remains the primary source into Year 5. Plan for that scenario and do not assume the optimistic case when making long-term commitments.</p>
+        </div>
+      </section>
+      <!-- ============================================================ -->
+      <!-- PART 10 — RISK, ROI & GLOBAL VISION -->
+      <!-- ============================================================ -->
+      <section class="part" id="risk-roi">
+        <div class="part-header">
+          <span class="part-tag"><span class="line"></span>Part 10 of 11</span>
+          <h2>Risk Analysis, Return on Investment &amp; Global Expansion</h2>
+          <p class="part-sub">An honest risk register, not a sanitised one, followed by the evidence behind the return-on-investment figures used throughout this document.</p>
+        </div>
+
+        <h3 class="with-rule">Risk Matrix</h3>
+        <div class="risk-card">
+          <div class="risk-head"><h4>1. Political resistance</h4><div class="risk-meta"><span class="pill pill-high">Probability: High</span><span class="pill pill-high">Impact: High</span><span class="pill pill-med">Residual: Medium</span></div></div>
+          <p>Officials whose conduct would be exposed have direct power to block, defund, or legally challenge UWAZI. Mitigated by full Phase 1–2 independence from government permission (PPRA, CBK, and KRA data are already public), by building the civil-society coalition before seeking government integration, and by an Open API that makes suppression technically difficult. Some Phase 3 integrations, particularly IFMIS, may face years of resistance regardless; UWAZI delivers substantial value on public data alone in the meantime.</p>
+        </div>
+        <div class="risk-card">
+          <div class="risk-head"><h4>2. Data blocking</h4><div class="risk-meta"><span class="pill pill-med">Probability: Med–High (P3)</span><span class="pill pill-med">Impact: Medium</span><span class="pill pill-low">Residual: Low–Moderate</span></div></div>
+          <p>Government may decline formal API access to IFMIS, KRA iTax, or KEPSS. Phase 1–2 require no government cooperation. Article 35 and the Access to Information Act 2016 provide a legal basis for formal access requests.</p>
+        </div>
+        <div class="risk-card">
+          <div class="risk-head"><h4>3. Cybersecurity threats</h4><div class="risk-meta"><span class="pill pill-high">Probability: High</span><span class="pill pill-high">Impact: High if compromised</span><span class="pill pill-low">Residual: Low–Medium</span></div></div>
+          <p>State-level or criminal actors may attempt to compromise the system to delete evidence or discredit UWAZI. Blockchain architecture makes deletion cryptographically impossible once confirmed across the consortium; bank-grade security controls apply from launch.</p>
+        </div>
+        <div class="risk-card">
+          <div class="risk-head"><h4>4. Adoption and usage</h4><div class="risk-meta"><span class="pill pill-med">Probability: Medium</span><span class="pill pill-med">Impact: Medium</span><span class="pill pill-low">Residual: Low</span></div></div>
+          <p>Citizens may not use the platform, reducing its deterrent effect. Mitigated by bilingual access from launch, a proposed USSD channel, and partnership with civil-society organisations that already reach millions of Kenyans.</p>
+        </div>
+        <div class="risk-card">
+          <div class="risk-head"><h4>5. Funding dependency</h4><div class="risk-meta"><span class="pill pill-med">Probability: Medium</span><span class="pill pill-med">Impact: Medium</span><span class="pill pill-low">Residual: Low</span></div></div>
+          <p>Over-reliance on a single donor could compromise independence. Mitigated by a minimum of four funding sources from inception, with no single source above 30% of Phase 1 budget, and editorial independence protected in every funding agreement.</p>
+        </div>
+        <div class="risk-card">
+          <div class="risk-head"><h4>6. Technical execution</h4><div class="risk-meta"><span class="pill pill-med">Probability: Medium</span><span class="pill pill-med">Impact: Medium (delays)</span><span class="pill pill-low">Residual: Low–Managed</span></div></div>
+          <p>Government-scale infrastructure is genuinely complex and legacy-system integration carries real technical risk. Mitigated by a phased architecture (Phase 1 uses public data only, with zero legacy-integration risk), rule-based detection before ML, and a CTO hired as the first priority role.</p>
+        </div>
+
+        <h3 class="with-rule">Return on Investment: Four Evidence-Based Channels</h3>
+        <div class="grid-2">
+          <div class="card">
+            <h4>1. Corruption prevention</h4>
+            <p>Brazil's Portal da Transparência cut procurement fraud 30–50% in monitored sectors, but only 8–10 years after launch. Kenya's conservative modelling: 5% reduction by Year 2–3 (KSh 30.4B/yr), 10% by Year 3–4 (KSh 60.8B/yr), with the Brazil-scale 30% figure modelled realistically at Year 5–8, not earlier.</p>
+          </div>
+          <div class="card">
+            <h4>2. Detection &amp; asset recovery</h4>
+            <p>FATF research finds real-time detection with automatic enforcement filing improves recovery rates 3–8× over retrospective audits. Against EACC's FY2024/25 baseline of KSh 3.4 billion recovered, this implies KSh 10.2B–27.2B/year by Year 2–4.</p>
+          </div>
+          <div class="card">
+            <h4>3. Sovereign borrowing-cost reduction</h4>
+            <p>An IMF working paper on governance and sovereign spreads finds credible, internationally verified transparency reforms typically improve borrowing spreads by 0.3–0.8% within 3–5 years. On Kenya's debt stock, even the conservative 0.3% figure is worth roughly KSh 36.9 billion a year, recovering UWAZI's full three-year build cost in about sixteen days of debt-service savings alone.</p>
+          </div>
+          <div class="card">
+            <h4>4. Donor financing improvement</h4>
+            <p>The spread between concessional financing (1–2%) and commercial financing (7–9%) on new annual borrowing implies a conservative saving of KSh 25–30 billion a year if even 20% of new borrowing shifts to concessional terms, achievable Year 3–5 with demonstrated accountability.</p>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table class="uwazi-table">
+            <thead><tr><th>ROI type</th><th class="num">Conservative</th><th class="num">Mid</th><th class="num">High</th></tr></thead>
+            <tbody>
+              <tr><td>Corruption prevention</td><td class="num">KSh 30.4B/yr</td><td class="num">KSh 60.8B/yr</td><td class="num">KSh 182.4B/yr</td></tr>
+              <tr><td>Detection &amp; recovery</td><td class="num">KSh 10.2B/yr</td><td class="num">KSh 17.0B/yr</td><td class="num">KSh 27.2B/yr</td></tr>
+              <tr><td>Borrowing-cost reduction</td><td class="num">KSh 36.9B/yr</td><td class="num">KSh 61.5B/yr</td><td class="num">KSh 98.3B/yr</td></tr>
+              <tr><td>Donor financing improvement</td><td class="num">KSh 25B/yr</td><td class="num">KSh 30B/yr</td><td class="num">KSh 50B/yr</td></tr>
+              <tr><td><strong>Conservative combined total (Year 3)</strong></td><td class="num" colspan="3"><strong>≈ KSh 102.5B / yr</strong></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="lead-quote">"KSh 102.5 billion against a KSh 1.25B–1.53B build cost is a conservative return ratio of roughly 67:1 to 82:1 at Year 3 steady state. No comparable infrastructure investment in Kenya's recent history offers an evidence-based return of this scale."</p>
+
+        <h3 class="with-rule">Global Expansion Model</h3>
+        <p>A deliberately staged path: prove the model in Kenya before exporting it anywhere else.</p>
+        <div class="grid-2">
+          <div class="card"><h4>Stage 1 · Prove Kenya (Years 1–3)</h4><p>Full operational proof of concept with independently verified impact and a modular, exportable platform architecture.</p></div>
+          <div class="card"><h4>Stage 2 · East Africa (Years 3–5)</h4><p>Partner with civil society in Tanzania and Uganda, adapting for local legal frameworks and languages, co-funded as a regional public good.</p></div>
+          <div class="card"><h4>Stage 3 · Pan-Africa (Years 5–10)</h4><p>Licensed deployment across the continent with potential African Union partnership; estimated revenue at 10-country scale, USD 10–50M annually.</p></div>
+          <div class="card"><h4>Stage 4 · Global South (Year 10+)</h4><p>Conditional on demonstrated national impact and formal Government of Kenya endorsement; not a guaranteed outcome, but a realistic long-term direction.</p></div>
+        </div>
+        <p style="font-size:.88rem;color:var(--ink-faint);">Illustrative target markets, based on their 2024–25 governance and corruption indicators: Nigeria, Tanzania, Uganda, Ghana, Rwanda, Ethiopia, South Africa, and the Democratic Republic of Congo, each for distinct structural reasons (oil-revenue opacity, language fit, devolved-government structure, civic-tech maturity, or resource-revenue opacity).</p>
+      </section>
+      <!-- ============================================================ -->
+      <!-- PART 11 — CONCLUSION & CONTACT -->
+      <!-- ============================================================ -->
+      <section class="part" id="conclusion">
+        <div class="part-header">
+          <span class="part-tag"><span class="line"></span>Part 11 of 11</span>
+          <h2>Strategic Conclusion &amp; Contact</h2>
+        </div>
+
+        <div class="grid-3">
+          <div class="card">
+            <h4>National infrastructure</h4>
+            <p>UWAZI is not an application. It is infrastructure, as essential to Kenya as roads, electricity, or water. A country cannot function without financial accountability any more than it can function without power.</p>
+          </div>
+          <div class="card">
+            <h4>A long-term system</h4>
+            <p>Designed to outlast any single administration: data distributed across independent nodes means no government can shut it down, and an open API means the data lives simultaneously in millions of hands worldwide.</p>
+          </div>
+          <div class="card">
+            <h4>A governance transformation tool</h4>
+            <p>The goal is not to catch individual thieves. It is to make theft structurally difficult. When every shilling is visible and every officer is named, deterrence replaces detection, and prevention replaces prosecution.</p>
+          </div>
+        </div>
+
+        <div class="callout gold" style="margin-top:24px;">
+          <span class="callout-label">The numbers, plainly</span>
+          <p>UWAZI's entire three-year build cost, KSh 1.25B–1.53B, is recoverable in under three weeks of operation at conservative, evidence-based impact levels. The return ratio is 67:1 to 82:1 on conservative projections. The constraint has never been the return on investment; it has been the political will and the funding to build the system.</p>
+        </div>
+
+        <h3 class="with-rule">Call to Action</h3>
+        <p>Kenya loses roughly KSh 608 billion every year to corruption: about KSh 1.67 billion a day, KSh 69 million an hour. The technology to close that gap exists. The legal framework to support it already exists, under Articles 35, 62, 157, and 201 of the Constitution and the Access to Information, Public Finance Management, and Conflict of Interest Acts. What is needed now is the will, the partnerships, and the funding to build it.</p>
+
+        <h3 class="with-rule">Intellectual Property Declaration</h3>
+        <p>This concept, in its specific, integrated form, was originated by <strong>John Thindi Mwaura ("Marcus")</strong> in Kajiado, Kenya, on 15 March 2026 (Reference: UWAZI-CONCEPT-001). The following constitute the original intellectual contribution of the named originator:</p>
+        <ol>
+          <li>Attaching individual government officer photographs, names, and publicly visible track records to every public financial transaction in real time, making personal accountability the default rather than the exception.</li>
+          <li>The integrated architecture combining, in one platform: real-time tax inflow tracking from the point of collection; Consolidated Fund balance visibility; individual officer accountability profiles; rule-based and AI-powered fraud detection with public alerts following mandatory human confirmation; auto-generated court-admissible blockchain evidence packages; and direct, simultaneous filing to EACC, ODPP, FRC, and PSC.</li>
+          <li>The "shilling-to-shilling" philosophy: tracking every public coin from the point of tax collection through every institutional hand to final expenditure, with no gaps.</li>
+          <li>The Integrity Clock: a public transparency mechanism, not a legal deadline, showing how long a filed case has been active and its current stated status.</li>
+          <li>The smart-contract conditional spending mechanism, releasing funds to contractors only when physical and technical verification confirms milestones are actually met on the ground.</li>
+        </ol>
+        <p>Any organisation, government body, investor, or individual wishing to implement, commercialise, or adapt this concept must obtain prior written authorisation from the originator.</p>
+
+        <div class="card" style="margin-top:20px;">
+          <h4>Contact</h4>
+          <p>
+            <strong>John Thindi Mwaura (Marcus)</strong>, Concept Originator<br>
+            Kajiado, Kenya<br>
+            Email: mwaura.ke.john@gmail.com · uwazi.ke@gmail.com<br>
+            Phone: +254 705 062 319<br>
+            Reference: UWAZI-CONCEPT-001
+          </p>
+        </div>
+      </section>
+    </div><!-- /.content-wrap -->
+  </main>
+</div><!-- /.shell -->
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="swahili">"Kufanya fedha za Kenya kuonekana kwa kila Mkenya." (Making every Kenyan shilling visible, from collection to delivery.)</div>
+    <div class="footer-grid">
+      <div>
+        <h5>UWAZI</h5>
+        <p>A proposed national public finance transparency and anti-corruption platform for Kenya. Document reference UWAZI-CONCEPT-001, 11-part series, updated June 2026.</p>
+      </div>
+      <div>
+        <h5>Contact</h5>
+        <a href="mailto:mwaura.ke.john@gmail.com">mwaura.ke.john@gmail.com</a>
+        <a href="mailto:uwazi.ke@gmail.com">uwazi.ke@gmail.com</a>
+        <a href="tel:+254705062319">+254 705 062 319</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <strong>Intellectual Property Notice:</strong> This document and all concepts described herein are the original intellectual work of John Thindi Mwaura (Marcus), originated in Kajiado, Kenya on 15 March 2026 (Reference: UWAZI-CONCEPT-001). Reproduction, adaptation, commercial use, or implementation without the originator's written consent is prohibited under Kenyan and international intellectual property law. All monetary figures are stated in Kenyan Shillings (KSh) unless noted; USD conversions use an indicative rate of KSh 130 per USD. All ROI, recovery, and impact projections are conservative, evidence-based estimates, not guarantees; see Part 10 for methodology and sources.
+    </div>
+  </div>
+</footer>
+
+<button class="back-to-top" id="backToTop" aria-label="Back to top">↑</button>
+<script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kenya Belongs to Its Citizens: Choose Peace. Choose Accountability. Choose 2027.</title>
+<meta name="description" content="A civic call to every Kenyan: reject political violence, reject handouts, know your constitutional power, and demand real accountability from leaders ahead of 2027.">
+<style>
+/* ================================================================
+   KENYA CITIZENS — Design tokens (same palette as UWAZI, new voice)
+   ================================================================ */
+:root{
+  --navy-950:#081120;
+  --navy-900:#0b1a2e;
+  --navy-800:#13294a;
+  --navy-700:#1c3a63;
+  --navy-600:#28527f;
+  --gold-300:#ffd479;
+  --gold-400:#f7c25c;
+  --gold-500:#f5b041;
+  --gold-600:#c98f2e;
+  --paper:#f8f6f1;
+  --paper-dim:#f1eee6;
+  --card:#ffffff;
+  --ink:#1a2233;
+  --ink-soft:#4d5566;
+  --ink-faint:#7a8194;
+  --line:#e1ddd3;
+  --danger:#a8341f;
+  --danger-bg:#fbeae6;
+  --danger-border:#d94e30;
+  --success:#1f6b46;
+  --success-bg:#e9f4ee;
+  --warn-bg:#fdf3e2;
+  --sidebar-w:290px;
+  --font:"Segoe UI","Roboto","Helvetica Neue",system-ui,-apple-system,sans-serif;
+  --font-mono:"Cascadia Mono","SF Mono","Consolas",ui-monospace,monospace;
+  --radius:10px;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{margin:0;font-family:var(--font);background:var(--paper);color:var(--ink);line-height:1.65;font-size:16px;-webkit-font-smoothing:antialiased;}
+a{color:var(--navy-700);text-decoration:none;}
+a:hover{text-decoration:underline;}
+h1,h2,h3,h4{line-height:1.2;letter-spacing:-0.01em;color:var(--navy-900);}
+p{margin:0 0 14px;}
+:focus-visible{outline:3px solid var(--gold-500);outline-offset:2px;}
+ul,ol{margin:0 0 14px;padding-left:22px;}
+li{margin-bottom:7px;}
+img{max-width:100%;}
+
+/* === Skip link === */
+.skip-link{position:absolute;left:-999px;top:0;background:var(--gold-500);color:var(--navy-950);padding:10px 16px;z-index:999;font-weight:700;}
+.skip-link:focus{left:0;}
+
+/* === Topbar mobile === */
+.topbar{
+  display:none;position:sticky;top:0;z-index:60;
+  background:var(--navy-900);color:#fff;
+  align-items:center;justify-content:space-between;
+  padding:12px 16px;border-bottom:2px solid var(--gold-500);
+}
+.topbar-brand{font-weight:800;letter-spacing:.04em;font-size:1rem;color:var(--gold-400);}
+.hamburger{
+  width:42px;height:42px;border-radius:8px;background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.2);display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:4px;cursor:pointer;
+}
+.hamburger span{display:block;width:20px;height:2px;background:var(--gold-400);border-radius:2px;transition:transform .25s,opacity .25s;}
+.hamburger.open span:nth-child(1){transform:translateY(6px) rotate(45deg);}
+.hamburger.open span:nth-child(2){opacity:0;}
+.hamburger.open span:nth-child(3){transform:translateY(-6px) rotate(-45deg);}
+
+/* === Sidebar overlay === */
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(8,17,32,.65);z-index:45;}
+.sidebar-overlay.show{display:block;}
+
+/* === Layout === */
+.shell{display:flex;min-height:100vh;}
+
+/* === Sidebar === */
+.sidebar{
+  width:var(--sidebar-w);flex-shrink:0;
+  background:var(--navy-950);
+  position:sticky;top:0;height:100vh;overflow-y:auto;
+  padding:0 0 30px;
+  border-right:1px solid rgba(245,176,65,.18);
+}
+.sidebar::-webkit-scrollbar{width:6px;}
+.sidebar::-webkit-scrollbar-thumb{background:rgba(245,176,65,.2);border-radius:3px;}
+
+.sb-brand{
+  padding:22px 22px 18px;
+  border-bottom:1px solid rgba(245,176,65,.18);
+  background:var(--navy-900);
+}
+.sb-brand .flag{font-size:1.6rem;margin-bottom:8px;}
+.sb-brand .title{font-weight:800;color:var(--gold-400);font-size:1rem;letter-spacing:.02em;line-height:1.3;}
+.sb-brand .sub{font-size:.75rem;color:#8a9ab5;margin-top:6px;line-height:1.5;}
+
+.sb-label{
+  font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--gold-500);padding:16px 22px 6px;font-weight:800;
+}
+nav.toc{padding:0 10px;}
+nav.toc a{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:9px 12px;border-radius:8px;color:#b8c6d8;font-size:.86rem;
+  text-decoration:none;transition:background .15s,color .15s;
+  border-left:3px solid transparent;
+}
+nav.toc a:hover{background:rgba(245,176,65,.08);color:#fff;}
+nav.toc a.active{background:rgba(245,176,65,.13);color:#fff;border-left-color:var(--gold-500);font-weight:600;}
+nav.toc a .num{font-family:var(--font-mono);font-size:.7rem;color:var(--gold-500);min-width:22px;font-weight:800;margin-top:1px;}
+
+.sb-cta{
+  margin:16px 14px 0;padding:14px 16px;
+  background:var(--danger);border-radius:var(--radius);
+  text-align:center;color:#fff;font-size:.82rem;font-weight:700;line-height:1.4;
+}
+.sb-footer{padding:16px 22px 0;margin-top:14px;border-top:1px solid rgba(245,176,65,.15);}
+.sb-footer p{font-size:.7rem;color:#6c7c98;line-height:1.6;margin:0;}
+
+/* === Main === */
+main{flex:1;min-width:0;}
+.content-wrap{max-width:900px;margin:0 auto;padding:0 36px 80px;}
+
+/* === Hero === */
+.hero{
+  background:var(--navy-950);
+  border-bottom:3px solid var(--gold-500);
+  padding:60px 36px 52px;
+  position:relative;overflow:hidden;
+}
+.hero::before{
+  content:"";position:absolute;top:0;left:0;right:0;bottom:0;
+  background:repeating-linear-gradient(
+    -45deg,
+    rgba(245,176,65,.025) 0px,rgba(245,176,65,.025) 1px,
+    transparent 1px,transparent 30px
+  );
+  pointer-events:none;
+}
+.hero-inner{max-width:900px;margin:0 auto;position:relative;z-index:1;}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--danger);color:#fff;
+  font-size:.72rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;
+  padding:5px 14px;border-radius:4px;margin-bottom:22px;
+}
+.hero h1{
+  font-size:2.8rem;font-weight:900;color:#fff;margin:0 0 8px;
+  line-height:1.1;
+}
+.hero h1 .accent{color:var(--gold-400);}
+.hero .lead{color:#c5d0e0;font-size:1.12rem;max-width:640px;margin:16px 0 0;line-height:1.65;}
+
+.hero-stats{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
+  margin-top:36px;background:rgba(245,176,65,.2);
+  border:1px solid rgba(245,176,65,.2);border-radius:var(--radius);overflow:hidden;
+}
+.h-stat{background:rgba(8,17,32,.7);padding:20px 16px;}
+.h-stat .v{font-family:var(--font-mono);font-size:1.8rem;font-weight:800;color:var(--gold-400);line-height:1;}
+.h-stat .l{font-size:.74rem;color:#97a8be;margin-top:6px;line-height:1.4;}
+.h-stat.red .v{color:#f07070;}
+
+/* === Sections === */
+.sec{padding:58px 0 16px;border-bottom:1px solid var(--line);scroll-margin-top:16px;}
+.sec:last-of-type{border-bottom:none;}
+.sec-hd{margin-bottom:28px;}
+.sec-tag{
+  display:inline-flex;align-items:center;gap:10px;
+  font-family:var(--font-mono);font-size:.68rem;font-weight:800;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--gold-600);margin-bottom:10px;
+}
+.sec-tag .bar{width:28px;height:2px;background:var(--gold-500);display:inline-block;}
+.sec h2{font-size:1.85rem;margin:0 0 8px;}
+.sec .sec-sub{color:var(--ink-soft);font-size:1.04rem;}
+h3{font-size:1.25rem;margin:30px 0 12px;color:var(--navy-800);}
+h3.rule{border-bottom:2px solid var(--line);padding-bottom:10px;}
+h4{font-size:1.02rem;margin:20px 0 9px;color:var(--navy-700);}
+
+/* === Pull quote === */
+.pq{
+  font-size:1.22rem;font-weight:700;color:var(--navy-900);
+  border-left:5px solid var(--gold-500);padding:4px 0 4px 20px;
+  margin:24px 0;line-height:1.45;
+}
+
+/* === Callouts === */
+.box{
+  border:1px solid var(--line);border-left:5px solid var(--navy-700);
+  background:var(--card);border-radius:var(--radius);
+  padding:16px 20px;margin:18px 0;
+}
+.box.red{border-left-color:var(--danger);background:var(--danger-bg);}
+.box.gold{border-left-color:var(--gold-500);background:var(--warn-bg);}
+.box.green{border-left-color:var(--success);background:var(--success-bg);}
+.box.navy{border-left-color:var(--navy-700);}
+.box .box-label{font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;font-weight:800;color:var(--ink-faint);margin-bottom:6px;display:block;}
+.box p:last-child{margin-bottom:0;}
+
+/* === Grids === */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:18px 0;}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:18px 0;}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px;}
+.card h4{margin-top:0;color:var(--navy-900);}
+.card .eyebrow{font-family:var(--font-mono);font-size:.67rem;color:var(--gold-600);text-transform:uppercase;font-weight:800;letter-spacing:.08em;margin-bottom:6px;display:block;}
+
+/* === Stat strips === */
+.stat-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:22px 0;}
+.stat-box{background:var(--navy-900);color:#fff;border-radius:var(--radius);padding:18px 14px;}
+.stat-box .v{font-family:var(--font-mono);font-size:1.4rem;font-weight:800;color:var(--gold-400);}
+.stat-box .l{font-size:.72rem;color:#9fb0c8;margin-top:4px;line-height:1.4;}
+.stat-box.red .v{color:#f07070;}
+.stat-box.red{background:var(--danger);}
+
+/* === Step list === */
+.steps{display:flex;flex-direction:column;gap:0;margin:20px 0;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--card);}
+.step{display:grid;grid-template-columns:52px 1fr;gap:14px;align-items:flex-start;padding:16px 18px;border-bottom:1px solid var(--line);}
+.step:last-child{border-bottom:none;}
+.step .sn{width:34px;height:34px;border-radius:50%;background:var(--navy-800);color:var(--gold-400);font-family:var(--font-mono);font-weight:800;display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0;}
+.step b{display:block;color:var(--navy-900);margin-bottom:3px;}
+.step span{color:var(--ink-soft);font-size:.88rem;}
+
+/* === Tables === */
+.tw{overflow-x:auto;margin:18px 0;border-radius:var(--radius);border:1px solid var(--line);}
+table.t{width:100%;border-collapse:collapse;font-size:.9rem;background:var(--card);}
+table.t th{background:var(--navy-900);color:#fff;text-align:left;padding:10px 14px;font-size:.76rem;letter-spacing:.03em;text-transform:uppercase;}
+table.t td{padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:top;}
+table.t tbody tr:nth-child(even){background:var(--paper-dim);}
+table.t tbody tr:hover{background:#fbf2de;}
+
+/* === Timeline === */
+.timeline{margin:22px 0;position:relative;padding-left:28px;}
+.timeline::before{content:"";position:absolute;left:8px;top:4px;bottom:4px;width:2px;background:var(--gold-500);}
+.tl-item{position:relative;margin-bottom:20px;padding-bottom:4px;}
+.tl-item::before{content:"";position:absolute;left:-24px;top:4px;width:12px;height:12px;border-radius:50%;background:var(--gold-500);border:2px solid #fff;box-sizing:border-box;}
+.tl-item.red::before{background:var(--danger);}
+.tl-date{font-family:var(--font-mono);font-size:.68rem;color:var(--gold-600);font-weight:800;text-transform:uppercase;letter-spacing:.08em;}
+.tl-item h4{margin:4px 0 5px;color:var(--navy-900);}
+.tl-item p{font-size:.9rem;color:var(--ink-soft);margin:0;}
+
+/* === Action checklist === */
+.checklist{margin:18px 0;display:flex;flex-direction:column;gap:10px;}
+.chk{display:flex;align-items:flex-start;gap:14px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;}
+.chk .icon{width:32px;height:32px;border-radius:50%;background:var(--success);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
+.chk .icon.warn{background:var(--danger);}
+.chk b{display:block;margin-bottom:3px;color:var(--navy-900);}
+.chk span{font-size:.88rem;color:var(--ink-soft);}
+
+/* === CTA block === */
+.cta-block{
+  background:var(--navy-900);border-radius:var(--radius);
+  padding:32px 28px;margin:28px 0;border:1px solid rgba(245,176,65,.25);
+}
+.cta-block h3{color:var(--gold-400);margin-top:0;}
+.cta-block p{color:#c5d0e0;}
+
+/* === Back to top === */
+.btt{
+  position:fixed;bottom:22px;right:22px;width:44px;height:44px;border-radius:50%;
+  background:var(--navy-900);color:var(--gold-400);border:1px solid rgba(245,176,65,.35);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.1rem;
+  opacity:0;transform:translateY(8px);transition:opacity .25s,transform .25s;z-index:40;
+}
+.btt.show{opacity:1;transform:translateY(0);}
+
+/* === Footer === */
+footer{background:var(--navy-950);color:#8a9ab5;padding:40px 36px 30px;}
+.foot-inner{max-width:900px;margin:0 auto;}
+.foot-top{display:grid;grid-template-columns:1.4fr 1fr;gap:24px;padding-bottom:20px;border-bottom:1px solid rgba(255,255,255,.07);}
+.foot-top h5{color:#fff;font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;margin:0 0 8px;}
+.foot-top p, .foot-top a{font-size:.84rem;color:#8a9ab5;}
+.foot-top a{display:block;margin-bottom:3px;}
+.foot-bottom{margin-top:20px;font-size:.72rem;color:#556070;line-height:1.6;}
+.constitution-ref{background:rgba(245,176,65,.08);border:1px solid rgba(245,176,65,.2);border-radius:8px;padding:14px 18px;margin-top:16px;}
+.constitution-ref p{color:#b8c4d0;font-size:.82rem;margin:0;}
+.constitution-ref strong{color:var(--gold-400);}
+
+/* === Responsive === */
+@media(max-width:900px){
+  .g2,.g3{grid-template-columns:1fr;}
+  .hero-stats{grid-template-columns:1fr 1fr;}
+  .stat-strip{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:820px){
+  .topbar{display:flex;}
+  .sidebar{
+    position:fixed;left:0;top:0;height:100%;z-index:50;
+    transform:translateX(-100%);transition:transform .28s ease;
+  }
+  .sidebar.open{transform:translateX(0);}
+  .content-wrap{padding:0 18px 60px;}
+  .hero{padding:36px 18px 40px;}
+  .hero h1{font-size:2rem;}
+  .hero-stats{grid-template-columns:1fr;}
+  footer{padding:30px 18px 22px;}
+  .foot-top{grid-template-columns:1fr;}
+}
+@media(max-width:520px){
+  .stat-strip{grid-template-columns:1fr;}
+}
+
+/* === Print === */
+@media print{
+  .topbar,.sidebar,.sidebar-overlay,.btt{display:none !important;}
+  .shell{display:block;}
+  main{width:100%;}
+  .content-wrap{max-width:100%;padding:0 8mm;}
+  body{background:#fff;font-size:11pt;}
+  .hero{background:#0b1a2e !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;padding:20px 8mm;}
+  .sec{padding:16px 0 6px;}
+  .card,.box,.cta-block,.steps,.timeline{break-inside:avoid;}
+  footer{background:#0b1a2e !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+}
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to content</a>
+
+<div class="topbar">
+  <div class="topbar-brand">Kenya Belongs to Its Citizens</div>
+  <button class="hamburger" id="hBtn" aria-label="Open navigation" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+</div>
+<div class="sidebar-overlay" id="overlay"></div>
+
+<div class="shell">
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-brand">
+      <div class="flag">🇰🇪</div>
+      <div class="title">Kenya Belongs to Its Citizens</div>
+      <div class="sub">A civic call to reject violence, reclaim your power, and build a better 2027.</div>
+    </div>
+    <div class="sb-label">Sections</div>
+    <nav class="toc" id="tocNav">
+      <a href="#warning"><span class="num">01</span><span>The Warning: 2027</span></a>
+      <a href="#never-again"><span class="num">02</span><span>Never Again: 2007 Taught Us</span></a>
+      <a href="#goonism"><span class="num">03</span><span>Goonism: What Is Happening Now</span></a>
+      <a href="#handout-trap"><span class="num">04</span><span>The Handout Trap</span></a>
+      <a href="#roots"><span class="num">05</span><span>Roots of Bad Leadership</span></a>
+      <a href="#your-power"><span class="num">06</span><span>Know Your Constitutional Power</span></a>
+      <a href="#citizen-action"><span class="num">07</span><span>What Citizens Can Do</span></a>
+      <a href="#vote-smart"><span class="num">08</span><span>Vote Smart in 2027</span></a>
+      <a href="#solutions"><span class="num">09</span><span>Solutions, Not Complaints</span></a>
+      <a href="#vision"><span class="num">10</span><span>The Kenya We Choose</span></a>
+    </nav>
+    <div class="sb-cta">
+      Violence does not start big.<br>It starts small. It starts now.<br>Your choice matters.
+    </div>
+    <div class="sb-footer">
+      <p>This platform is dedicated to helping every Kenyan understand their constitutional power, protect democracy, demand accountability, and build a stronger nation. Sources are cited throughout.</p>
+    </div>
+  </aside>
+
+  <main id="main">
+    <!-- HERO -->
+    <section class="hero" id="top">
+      <div class="hero-inner">
+        <span class="hero-eyebrow">Kenya 2027 General Election: One Year to Choose</span>
+        <h1>Your vote is not<br>worth your life.<br><span class="accent">No handout is.</span></h1>
+        <p class="lead">Kenya is approaching a pivotal election. Political violence is rising. Goons are being mobilised. Citizens are being used, divided, and discarded by the very politicians who claim to serve them. This page is a direct appeal to every Kenyan: understand what is happening, understand your power, and choose a different path.</p>
+        <div class="hero-stats">
+          <div class="h-stat red">
+            <div class="v">1,100+</div>
+            <div class="l">Kenyans killed in the 2007-08 post-election violence. Mothers. Fathers. Children.</div>
+          </div>
+          <div class="h-stat red">
+            <div class="v">600,000+</div>
+            <div class="l">Kenyans displaced from their homes in 2007-08. Many never returned.</div>
+          </div>
+          <div class="h-stat">
+            <div class="v">August 2027</div>
+            <div class="l">Kenya's next general election. The choices made now determine whether it is peaceful.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="content-wrap">
+      <!-- ============================================================ -->
+      <!-- SECTION 01 — THE WARNING -->
+      <!-- ============================================================ -->
+      <section class="sec" id="warning">
+        <div class="sec-hd">
+          <span class="sec-tag"><span class="bar"></span>Section 01</span>
+          <h2>The Warning: Where Kenya Stands in 2026</h2>
+          <p class="sec-sub">The warning signs are clear and documented. Choosing to look away is also a choice.</p>
+        </div>
+
+        <div class="box red">
+          <span class="box-label">Kofi Annan Foundation, June 2026</span>
+          <p>Kenya has been assigned an Electoral Vulnerability Index risk score of <strong>45.4 out of 100</strong> for the 2026-2027 election cycle. The Kofi Annan Foundation identifies Kenya's key risk factors as: competitive presidential contests, ethnic political mobilisation, youth unemployment, land grievances, and lingering mistrust in electoral administration. The report is explicit: Kenya "remains electorally sensitive."</p>
+        </div>
+
+        <div class="stat-strip">
+          <div class="stat-box red"><div class="v">45.4</div><div class="l">Kenya's Electoral Vulnerability Index score (June 2026 report)</div></div>
+          <div class="stat-box"><div class="v">15.25%</div><div class="l">Youth unemployment rate, 2025 (World Bank). The pool politicians recruit from.</div></div>
+          <div class="stat-box"><div class="v">75%</div><div class="l">Of Kenyans under 35 face limited access to meaningful employment (World Bank)</div></div>
+          <div class="stat-box"><div class="v">2027</div><div class="l">August general election. Campaigns are already heating up now, one year early.</div></div>
+        </div>
+
+        <p>Political scientist Karuti Kanyinga of Stellenbosch Institute for Advanced Study put it plainly in May 2026: <em>"If political leaders don't tone down the rhetoric, the election is going to be very bloody. Everyone will have their own protection gangs."</em> This is not speculation. It is an assessment by one of Kenya's most respected governance scholars, watching patterns he has seen before.</p>
+
+        <div class="box gold">
+          <span class="box-label">The pattern Kenya must break</span>
+          <p>Violence does not start on election day. It starts many months earlier, with small incidents that are excused, normalised, and turned tribal. By the time it looks serious, it is already very hard to stop. The window to stop it is <strong>now</strong>, not after the first person dies.</p>
+        </div>
+
+        <h3 class="rule">A Timeline of Warning Signs Already Recorded</h3>
+        <div class="timeline">
+          <div class="tl-item red">
+            <div class="tl-date">November 2025</div>
+            <h4>Vehicle of DAP-K leader set ablaze</h4>
+            <p>Eugene Wamalwa's vehicle was set on fire by unknown attackers in Manyonje, Butali Ward, during a by-election. Security agencies noted it as a rising trend of politically motivated arson.</p>
+          </div>
+          <div class="tl-item red">
+            <div class="tl-date">January 2026</div>
+            <h4>Church gathering attacked in Murang'a</h4>
+            <p>Former Deputy President Rigathi Gachagua and his supporters were forced to flee after a group of youths attacked a political gathering at Witima Anglican Church. Police fired teargas inside the church grounds to disperse the crowd.</p>
+          </div>
+          <div class="tl-item red">
+            <div class="tl-date">March 2026</div>
+            <h4>Opposition rally stormed in Nakuru</h4>
+            <p>Suspected goons stormed a political gathering in Nakuru County, attacked supporters, and forced leaders to abandon the event. No arrests were reported in connection with the attack.</p>
+          </div>
+          <div class="tl-item red">
+            <div class="tl-date">April 8, 2026</div>
+            <h4>Senator attacked and hospitalised</h4>
+            <p>Vihiga Senator Godfrey Osotsi was assaulted by more than ten suspected goons in a Kisumu restaurant, sustaining serious injuries that required hospitalisation. His only apparent offence was his political position. The attack sparked protests across western Kenya.</p>
+          </div>
+          <div class="tl-item red">
+            <div class="tl-date">May 18, 2026</div>
+            <h4>Media crew robbed in Ruiru</h4>
+            <p>A Nation Media Group crew was approached and attacked by goons operating on the fringes of a political gathering in Ruiru. Political rallies have become organised hunting grounds for criminal gangs with clear political connections.</p>
+          </div>
+          <div class="tl-item">
+            <div class="tl-date">June 2026</div>
+            <h4>Security agencies issue formal warning</h4>
+            <p>Uasin Gishu County security authorities launched enforcement operations targeting gang members, calling the situation a "growing security threat." Interior CS Kipchumba Murkomen publicly acknowledged that "some groups receive support from political figures," complicating dismantlement efforts.</p>
+          </div>
+        </div>
+
+        <div class="box red">
+          <span class="box-label">A direct warning on international accountability</span>
+          <p>Former Presidential Advisor Moses Kuria said in January 2026: <em>"The biggest risk to Kenya's security and democracy is the use of goons as tools of political mobilisation in 2026 and 2027. I can tell you without fear of contradiction that some people will end up at the ICC. This time round, no witnesses will disappear."</em></p>
+        </div>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- SECTION 02 — NEVER AGAIN -->
+      <!-- ============================================================ -->
+      <section class="sec" id="never-again">
+        <div class="sec-hd">
+          <span class="sec-tag"><span class="bar"></span>Section 02</span>
+          <h2>Never Again: What 2007 Actually Cost Kenya</h2>
+          <p class="sec-sub">The people who organised political violence in 2007 kept their positions. The people who suffered were ordinary Kenyans. That must be understood clearly before 2027.</p>
+        </div>
+
+        <div class="stat-strip">
+          <div class="stat-box red"><div class="v">1,100+</div><div class="l">People killed in the 2007-08 post-election violence (Human Rights Watch)</div></div>
+          <div class="stat-box red"><div class="v">1,200+</div><div class="l">Women raped during the violence, according to documented reports (ReliefWeb)</div></div>
+          <div class="stat-box red"><div class="v">600,000+</div><div class="l">Kenyans internally displaced from their homes (Wilson Center research)</div></div>
+          <div class="stat-box red"><div class="v">115,000+</div><div class="l">Private properties destroyed or burned (Wilson Center, 2017)</div></div>
+        </div>
+
+        <p>The violence was not random. Human Rights Watch documented in its 2008 report that it was "organised," that politicians had been consistently implicated in funding and directing it, and that "no politician has yet been held accountable for their role in violence." That remained largely true years later.</p>
+
+        <div class="box red">
+          <span class="box-label">The economic cost the country carried</span>
+          <p>The 2007-08 violence did not only destroy lives. It disrupted 40% of Sudan's imports, which were routed through Kenya. It left 18,000 shipping containers stranded in Mombasa, affecting the entire East African region. Kenya's reputation as a stable regional anchor was damaged for years. The people who paid that price were not the politicians who incited the violence. They were traders, farmers, drivers, and families across the region.</p>
+        </div>
+
+        <div class="pq">"Violence does not start big. It starts small. It is excused and normalised. It is turned tribal. Until one day, it is too late. 'Never again' is not something we say only when we remember the past. It is a mantra and a philosophy we must live now."</div>
+        <p style="font-size:.84rem;color:var(--ink-faint);">Civic commentary published by The Kenya Times, July 2026.</p>
+
+        <h3 class="rule">Who Actually Suffers in Political Violence</h3>
+        <div class="g2">
+          <div class="card">
+            <h4>Who gets killed and displaced</h4>
+            <p>Not the politicians who finance the gangs. Not the wealthy patrons who direct them. Ordinary citizens. Farmers. Market traders. Teachers. Young men recruited as foot soldiers who become the first casualties of the violence they were paid to start.</p>
+          </div>
+          <div class="card">
+            <h4>Who stays safe</h4>
+            <p>The politicians and their families, protected by security details paid for by the state, in houses in secure neighbourhoods, far from the violence their financing makes possible. Their children do not study in the schools that burn. Their families do not sleep in the camps for the displaced.</p>
+          </div>
+          <div class="card">
+            <h4>Who never faces justice</h4>
+            <p>Historically, the organisers and financiers of political violence in Kenya have walked free. The Waki Report on the 2007-08 violence named individuals with sealed envelopes submitted to the international community. Most of those named continued in public life.</p>
+          </div>
+          <div class="card">
+            <h4>What the goon gets</h4>
+            <p>A few hundred shillings for a day's work. A T-shirt. Perhaps a meal. And when the violence escalates, a criminal record, a jail cell, or a funeral. The politician who paid them moves on. The goon carries the consequences permanently.</p>
+          </div>
+        </div>
+      </section>
+      <!-- ============================================================ -->
+      <!-- SECTION 03 — GOONISM NOW -->
+      <!-- ============================================================ -->
+      <section class="sec" id="goonism">
+        <div class="sec-hd">
+          <span class="sec-tag"><span class="bar"></span>Section 03</span>
+          <h2>Goonism: Understanding the Political Violence Machine</h2>
+          <p class="sec-sub">Goonism is not random disorder. It is an organised system that recruits, pays, deploys, and discards young Kenyans as tools of political competition.</p>
+        </div>
+
+        <p>"Goonism" became Kenya's most discussed political word in 2026. The Associated Press reported in May 2026 that it is "frequently uttered by national leaders to convey annoyance at the gangs that intimidate those whose political activities they oppose." The irony, as the AP also reported, is that both sides accuse each other while neither side stops it: "At times it can seem as if goonism is up against goonism."</p>
+
+        <div class="box red">
+          <span class="box-label">What the Daily Nation (June 2026) documented</span>
+          <p>Political rallies have become "lucrative hunting grounds for organised criminal gangs." Security agencies confirm that gangs previously known for trailing motorcades demanding handouts have evolved into sophisticated criminal networks. These networks now also engage in drug trafficking, extortion, and land disputes, outside their political work. The politician who recruited them for one purpose now has limited control over what else they do.</p>
+        </div>
+
+        <h3 class="rule">How the Recruitment Machine Works</h3>
+        <div class="steps">
+          <div class="step">
+            <div class="sn">1</div>
+            <div><b>Identify vulnerable young men</b><span>Politicians and their agents target areas with high youth unemployment. A young man who cannot find work for KSh 500 a day becomes available for KSh 500 a day to do other things. The political analyst Calvin Muga confirmed in 2026 that "the rise of such groups is tied to growing youth unemployment."</span></div>
+          </div>
+          <div class="step">
+            <div class="sn">2</div>
+            <div><b>Provide a sense of belonging and identity</b><span>The recruits are organised into groups, given T-shirts or other identifiers, made to feel powerful and part of something. For young men with no formal employment and no visible path forward, this is a genuine psychological pull, not just a financial one.</span></div>
+          </div>
+          <div class="step">
+            <div class="sn">3</div>
+            <div><b>Escalate tasks gradually</b><span>The work begins with attending rallies, chanting, and making noise. Then it becomes disrupting an opponent's rally. Then physically confronting individuals. Then targeted attacks. Each escalation feels like a small step from the last one.</span></div>
+          </div>
+          <div class="step">
+            <div class="sn">4</div>
+            <div><b>Provide cover through political connections</b><span>When arrests happen, powerful connections ensure minimal consequences. Police may be slow to act where gang members are seen as aligned with authority. This impunity makes the next escalation easier to agree to.</span></div>
+          </div>
+          <div class="step">
+            <div class="sn">5</div>
+            <div><b>Abandon the recruits when no longer useful</b><span>After an election is won or lost, the financing stops. The gangs, now organised and armed with experience in coercion, do not dissolve. They turn to extortion, crime, and inter-gang competition. The politician has moved on. The communities they came from now live with the consequences.</span></div>
+          </div>
+        </div>
+
+        <div class="box">
+          <span class="box-label">Kisumu West MP Rosa Buyu, September 2025</span>
+          <p>"Political violence orchestrated by goons is not random but calculated and politically sponsored. We cannot allow this to continue. The people fuelling this resurgence of gangs are leaders. Unfortunately, those leaders are not the ones who will suffer."</p>
+        </div>
+
+        <div class="pq">If you are young, unemployed, and someone is offering you money to attend a political event, to disrupt a meeting, or to "protect" a politician, know this: you are not being employed. You are being used. And when it is over, you will carry the consequences alone.</div>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- SECTION 04 — THE HANDOUT TRAP -->
+      <!-- ============================================================ -->
+      <section class="sec" id="handout-trap">
+        <div class="sec-hd">
+          <span class="sec-tag"><span class="bar"></span>Section 04</span>
+          <h2>The Handout Trap: How Poverty Is Weaponised Against Citizens</h2>
+          <p class="sec-sub">The handout is not generosity. It is a transaction that trades your long-term interests for a politician's short-term power.</p>
+        </div>
+
+        <p>Kenya spends roughly <strong>KSh 608 billion every year to corruption</strong> (EACC Annual Report, FY2024/25). That is your tax money, your VAT, your PAYE, your levy money. The same politicians who pocket or enable this theft then return to your community before elections with KSh 500 notes, branded maize flour, and promises of water tanks. They are giving you back a fraction of what they took, in exchange for your vote and your silence.</p>
+
+        <div class="box gold">
+          <span class="box-label">The arithmetic of handouts</span>
+          <p>If a politician gives KSh 500 to each of 10,000 voters, that costs KSh 5 million. If that same politician controls a constituency development fund of KSh 142 million per year, the handout that bought their protection costs less than 4% of what they control. The return on their investment is enormous. The return on your KSh 500 is nothing: no road, no hospital, no school, no clean water, no job.</p>
+        </div>
+
+        <h3 class="rule">What a Handout Actually Buys (and What It Does Not)</h3>
+        <div class="tw">
+          <table class="t">
+            <thead><tr><th>What the handout gives you</th><th>What it denies you</th></tr></thead>
+            <tbody>
+              <tr><td>KSh 200 to 2,000 on one day</td><td>Accountability from that leader for five years</td></tr>
+              <tr><td>A bag of branded flour or sugar</td><td>The right to demand answers about the public budget</td></tr>
+              <tr><td>A short-term feeling of recognition</td><td>Your vote as a genuine expression of your values and judgment</td></tr>
+              <tr><td>Nothing, if you refuse to vote as directed after accepting the handout</td><td>Nothing either way, since the transaction was never about you</td></tr>
+              <tr><td>A political obligation that silences you</td><td>The ability to join others in demanding performance</td></tr>
+              <tr><td>A one-time payment</td><td>A generation of better governance, better schools, better hospitals</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 class="rule">How Handouts Link Directly to Violence</h3>
+        <p>The handout culture and political violence are the same system, not separate problems. Here is the connection:</p>
+        <div class="g2">
+          <div class="card">
+            <h4>Handouts create financial dependency</h4>
+            <p>When a community becomes accustomed to receiving handouts from a specific politician, it develops a financial relationship that feels like loyalty but is actually dependence. That politician can then call on the community to "protect their investment" when threatened by a rival.</p>
+          </div>
+          <div class="card">
+            <h4>Handouts fund goon recruitment</h4>
+            <p>The same machinery that distributes handouts before elections distributes cash to goons during campaigns. The "agents" who organise handout distribution are often the same people who recruit and pay for political disruption.</p>
+          </div>
+          <div class="card">
+            <h4>Acceptance normalises transactions</h4>
+            <p>When a community accepts that leaders give things in exchange for votes, it becomes harder to reject the next step: giving things in exchange for silence about corruption, or for active participation in threatening political opponents.</p>
+          </div>
+          <div class="card">
+            <h4>Refusal breaks the chain</h4>
+            <p>A citizen who refuses a handout is not a lesser citizen. They are a more powerful one. A politician who cannot buy silence cannot easily buy violence. The refusal of individual citizens is, collectively, the most effective dismantling tool available.</p>
+          </div>
+        </div>
+
+        <div class="cta-block">
+          <h3>A handout lasts a day. Good governance benefits generations.</h3>
+          <p>The strongest basis for deciding who leads Kenya is an informed judgment about policies, track records, integrity, and concrete results. A KSh 500 note and a bag of flour do not constitute a platform. They constitute a purchase. You are worth more than a purchase.</p>
+        </div>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- SECTION 05 — ROOTS OF BAD LEADERSHIP -->
+      <!-- ============================================================ -->
+      <section class="sec" id="roots">
+        <div class="sec-hd">
+          <span class="sec-tag"><span class="bar"></span>Section 05</span>
+          <h2>Roots of Bad Leadership: The System That Sustains It</h2>
+          <p class="sec-sub">Bad leadership is not an accident, and it is rarely one person's fault alone. It is sustained by a set of dynamics that citizens need to understand in order to disrupt them.</p>
+        </div>
+
+        <div class="g2">
+          <div class="card">
+            <span class="eyebrow">Problem 01</span>
+            <h4>Ethnic mobilisation over merit</h4>
+            <p>When campaigns are fought and won on ethnic alignments rather than issue-based platforms, leaders are elected to "represent their tribe" rather than serve the nation. Merit is replaced by ethnic loyalty. Appointments go to the right community, not the right person. Procurement goes to the right network, not the right company. Public resources become communal rewards, not public investments.</p>
+          </div>
+          <div class="card">
+            <span class="eyebrow">Problem 02</span>
+            <h4>Political patronage and cronyism</h4>
+            <p>The political culture rewards loyalists, financial backers, and personal allies over qualified, competent professionals. Key institutional positions go to people who owe their appointment to a patron, not to the public. Those appointees know who they serve. Their decisions reflect that knowledge.</p>
+          </div>
+          <div class="card">
+            <span class="eyebrow">Problem 03</span>
+            <h4>Weak enforcement creates impunity</h4>
+            <p>Kenya has one of the most progressive constitutions in Africa. The problem is not the absence of rules; it is the weak enforcement of existing rules. Anti-corruption bodies that are underfunded or politically interfered with, judicial processes that move slowly, and officials who face no real consequences for documented wrongdoing all create a culture where the rules do not apply to those with connections.</p>
+          </div>
+          <div class="card">
+            <span class="eyebrow">Problem 04</span>
+            <h4>Poverty exploited as a tool</h4>
+            <p>High youth unemployment and economic hardship are not just social problems. In the hands of political strategists, they become weapons. Desperation is recruitable. Economic vulnerability is purchasable. A population that cannot afford to wait for long-term policy outcomes is more susceptible to short-term transactions, including handouts, goon payments, and tribal mobilisation.</p>
+          </div>
+          <div class="card">
+            <span class="eyebrow">Problem 05</span>
+            <h4>Citizen apathy fills the vacuum</h4>
+            <p>Repeated cycles of unfulfilled promises produce a specific and dangerous result: citizens who believe nothing will change and disengage from governance between elections. That disengagement creates exactly the space bad governance needs to operate. When citizens stop attending public participation forums, stop reading budgets, stop asking questions, and stop holding leaders accountable between elections, the system runs without constraint.</p>
+          </div>
+          <div class="card">
+            <span class="eyebrow">Problem 06</span>
+            <h4>Division by design</h4>
+            <p>Politicians who cannot win on a record of performance need another path to power. Dividing citizens is that path. When communities are focused on each other as enemies, they are not focused on the people in power. Ethnic division, regional grievance, and religious tension are not side effects of political competition in Kenya. For certain actors, they are the strategy.</p>
+          </div>
+        </div>
+
+        <div class="box gold">
+          <span class="box-label">The important thing to understand about these problems</span>
+          <p>Every one of these dynamics requires citizen participation to continue. Ethnic mobilisation works only if citizens vote on ethnic lines. Cronyism survives only if citizens tolerate unqualified appointees. Impunity endures only if citizens do not demand prosecution. Poverty exploitation works only if citizens sell their votes. Apathy is only a vacuum if citizens choose not to fill it. This is not an accusation, it is an empowerment: the system depends on citizens not knowing their power. This page exists to change that.</p>
+        </div>
+      </section>
+      <!-- ============================================================ -->
+      <!-- SECTION 06 — YOUR CONSTITUTIONAL POWER -->
+      <!-- ============================================================ -->
+      <section class="sec" id="your-power">
+        <div class="sec-hd">
+          <span class="sec-tag"><span class="bar"></span>Section 06</span>
+          <h2>Know Your Constitutional Power</h2>
+          <p class="sec-sub">Kenya's Constitution did not create rulers. It created public servants. The Constitution begins with you.</p>
+        </div>
+
+        <div class="box gold">
+          <span class="box-label">Article 1(1), Constitution of Kenya, 2010</span>
+          <p><strong>"All sovereign power belongs to the people of Kenya and shall be exercised only in accordance with this Constitution."</strong> This is not a figure of speech. It is the foundation of Kenya's entire governance structure. The President, the Governor, the MP, the Senator, the MCA: each of these offices exists because citizens created it through the Constitution. Each of those leaders holds power in trust from the people. That trust can be withdrawn.</p>
+        </div>
+
+        <p>You can read Kenya's Constitution in full at <strong>kenyalaw.org</strong>. Every Kenyan should read at least Chapter One (Sovereignty of the People), Chapter Four (the Bill of Rights), and Chapter Six (Leadership and Integrity). These chapters describe rights and obligations that already belong to you, today, regardless of who is in office.</p>
+
+        <h3 class="rule">Rights You Already Have and Can Use Now</h3>
+        <div class="tw">
+          <table class="t">
+            <thead><tr><th>Constitutional provision</th><th>What it means in practice</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Article 1</strong>: Sovereignty of the People</td><td>All power in Kenya belongs to citizens, not to any leader or party. Leaders exercise that power on your behalf. They are accountable to you, not the other way around.</td></tr>
+              <tr><td><strong>Article 33</strong>: Freedom of Expression</td><td>You have the right to speak, to criticise leaders, to share information, and to participate in public debate without fear, within the limits of the law.</td></tr>
+              <tr><td><strong>Article 35</strong>: Right to Information</td><td>Every Kenyan has the right to access information held by the state. You are legally entitled to ask government agencies how they spent your money, and to receive an answer.</td></tr>
+              <tr><td><strong>Article 36 and 37</strong>: Assembly and Petition</td><td>You have the right to assemble peacefully, to associate with others, and to petition Parliament and public bodies about any matter. Peaceful public participation is constitutional, not a favour granted by leaders.</td></tr>
+              <tr><td><strong>Article 62</strong>: Public Resources Belong to the People</td><td>All natural resources of Kenya belong to all Kenyans. Oil, minerals, land, forests, rivers: these belong to the public. Revenue from them should flow to public benefit.</td></tr>
+              <tr><td><strong>Chapter Six</strong>: Leadership and Integrity</td><td>Leaders are constitutionally required to meet standards of integrity. Article 73 obligates them to serve in a manner consistent with the purposes and objects of the Constitution. Failure to do so is not just moral; it is constitutional.</td></tr>
+              <tr><td><strong>Article 201</strong>: Principles of Public Finance</td><td>Public money must be used transparently. Accountability must apply to all persons who handle public funds. This principle is already law; it simply requires citizens to demand its enforcement.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 class="rule">The Offices Your Taxes Fund and What They Owe You</h3>
+        <div class="tw">
+          <table class="t">
+            <thead><tr><th>Office</th><th>What it is responsible for</th><th>What you can demand</th></tr></thead>
+            <tbody>
+              <tr><td><strong>President</strong></td><td>National governance, security, foreign policy, national budget approval, constitutional compliance of the executive</td><td>Evidence of policy implementation; explanation of budget decisions; compliance with Chapter Six integrity requirements</td></tr>
+              <tr><td><strong>Governor</strong></td><td>County government, county budget, devolved service delivery (health centres, early childhood education, local roads, markets)</td><td>Published county budget; completed health facilities; functioning county services; audit reports</td></tr>
+              <tr><td><strong>Senator</strong></td><td>Representing county interests in the Senate; oversight of county government funding; review of national legislation affecting counties</td><td>Senate oversight reports; position on legislation affecting your county; attendance and participation record</td></tr>
+              <tr><td><strong>Member of Parliament</strong></td><td>Legislation; oversight of the national executive; NG-CDF management (KSh 142M+ per constituency per year)</td><td>NG-CDF project lists; tender records; completed projects; budget allocation details; attendance record</td></tr>
+              <tr><td><strong>Member of County Assembly</strong></td><td>County legislation; oversight of county government; Ward Development Fund management (approx. KSh 11M+ per ward per year)</td><td>Ward Development Fund project lists; completed projects; contractor details; MCA attendance and vote record</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="pq">No politician owns public office. Every office exists because citizens created it through the Constitution. Taxes fund those offices. Leaders therefore owe accountability to the public. Public office is temporary. The Constitution belongs to the people permanently.</div>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- SECTION 07 — WHAT CITIZENS CAN DO -->
+      <!-- ============================================================ -->
+      <section class="sec" id="citizen-action">
+        <div class="sec-hd">
+          <span class="sec-tag"><span class="bar"></span>Section 07</span>
+          <h2>What Citizens Can Do: Moving from Witnesses to Participants</h2>
+          <p class="sec-sub">Democracies do not become stronger when citizens vote every five years. They become stronger when citizens remain engaged every day between elections.</p>
+        </div>
+
+        <p>Citizens are not spectators. They are participants in governance. The question is not whether citizens have power; the question is whether they choose to use it. Here are the specific things that make a difference, not vague calls for change, but concrete, actionable steps.</p>
+
+        <h3 class="rule">Actions That Change Outcomes</h3>
+        <div class="checklist">
+          <div class="chk">
+            <div class="icon">1</div>
+            <div><b>Reject the handout and make it known you have rejected it</b><span>A voter who publicly refuses a handout normalises refusal for others around them. Silence after accepting implies acceptance. Communities that collectively refuse become significantly harder to buy.</span></div>
+          </div>
+          <div class="chk">
+            <div class="icon">2</div>
+            <div><b>Attend public participation forums and budget hearings</b><span>County and national public participation forums are legally required. When citizens attend, demand specific answers, and put their questions on record, leaders cannot later claim community approval for decisions the community never endorsed.</span></div>
+          </div>
+          <div class="chk">
+            <div class="icon">3</div>
+            <div><b>Read the budget for your county and constituency</b><span>Every county government publishes budget documents. Every NG-CDF publishes allocation documents. Reading them, even briefly, equips you to ask specific, fact-based questions rather than general complaints, and makes you significantly harder to deceive.</span></div>
+          </div>
+          <div class="chk">
+            <div class="icon">4</div>
+            <div><b>Visit and photograph government projects near you</b><span>If a project was funded in your ward, go and see it. Is it complete? Does it match what was promised? Is the contractor on site? Your observation, your photograph, your public record of what you saw, is a form of civic power that no single politician can easily dismiss.</span></div>
+          </div>
+          <div class="chk">
+            <div class="icon">5</div>
+            <div><b>Report corruption and irregularities to EACC</b><span>The Ethics and Anti-Corruption Commission has formal reporting channels. A report with specific details (names, amounts, contracts, dates) is more effective than a general complaint. Collective reporting from multiple citizens on the same matter carries more weight than an individual submission.</span></div>
+          </div>
+          <div class="chk">
+            <div class="icon warn">!</div>
+            <div><b>Refuse to participate in political violence, regardless of who asks</b><span>No amount of money, no tribal appeal, no political loyalty, justifies being the person who commits violence against another Kenyan citizen. The politician who asks you to do this will not be standing next to you in the dock or at the graveyard. You will bear the consequence alone.</span></div>
+          </div>
+          <div class="chk">
+            <div class="icon">6</div>
+            <div><b>Support investigative journalism and civil society</b><span>Organisations like Mzalendo Trust (which tracks MP attendance and voting records), Transparency International Kenya, and investigative journalists expose what official reporting conceals. Following, sharing, and supporting their work extends its reach and legitimacy.</span></div>
+          </div>
+          <div class="chk">
+            <div class="icon">7</div>
+            <div><b>Engage peacefully, but consistently demand evidence</b><span>At rallies, at public meetings, in conversations with ward officers: ask for evidence. Where is the project? Where is the budget? Where is the contract? Where is the completed road? Evidence is stronger than any political speech, and the habit of demanding it changes what leaders believe they can say and do.</span></div>
+          </div>
+        </div>
+
+        <h3 class="rule">Civic Rights That Are Already Available to Use</h3>
+        <div class="g3">
+          <div class="card"><h4>Petition Parliament</h4><p>Any Kenyan can file a formal petition with the National Assembly or Senate. Petitions require a response. A well-documented petition on a specific issue (a stalled project, an irregular procurement) creates a formal record that cannot simply be ignored.</p></div>
+          <div class="card"><h4>Access to Information Act 2016</h4><p>You can formally request information from any government body. The request must be responded to within a set timeframe. Ignored requests can be escalated through the Commission on Administrative Justice (the Ombudsman).</p></div>
+          <div class="card"><h4>Public participation forums</h4><p>County governments and Parliament are constitutionally required to invite and consider public input. Attending these forums, speaking on record, and following up when commitments are not kept, is a recognised and effective form of civic engagement.</p></div>
+        </div>
+      </section>
+      <!-- ============================================================ -->
+      <!-- SECTION 08 — VOTE SMART -->
+      <!-- ============================================================ -->
+      <section class="sec" id="vote-smart">
+        <div class="sec-hd">
+          <span class="sec-tag"><span class="bar"></span>Section 08</span>
+          <h2>Vote Smart in 2027: Issue-Based Voting Over Tribal Politics</h2>
+          <p class="sec-sub">The most powerful thing a citizen does in a democracy is not just to vote. It is to vote on the basis of evidence, performance, and integrity, not tribe, handout, or rhetoric.</p>
+        </div>
+
+        <div class="box gold">
+          <span class="box-label">The tribal voting trap</span>
+          <p>When you vote for a person because of their ethnic community, you are not voting for yourself. You are voting for the politician's community. The politician will represent their donors, their ethnic base, their political allies, and their business interests, in roughly that order. Your ethnic community will get the symbolic reward of "their person" being in power. Actual service delivery is a separate and often absent question.</p>
+        </div>
+
+        <h3 class="rule">A Practical Framework for Evaluating Any Leader</h3>
+        <div class="steps">
+          <div class="step">
+            <div class="sn">1</div>
+            <div><b>What is their actual track record?</b><span>Not their promises during campaigns, but their record of delivery during their last term in office. What projects did they initiate and complete? What legislation did they sponsor or block? What does Mzalendo Trust (mzalendo.com) show about their parliamentary attendance and voting record?</span></div>
+          </div>
+          <div class="step">
+            <div class="sn">2</div>
+            <div><b>Can they produce evidence, not just claims?</b><span>Ask any candidate to produce documentation: NG-CDF project reports with audited completion rates, county project lists with GPS coordinates, development plans with measurable targets. A candidate who responds with speeches rather than documents is telling you something important about how they intend to govern.</span></div>
+          </div>
+          <div class="step">
+            <div class="sn">3</div>
+            <div><b>What do Chapter Six integrity standards say about them?</b><span>Kenya's Leadership and Integrity Act 2012 sets specific standards for leaders. Has the candidate been investigated for corruption? Were there findings? What was the outcome? This is public information in most cases. An EACC clearance certificate is a basic minimum, not an endorsement.</span></div>
+          </div>
+          <div class="step">
+            <div class="sn">4</div>
+            <div><b>What specific, budgeted, measurable commitments are they making?</b><span>A promise without a budget is a slogan. Ask: how much will this cost? Where does the money come from? What is the timeline? What is the measurable outcome? Who will be accountable if it is not delivered? A leader who cannot answer these questions for their campaign promises will not answer them in office either.</span></div>
+          </div>
+          <div class="step">
+            <div class="sn">5</div>
+            <div><b>Are they encouraging unity or division?</b><span>Listen carefully to how a candidate talks about other communities. Are they naming grievances against other ethnic groups? Are they stoking fear of a rival community? Are they promising benefits specifically to one group? This pattern, once in power, becomes policy. A leader who divides to win will govern by dividing.</span></div>
+          </div>
+        </div>
+
+        <h3 class="rule">Campaign Promises Should Be Trackable</h3>
+        <p>Every promise a candidate makes during a campaign should have: a specific date for delivery, a budget where applicable, measurable outcomes, a person who is publicly responsible, and a mechanism for checking progress. If a promise does not have these elements, it is not a commitment. It is a marketing statement.</p>
+        <p>Keep a personal record of what leaders promise in your area. Write it down. Share it. After the election, return to the record. Ask publicly what happened to each promise. This simple habit, practised widely, changes the incentive structure for politicians who currently expect their promises to be forgotten after polling day.</p>
+
+        <div class="cta-block">
+          <h3>What you should not use as the basis for voting</h3>
+          <p style="color:#c5d0e0;">Tribe. Handouts. Slogans and rallying cries. The candidate your family has always supported. The candidate who is "one of us." The candidate who gave your community something visible just before the election. The candidate whose rallies are most energetic. The candidate who speaks most passionately about the suffering of your community without explaining concretely what they did or will do about it.</p>
+          <p style="color:var(--gold-400);font-weight:700;margin-bottom:0;">Use: evidence, track record, integrity, specific plans, measurable commitments, and your constitutional right to demand accountability before and after voting.</p>
+        </div>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- SECTION 09 — SOLUTIONS, NOT COMPLAINTS -->
+      <!-- ============================================================ -->
+      <section class="sec" id="solutions">
+        <div class="sec-hd">
+          <span class="sec-tag"><span class="bar"></span>Section 09</span>
+          <h2>Solutions, Not Complaints: What Actually Changes Things</h2>
+          <p class="sec-sub">Kenya has complained about the same problems for decades. The question is no longer what the problems are. It is what, concretely, addresses them.</p>
+        </div>
+
+        <p>Complaining about bad leadership day in and day out without working toward solutions is itself part of the problem. It creates a sense of permanent victimhood that drains civic energy rather than focusing it. Here is what actually works:</p>
+
+        <h3 class="rule">Technology as an Accountability Tool</h3>
+        <div class="g2">
+          <div class="card">
+            <h4>Public finance transparency platforms</h4>
+            <p>Digital systems that track government spending in real time, from tax collection to project completion, remove the information advantage politicians use to hide misuse. When any citizen can look up a contract, a payment, and a responsible officer's name on their phone, the system changes. UWAZI is one such proposed platform for Kenya.</p>
+          </div>
+          <div class="card">
+            <h4>Parliamentary tracking</h4>
+            <p>Mzalendo Trust (mzalendo.com) tracks MP attendance, votes, speeches, and questions in Parliament. This is free, publicly available, and entirely factual. It removes one of the most common political defences: the claim that an MP "worked hard for the people" when the voting and attendance record says otherwise.</p>
+          </div>
+          <div class="card">
+            <h4>Investigative journalism</h4>
+            <p>Organisations including Nation Investigations, Auditor-General watch groups, and international investigative networks regularly publish documented exposés on specific corruption cases. Supporting these organisations, subscribing to their output, and sharing verified reports is a direct contribution to accountability.</p>
+          </div>
+          <div class="card">
+            <h4>Civic technology for citizen reporting</h4>
+            <p>Tools that allow citizens to photograph incomplete projects, document irregularities, and file formal reports through regulated channels give ordinary Kenyans a mechanism that did not exist before smartphones. Using these tools, especially collectively, creates records that cannot be dismissed as mere complaints.</p>
+          </div>
+        </div>
+
+        <h3 class="rule">Institutions That Must Be Strengthened</h3>
+        <div class="box">
+          <span class="box-label">The problem of institutional capture</span>
+          <p>Kenya's problem is rarely the absence of institutions. There is an EACC, an ODPP, a Controller of Budget, an Auditor-General, a PPRA, and an IEBC. The problem is that these institutions are sometimes underfunded, politically interfered with, or led by individuals who owe their appointments to political patrons. Strengthening institutions means demanding that they receive adequate funding, that appointments follow merit, and that interference by politicians is publicly named and resisted.</p>
+        </div>
+        <div class="g2">
+          <div class="card">
+            <h4>Judiciary independence</h4>
+            <p>A judiciary that applies the law without political interference is Kenya's strongest single protection against corrupt governance. Court rulings that hold leaders accountable, even when politically uncomfortable, must be supported and defended by citizens as a fundamental protection for everyone, not only for the opponents of today's ruling party.</p>
+          </div>
+          <div class="card">
+            <h4>Law enforcement accountability</h4>
+            <p>Police who protect political goons instead of arresting them, who fire teargas into churches instead of arresting rally disruptors, who make three arrests in a hospitalisation case and allow the alleged ringleader to remain free, are part of the problem. Citizens have the right to demand Internal Affairs investigations, to document police misconduct publicly, and to report it to the Independent Policing Oversight Authority (IPOA).</p>
+          </div>
+          <div class="card">
+            <h4>IEBC and electoral process integrity</h4>
+            <p>IEBC Chair Erastus Ethekon warned in 2026 that the current political climate, if left unchecked, could undermine the credibility of the 2027 elections. Citizens who engage with the voter registration process, who volunteer as observers, and who report irregularities through official channels, directly strengthen the institution's ability to deliver a credible election.</p>
+          </div>
+          <div class="card">
+            <h4>National Cohesion and Integration Commission</h4>
+            <p>The NCIC has a legal mandate to investigate and prosecute hate speech and ethnic incitement. In 2026-27, citizens should actively report to NCIC any political speech that specifically targets communities, uses ethnic identity to incite hostility, or calls for violence against supporters of any candidate. This applies equally across party and ethnic lines.</p>
+          </div>
+        </div>
+
+        <h3 class="rule">What Individuals Can Build, Not Wait For</h3>
+        <div class="checklist">
+          <div class="chk">
+            <div class="icon">A</div>
+            <div><b>Cross-ethnic civic groups</b><span>Groups of citizens from multiple communities who collaborate on specific accountability issues (monitoring a health centre, tracking a road project) build the trust across ethnic lines that politicians exploit by keeping communities separate and suspicious of each other.</span></div>
+          </div>
+          <div class="chk">
+            <div class="icon">B</div>
+            <div><b>Youth civic leadership</b><span>Young Kenyans who refuse to be recruited as goons, and who instead organise as civic monitors, journalists, and voter education facilitators, represent the single most disruptive force available against the political violence machine. You cannot recruit someone who has a civic identity that gives them something more valuable than a day's goon pay.</span></div>
+          </div>
+          <div class="chk">
+            <div class="icon">C</div>
+            <div><b>Documented, factual civic communication</b><span>Sharing verified facts about governance, not rumours, not tribal narratives, but documented, sourced, factual records, on social media and in community channels, builds a collective factual baseline that makes manipulation harder. Disinformation needs a vacuum to fill. Facts fill the vacuum first.</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- SECTION 10 — THE KENYA WE CHOOSE -->
+      <!-- ============================================================ -->
+      <section class="sec" id="vision">
+        <div class="sec-hd">
+          <span class="sec-tag"><span class="bar"></span>Section 10</span>
+          <h2>The Kenya We Choose</h2>
+          <p class="sec-sub">The future is not determined by what leaders decide to give Kenya. It is determined by what citizens decide to demand, accept, tolerate, and build.</p>
+        </div>
+
+        <div class="pq">Imagine a Kenya where every public project can be tracked by any citizen on any phone. Where every campaign promise has a measurable completion date. Where every shilling of your tax money follows a visible, publicly documented path from the point it is collected to the point it is spent. Where every leader knows that their record of performance, not their rhetoric, will determine whether they keep your trust.</div>
+
+        <p>That Kenya is not a fantasy. It is a set of specific decisions that citizens, institutions, and accountability tools can make real, if the will exists to pursue them. The tools are available. The legal framework already exists. The question is whether citizens are willing to demand more than what they have settled for before.</p>
+
+        <h3 class="rule">Reject These Things Completely and Openly</h3>
+        <div class="g2">
+          <div class="card" style="border-left:4px solid var(--danger);">
+            <h4>Reject violence in every form</h4>
+            <p>Whether the person asking you to commit it is your community leader, your political hero, someone from your ethnic group, or someone offering you money: the answer is no. Violence against a Kenyan citizen for political reasons is a crime under Kenyan law and an offence against every principle Kenya's Constitution establishes.</p>
+          </div>
+          <div class="card" style="border-left:4px solid var(--danger);">
+            <h4>Reject hate speech</h4>
+            <p>Language that characterises any Kenyan community as an enemy, a threat, or less deserving of rights and resources is hate speech under the National Cohesion and Integration Act. It has consequences in law. Refusing to repeat it, share it, or amplify it on social media is a civic act.</p>
+          </div>
+          <div class="card" style="border-left:4px solid var(--danger);">
+            <h4>Reject vote buying</h4>
+            <p>Accepting a handout in exchange for a vote is an electoral offence under the Elections Act. Offering one is also an offence. Both undermine Kenya's democratic process and signal to politicians that they can continue buying elections rather than winning them on merit.</p>
+          </div>
+          <div class="card" style="border-left:4px solid var(--danger);">
+            <h4>Reject political apathy</h4>
+            <p>Choosing to disengage because "nothing will change" is not a neutral position. It leaves decisions about your county's health budget, your ward's road allocation, and your country's direction to whoever shows up. Whoever shows up is often whoever the political machine sends.</p>
+          </div>
+        </div>
+
+        <h3 class="rule">Build These Things Actively and Consistently</h3>
+        <div class="g2">
+          <div class="card" style="border-left:4px solid var(--success);">
+            <h4>Build civic knowledge</h4>
+            <p>Read the Constitution. Learn what your elected leaders are constitutionally required to do, what resources they control, and what mechanisms exist to hold them accountable. Knowledge is not abstract; it is the specific, practical foundation of every effective accountability action.</p>
+          </div>
+          <div class="card" style="border-left:4px solid var(--success);">
+            <h4>Build cross-community relationships</h4>
+            <p>Know people from different communities as people, not as political abstractions. The politician's power to turn communities against each other depends on those communities not knowing each other directly. Relationships across ethnic lines are the most effective form of peace infrastructure available.</p>
+          </div>
+          <div class="card" style="border-left:4px solid var(--success);">
+            <h4>Build civic habits between elections</h4>
+            <p>Democracy does not happen only on election day. Attending one public participation forum, reading one county budget document, visiting one government project in your area, filing one formal question to your ward officer: these habits, practised by many citizens consistently, change what leaders believe they can ignore.</p>
+          </div>
+          <div class="card" style="border-left:4px solid var(--success);">
+            <h4>Build demand for evidence-based governance</h4>
+            <p>A community that consistently demands evidence, where is the road, where is the clinic, where is the audit, where is the completion certificate, raises the cost of corrupt governance. Leaders who know their electorate will check become leaders who have reasons to deliver.</p>
+          </div>
+        </div>
+
+        <div class="cta-block">
+          <h3>A direct appeal to young Kenyans</h3>
+          <p>You are the majority of Kenya's population. You bear the longest consequences of the decisions made now. You are also the primary target of political recruitment, whether as goons, as tribal foot soldiers, or as voters sold a handout in exchange for your voice. You are worth more than any of those roles assign you. Your energy, your intelligence, your connection, and your numbers, applied to civic accountability rather than political violence, is the single most powerful force available to change what Kenya becomes. The choice of what to do with that power is yours.</p>
+        </div>
+
+        <div class="constitution-ref">
+          <p><strong>Read Kenya's Constitution:</strong> kenyalaw.org/kenya-constitution-2010<br>
+          <strong>Track your MP:</strong> mzalendo.com<br>
+          <strong>Report corruption:</strong> eacc.go.ke (Ethics and Anti-Corruption Commission)<br>
+          <strong>Report electoral offences:</strong> iebc.or.ke (Independent Electoral and Boundaries Commission)<br>
+          <strong>Report hate speech:</strong> cohesion.or.ke (National Cohesion and Integration Commission)<br>
+          <strong>Report police misconduct:</strong> ipoa.go.ke (Independent Policing Oversight Authority)<br>
+          <strong>Report administrative injustice:</strong> ombudsman.go.ke (Commission on Administrative Justice)</p>
+        </div>
+      </section>
+    </div>
+
+    <footer>
+      <div class="foot-inner">
+        <div class="foot-top">
+          <div>
+            <h5>Kenya Belongs to Its Citizens</h5>
+            <p>This platform is dedicated to helping every Kenyan understand their constitutional power, protect democracy, demand accountability, and build a stronger nation. Content is factual and source-cited throughout. This is a non-partisan civic resource; it is not affiliated with any political party or candidate.</p>
+          </div>
+          <div>
+            <h5>Key Resources</h5>
+            <a href="https://kenyalaw.org" target="_blank" rel="noopener">Kenya's Constitution: kenyalaw.org</a>
+            <a href="https://mzalendo.com" target="_blank" rel="noopener">Track your MP: mzalendo.com</a>
+            <a href="https://eacc.go.ke" target="_blank" rel="noopener">Report corruption: eacc.go.ke</a>
+            <a href="https://cohesion.or.ke" target="_blank" rel="noopener">Report hate speech: cohesion.or.ke</a>
+            <a href="https://ipoa.go.ke" target="_blank" rel="noopener">Report police misconduct: ipoa.go.ke</a>
+          </div>
+        </div>
+        <div class="foot-bottom">
+          <strong>Sources:</strong> Kofi Annan Foundation Electoral Vulnerability Index 2026-27 (June 2026); The Africa Report on Kenya goonism (April 2026); AP Wire Service, political goonism reporting (May 2026); Daily Nation, "How gangs have turned political meetings into crime scenes" (June 2026); The Kenya Times, civic commentary on violence (July 2026); Moses Kuria statement on ICC accountability (January 2026); Rosa Buyu statement, Jukwaa la Usalama (September 2025); Human Rights Watch, "Ballots to Bullets" (2008); Wilson Center, 2007 post-election violence analysis; World Bank and Statista, Kenya youth unemployment data 2025; EACC Annual Report FY2024/25; Federation of Kenya Employers youth employment data. All figures verified against primary or credible secondary sources as of July 2026. All sovereign power belongs to the people of Kenya. Constitution of Kenya 2010, Article 1(1).
+        </div>
+      </div>
+    </footer>
+  </main>
+</div>
+
+<button class="btt" id="btt" aria-label="Back to top">&#8593;</button>
+
+<script>
+(function(){
+  "use strict";
+  var sidebar = document.getElementById('sidebar');
+  var overlay = document.getElementById('overlay');
+  var hBtn = document.getElementById('hBtn');
+  function open(){sidebar.classList.add('open');overlay.classList.add('show');hBtn.classList.add('open');hBtn.setAttribute('aria-expanded','true');}
+  function close(){sidebar.classList.remove('open');overlay.classList.remove('show');hBtn.classList.remove('open');hBtn.setAttribute('aria-expanded','false');}
+  if(hBtn)hBtn.addEventListener('click',function(){sidebar.classList.contains('open')?close():open();});
+  if(overlay)overlay.addEventListener('click',close);
+  var tocLinks=Array.prototype.slice.call(document.querySelectorAll('#tocNav a'));
+  tocLinks.forEach(function(l){l.addEventListener('click',function(){if(window.matchMedia('(max-width:820px)').matches)close();});});
+
+  if('IntersectionObserver' in window){
+    var secs=Array.prototype.slice.call(document.querySelectorAll('.sec'));
+    var lmap={};
+    tocLinks.forEach(function(l){lmap[l.getAttribute('href').replace('#','')]=l;});
+    function setActive(id){tocLinks.forEach(function(l){l.classList.remove('active');});if(lmap[id])lmap[id].classList.add('active');}
+    new IntersectionObserver(function(entries){
+      var vis=entries.filter(function(e){return e.isIntersecting;});
+      if(vis.length){vis.sort(function(a,b){return b.intersectionRatio-a.intersectionRatio;});setActive(vis[0].target.id);}
+    },{rootMargin:'-15% 0px -55% 0px',threshold:[0,.1,.25,.5,.75,1]}).observe(secs[0]);
+    secs.forEach(function(s){new IntersectionObserver(function(entries){
+      entries.forEach(function(e){if(e.isIntersecting)setActive(e.target.id);});
+    },{rootMargin:'-15% 0px -55% 0px',threshold:.1}).observe(s);});
+  }
+
+  var btt=document.getElementById('btt');
+  window.addEventListener('scroll',function(){btt.classList[window.scrollY>500?'add':'remove']('show');},{passive:true});
+  btt.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});
+
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.style.scrollBehavior='auto';
+})();
+</script>
+</body>
+</html>
