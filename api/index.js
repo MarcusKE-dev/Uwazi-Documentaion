@@ -42,6 +42,9 @@ app.use(cors({
 
 app.use(express.json({ limit: '1mb' }));
 
+// Serve static files from the root directory
+app.use(express.static(path.join(__dirname, '..')));
+
 const PORT = process.env.PORT || 3000;
 const CALLBACK_URL = process.env.CALLBACK_URL || 'https://coping-jockey-portly.ngrok-free.dev/api/callback';
 
@@ -340,6 +343,16 @@ app.post('/api/callback', (req, res) => {
     console.log(JSON.stringify(callbackData, null, 2));
 
     res.status(200).json({ ResultCode: 0, ResultDesc: "Accepted" });
+});
+
+// --- SPA FALLBACK: SERVE INDEX.HTML FOR CLIENT-SIDE ROUTING ---
+app.get('*', (req, res) => {
+    const indexPath = path.join(__dirname, '..', 'index.html');
+    res.sendFile(indexPath, (err) => {
+        if (err) {
+            res.status(404).json({ error: 'Not found', path: req.path });
+        }
+    });
 });
 
 // --- GLOBAL ERROR HANDLER ---
