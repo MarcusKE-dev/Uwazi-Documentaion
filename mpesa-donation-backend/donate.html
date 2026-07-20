@@ -58,6 +58,12 @@
       background: #f7c25c;
     }
 
+    button:disabled {
+      background: #e6dcc9;
+      color: #9a8f76;
+      cursor: not-allowed;
+    }
+
     #status {
       margin-top: 16px;
       padding: 10px;
@@ -94,14 +100,13 @@
 
   <form id="donateForm">
     <label for="phone"> M‑Pesa Phone Number</label>
-    <!-- Updated pattern allows optional '+', optional '254' or '0', followed by 1, 7, 0, or 6 and the remaining digits -->
-    <input type="tel" id="phone" placeholder="0712345678" required pattern="^(\+?254|0)[1706]\d{8}$"
+    <input type="tel" id="phone" placeholder="0712345678" required pattern="^(\+?254|0)[17]\d{8}$"
       title="Enter a valid phone number (e.g., 0712345678, 0112345678, or 254712345678)">
 
     <label for="amount"> Amount (KES)</label>
     <input type="number" id="amount" placeholder="e.g. 100" min="1" required>
 
-    <button type="submit">Donate Now</button>
+    <button type="submit" id="donateBtn">Donate Now</button>
   </form>
 
   <div id="status"></div>
@@ -109,14 +114,18 @@
   <script>
     const form = document.getElementById('donateForm');
     const statusDiv = document.getElementById('status');
+    const donateBtn = document.getElementById('donateBtn');
 
     const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
       ? 'http://localhost:3000'
       : window.location.origin;
     const BACKEND_URL = `${API_BASE}/api/donate`;
     const STATUS_URL = `${API_BASE}/api/payment-status`;
+
     let paymentPollTimer = null;
     let pollAttempts = 0;
+    let consecutiveNetworkErrors = 0;
+    const MAX_CONSECUTIVE_NETWORK_ERRORS = 5; // only give up after repeated real failures, not one blip
 
     function clearPaymentPolling() {
       if (paymentPollTimer) {
@@ -124,10 +133,12 @@
         paymentPollTimer = null;
       }
       pollAttempts = 0;
+      consecutiveNetworkErrors = 0;
     }
 
-    function resetForm() {
-      form.reset();
+    function setBusy(isBusy) {
+      donateBtn.disabled = isBusy;
+      donateBtn.textContent = isBusy ? 'Processing…' : 'Donate Now';
     }
 
     function showStatus(message, className, show = true) {
@@ -137,8 +148,7 @@
     }
 
     async function pollPaymentStatus(checkoutRequestId) {
-      const maxAttempts = 180; // 15 minutes with 5-second intervals
-      pollAttempts = 0;
+      const maxAttempts = 180; // 15 minutes at 5-second intervals
 
       const checkStatus = async () => {
         pollAttempts += 1;
@@ -150,12 +160,14 @@
           });
 
           if (!response.ok) {
-            console.error(`Status check failed: ${response.status}`);
+            // A single failed HTTP call is not the end of the world — the
+            // backend usually still returns pending/failed as normal JSON,
+            // so this branch is now rare. Treat it as a transient blip.
             throw new Error(`Status check returned ${response.status}`);
           }
 
           const data = await response.json();
-          console.log(`Poll attempt ${pollAttempts}: Status = ${data.status}`, data);
+          consecutiveNetworkErrors = 0; // this attempt succeeded, reset the blip counter
 
           if (data.status === 'success') {
             clearPaymentPolling();
@@ -163,7 +175,8 @@
               `✅ Donation received. Thank you! Receipt: ${data.receiptNumber || 'N/A'}`,
               'success'
             );
-            resetForm();
+            form.reset();
+            setBusy(false);
             return;
           }
 
@@ -171,31 +184,56 @@
             clearPaymentPolling();
             const errorMsg = data.message || data.userMessage || 'Payment failed';
             showStatus(`❌ ${errorMsg}`, 'error');
+            setBusy(false);
             return;
           }
 
-          // Still pending
+          // Still pending — this is the normal state while the user is
+          // looking at their phone. Keep polling.
           if (pollAttempts >= maxAttempts) {
             clearPaymentPolling();
             showStatus(
-              '⏰ Payment confirmation took too long. If you already paid, your money is safe. Please wait a few minutes and check your M-Pesa statement, or try again.',
+              '⏰ Payment confirmation took too long. If you already paid, your money is safe. Please check your M-Pesa statement, or try again.',
               'error'
             );
+            setBusy(false);
             return;
           }
 
-          // Continue polling
-          showStatus(`⏳ Waiting for payment confirmation... (${Math.floor(pollAttempts * 5 / 60)}m)`, 'loading');
+          showStatus(
+            data.userMessage || `⏳ Waiting for payment confirmation... (${Math.floor(pollAttempts * 5 / 60)}m)`,
+            'loading'
+          );
         } catch (err) {
-          console.error('Poll error:', err);
-          clearPaymentPolling();
-          showStatus(`❌ Unable to verify payment. Please check your M-Pesa statement to confirm.`, 'error');
+          // A single network hiccup should NOT end the whole flow — only
+          // stop polling after several in a row, since the payment may
+          // well still be going through on Safaricom's side.
+          consecutiveNetworkErrors += 1;
+          console.warn(`Poll attempt ${pollAttempts} failed (${consecutiveNetworkErrors} in a row):`, err);
+
+          if (consecutiveNetworkErrors >= MAX_CONSECUTIVE_NETWORK_ERRORS) {
+            clearPaymentPolling();
+            showStatus('❌ Unable to verify payment. Please check your M-Pesa statement to confirm.', 'error');
+            setBusy(false);
+            return;
+          }
+
+          if (pollAttempts >= maxAttempts) {
+            clearPaymentPolling();
+            showStatus('⏰ Payment confirmation took too long. Please check your M-Pesa statement.', 'error');
+            setBusy(false);
+            return;
+          }
+
+          showStatus('⏳ Still checking payment status...', 'loading');
         }
       };
 
-      // First check immediately, then poll every 5 seconds
+      // Give Safaricom (and the user) a few seconds before the first check —
+      // querying immediately almost always returns "still processing".
+      await new Promise((resolve) => setTimeout(resolve, 4000));
       await checkStatus();
-      if (paymentPollTimer === null) { // Only set interval if still polling
+      if (paymentPollTimer === null) {
         paymentPollTimer = setInterval(checkStatus, 5000);
       }
     }
@@ -204,7 +242,6 @@
       e.preventDefault();
       clearPaymentPolling();
 
-      // Get and validate inputs
       let rawPhone = document.getElementById('phone').value.replace(/\s+/g, '').trim();
       const amount = parseInt(document.getElementById('amount').value.trim(), 10);
 
@@ -213,7 +250,6 @@
         return;
       }
 
-      // Format phone number
       if (rawPhone.startsWith('+')) {
         rawPhone = rawPhone.substring(1);
       }
@@ -223,7 +259,7 @@
 
       const formattedPhone = rawPhone;
 
-      // Show loading state
+      setBusy(true);
       showStatus(`⏳ Requesting M-Pesa prompt for ${formattedPhone}...`, 'loading');
 
       try {
@@ -242,15 +278,13 @@
             'success'
           );
 
-          // Start polling if we have a checkout request ID
           if (data.checkoutRequestId) {
-            console.log(`Starting poll for checkoutRequestId: ${data.checkoutRequestId}`);
             pollPaymentStatus(data.checkoutRequestId);
           } else {
             console.warn('No checkoutRequestId in response:', data);
+            setBusy(false);
           }
         } else {
-          // Handle error responses
           const errorMsg = data.error || data.message || data.ErrorMessage || 'Payment request failed';
           throw new Error(errorMsg);
         }
@@ -258,6 +292,7 @@
         clearPaymentPolling();
         console.error('Submit error:', err);
         showStatus(`❌ ${err.message || 'Unable to process payment. Please try again.'}`, 'error');
+        setBusy(false);
       }
     });
   </script>
