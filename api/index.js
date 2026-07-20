@@ -173,6 +173,55 @@ async function getTransaction(checkoutRequestId) {
     return memoryStore.get(checkoutRequestId) || null;
 }
 
+// ---------------------------------------------------------------------------
+// PERMANENT RECORD (Neon serverless Postgres)
+// Redis above is deliberately short-lived — it only exists to answer "is
+// this pending yet?" fast. This is the durable, queryable, forever record:
+// every completed donation (success or failed) gets one row here.
+// Uses Neon's HTTP driver, built specifically for serverless functions —
+// a normal Postgres client would open a fresh TCP connection on every
+// invocation and can exhaust the database's connection limit.
+// ---------------------------------------------------------------------------
+let sql = null;
+try {
+    const { neon } = require('@neondatabase/serverless');
+    const databaseUrl = process.env.DATABASE_URL;
+    if (databaseUrl) {
+        sql = neon(databaseUrl);
+        console.log('[storage] Using Neon Postgres for permanent donation records.');
+    } else {
+        console.warn('[storage] DATABASE_URL not set — completed donations will NOT be permanently recorded.');
+    }
+} catch (e) {
+    console.warn('[storage] @neondatabase/serverless not installed — completed donations will NOT be permanently recorded.');
+}
+
+async function recordDonation({ checkoutRequestId, status, amount, receiptNumber, phone, resultDesc }) {
+    if (!sql) return;
+    try {
+        await sql`
+            insert into donations (checkout_request_id, status, amount, mpesa_receipt_number, phone_last4, result_desc)
+            values (
+                ${checkoutRequestId},
+                ${status},
+                ${amount ? Number(amount) : null},
+                ${receiptNumber || null},
+                ${phone ? String(phone).slice(-4) : null},
+                ${resultDesc || null}
+            )
+            on conflict (checkout_request_id)
+            do update set
+                status = excluded.status,
+                amount = excluded.amount,
+                mpesa_receipt_number = excluded.mpesa_receipt_number,
+                result_desc = excluded.result_desc
+        `;
+        console.log(`[db] Recorded donation ${checkoutRequestId} as ${status}`);
+    } catch (e) {
+        console.error('[db] Failed to record donation:', e.message);
+    }
+}
+
 function classifyStkStatus(queryResult) {
     const resultCode = normalizeResultCode(queryResult.ResultCode || queryResult.ResponseCode);
     const resultDesc = String(queryResult.ResultDesc || queryResult.ResponseDescription || '').toLowerCase();
@@ -509,17 +558,23 @@ app.post('/api/callback', async (req, res) => {
 
             if (resultCode === 0) {
                 const items = stkCallback.CallbackMetadata?.Item || [];
+                const receiptNumber = items.find((i) => i.Name === 'MpesaReceiptNumber')?.Value;
+                const amount = items.find((i) => i.Name === 'Amount')?.Value;
+                const phone = items.find((i) => i.Name === 'PhoneNumber')?.Value;
+
                 await setTransaction(checkoutRequestId, {
                     status: 'success',
                     message: 'Donation received. Thank you!',
                     userMessage: 'Donation received. Thank you!',
-                    receiptNumber: items.find((i) => i.Name === 'MpesaReceiptNumber')?.Value,
-                    amount: items.find((i) => i.Name === 'Amount')?.Value
+                    receiptNumber,
+                    amount
                 });
+                await recordDonation({ checkoutRequestId, status: 'success', amount, receiptNumber, phone, resultDesc: stkCallback.ResultDesc });
                 console.log(`[callback] Stored SUCCESS for ${checkoutRequestId}`);
             } else {
                 const msg = getFriendlyErrorMessage(stkCallback.ResultDesc);
                 await setTransaction(checkoutRequestId, { status: 'failed', message: msg, userMessage: msg });
+                await recordDonation({ checkoutRequestId, status: 'failed', resultDesc: stkCallback.ResultDesc });
                 console.log(`[callback] Stored FAILED for ${checkoutRequestId}`);
             }
         }
