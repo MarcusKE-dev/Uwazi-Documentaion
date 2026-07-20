@@ -347,11 +347,19 @@ app.post('/api/callback', (req, res) => {
 
 // --- SPA FALLBACK: SERVE INDEX.HTML FOR CLIENT-SIDE ROUTING ---
 app.use((req, res, next) => {
-    // Skip API routes and static file serving
+    // Skip API routes
     if (req.path.startsWith('/api')) {
         return next();
     }
     
+    // Skip static files: if the request path has a file extension (dot in the last segment),
+    // let express.static handle it or return 404. Don't fall back to index.html.
+    const lastSegment = req.path.split('/').pop();
+    if (lastSegment && lastSegment.includes('.')) {
+        return next(); // This will likely 404 if the file doesn't exist
+    }
+    
+    // For routes without extensions (SPA routes), serve index.html
     const indexPath = path.join(__dirname, '..', 'index.html');
     res.sendFile(indexPath, (err) => {
         if (err) {
