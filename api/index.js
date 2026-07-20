@@ -148,24 +148,38 @@ function classifyStkStatus(queryResult) {
 
     if (isSuccess) {
         const items = queryResult.CallbackMetadata?.Item || [];
+        const receiptNumber = items.find((item) => item.Name === 'MpesaReceiptNumber')?.Value;
+        const amount = items.find((item) => item.Name === 'Amount')?.Value;
+        console.log(`✅ PAYMENT SUCCESS: Receipt ${receiptNumber}, Amount ${amount}`);
         return {
             status: 'success',
+            message: 'Donation received. Thank you!',
             userMessage: queryResult.ResultDesc || 'Donation received. Thank you!',
-            receiptNumber: items.find((item) => item.Name === 'MpesaReceiptNumber')?.Value,
-            amount: items.find((item) => item.Name === 'Amount')?.Value
+            receiptNumber: receiptNumber,
+            amount: amount
+        };
+    }
+
+    if (isCancelled) {
+        console.log(`❌ PAYMENT CANCELLED by user: ${resultDesc}`);
+        return {
+            status: 'failed',
+            message: getFriendlyErrorMessage(queryResult.ResultDesc || 'Payment was cancelled.')
         };
     }
 
     if (isPending) {
         return {
             status: 'pending',
+            message: 'Payment is still being processed. Please wait.',
             userMessage: 'Payment is still being processed. Please wait a moment.'
         };
     }
 
+    console.log(`❌ PAYMENT FAILED: ${resultDesc}`);
     return {
         status: 'failed',
-        userMessage: getFriendlyErrorMessage(queryResult.ResultDesc || 'Payment was cancelled or failed.')
+        message: getFriendlyErrorMessage(queryResult.ResultDesc || 'Payment failed.')
     };
 }
 
@@ -220,22 +234,38 @@ async function queryStkStatus(checkoutRequestId, accessToken) {
 async function initiateStkPush(stkPayload, token) {
     for (let attempt = 0; attempt <= MAX_RETRIES; attempt += 1) {
         try {
-            return await axios.post(
+            console.log(`🔄 STK Push attempt ${attempt + 1}/${MAX_RETRIES + 1}...`);
+            const response = await axios.post(
                 `${SAFARICOM_BASE_URL}/mpesa/stkpush/v1/processrequest`,
                 stkPayload,
                 { headers: { Authorization: `Bearer ${token}` }, timeout: 15000 }
             );
+            console.log(`✅ STK Push successful on attempt ${attempt + 1}`);
+            return response;
         } catch (error) {
             const message = String(error?.response?.data?.errorMessage || error?.response?.data?.error || error?.message || '');
+            const statusCode = error?.response?.status;
+            
+            // Only retry on specific errors: network issues, timeouts, or actual busy responses
             const shouldRetry = attempt < MAX_RETRIES && (
+                !error.response || // Network error
+                statusCode === 502 || statusCode === 503 || statusCode === 504 || // Service unavailable
                 message.toLowerCase().includes('busy') ||
                 message.toLowerCase().includes('timeout') ||
                 message.toLowerCase().includes('temporarily') ||
-                !error.response
+                message.toLowerCase().includes('connection')
             );
 
-            if (!shouldRetry) throw error;
-            await sleep(RETRY_DELAY_MS * (attempt + 1));
+            if (!shouldRetry) {
+                console.error(`❌ STK Push failed on attempt ${attempt + 1}. Not retrying:`, message);
+                throw error;
+            }
+            
+            if (attempt < MAX_RETRIES) {
+                const delayMs = RETRY_DELAY_MS * Math.pow(2, attempt); // Exponential backoff
+                console.warn(`⚠️ STK Push attempt ${attempt + 1} failed: ${message}. Retrying in ${delayMs}ms...`);
+                await sleep(delayMs);
+            }
         }
     }
 }
@@ -303,17 +333,22 @@ app.post('/api/donate', generateToken, async (req, res) => {
         const response = await initiateStkPush(stkPayload, req.token);
         const checkoutRequestId = response.data.CheckoutRequestID;
 
+        console.log(`📱 STK Push initiated: ${checkoutRequestId} for phone ${phone}, amount ${amount}`);
+
         res.status(200).json({
             ...response.data,
             success: true,
             status: 'pending',
-            checkoutRequestId
+            checkoutRequestId,
+            ResponseCode: response.data.ResponseCode || '0'
         });
     } catch (error) {
-        console.error("STK Push Error:", error.response ? error.response.data : error.message);
+        console.error("❌ STK Push Error:", error.response ? error.response.data : error.message);
+        const errorMessage = getFriendlyErrorMessage(error);
         res.status(502).json({
             success: false,
-            error: getFriendlyErrorMessage(error),
+            error: errorMessage,
+            message: errorMessage,
             code: 'STK_PUSH_FAILED'
         });
     }

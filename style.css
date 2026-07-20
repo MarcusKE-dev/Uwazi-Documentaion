@@ -193,13 +193,27 @@ table{border-collapse:collapse;width:100%;}
   }
 }
 @media (max-width: 600px){
+  .cta-links-bar{
+    position: static; /* Remove sticky positioning on mobile */
+    padding: 12px 12px;
+    margin-bottom: 20px;
+  }
   .cta-links-inner{
     flex-direction: column;
     align-items: stretch;
+    gap: 8px;
+  }
+  .cta-label{
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+    margin-bottom: 8px;
+    margin-right: 0;
   }
   .cta-link-card{
     justify-content: center;
     text-align: center;
+    padding: 10px 12px;
   }
 }
 
