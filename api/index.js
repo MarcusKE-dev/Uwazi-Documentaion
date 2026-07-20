@@ -346,10 +346,16 @@ app.post('/api/callback', (req, res) => {
 });
 
 // --- SPA FALLBACK: SERVE INDEX.HTML FOR CLIENT-SIDE ROUTING ---
-app.get('*', (req, res) => {
+app.use((req, res, next) => {
+    // Skip API routes and static file serving
+    if (req.path.startsWith('/api')) {
+        return next();
+    }
+    
     const indexPath = path.join(__dirname, '..', 'index.html');
     res.sendFile(indexPath, (err) => {
         if (err) {
+            console.error('Error sending index.html:', err);
             res.status(404).json({ error: 'Not found', path: req.path });
         }
     });
