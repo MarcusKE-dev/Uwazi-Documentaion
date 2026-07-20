@@ -183,8 +183,11 @@ async function getTransaction(checkoutRequestId) {
 // invocation and can exhaust the database's connection limit.
 // ---------------------------------------------------------------------------
 let sql = null;
+let neonPackageLoaded = false;
+let neonPackageError = null;
 try {
     const { neon } = require('@neondatabase/serverless');
+    neonPackageLoaded = true;
     const databaseUrl = process.env.DATABASE_URL;
     if (databaseUrl) {
         sql = neon(databaseUrl);
@@ -193,7 +196,8 @@ try {
         console.warn('[storage] DATABASE_URL not set — completed donations will NOT be permanently recorded.');
     }
 } catch (e) {
-    console.warn('[storage] @neondatabase/serverless not installed — completed donations will NOT be permanently recorded.');
+    neonPackageError = e.message;
+    console.warn('[storage] @neondatabase/serverless not installed or failed to load — completed donations will NOT be permanently recorded. Error:', e.message);
 }
 
 async function recordDonation({ checkoutRequestId, status, amount, receiptNumber, phone, resultDesc }) {
@@ -528,6 +532,42 @@ app.get('/api/payment-status/:checkoutRequestId', async (req, res) => {
     }
 });
 
+// --- ADMIN: VIEW RECENT DONATIONS ---
+// Protected by a secret so this donor data isn't publicly viewable.
+// Set ADMIN_SECRET in Vercel, then visit:
+// https://your-domain.vercel.app/api/admin/donations?key=<ADMIN_SECRET>
+app.get('/api/admin/donations', async (req, res) => {
+    if (!process.env.ADMIN_SECRET) {
+        return res.status(500).json({ error: 'ADMIN_SECRET is not configured on the server.' });
+    }
+    if (req.query.key !== process.env.ADMIN_SECRET) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
+    if (!sql) {
+        return res.status(500).json({ error: 'Database not configured.' });
+    }
+
+    try {
+        const rows = await sql`
+            select checkout_request_id, status, amount, mpesa_receipt_number, phone_last4, result_desc, created_at
+            from donations
+            order by created_at desc
+            limit 100
+        `;
+        const totalSuccess = await sql`
+            select coalesce(sum(amount), 0) as total from donations where status = 'success'
+        `;
+
+        res.json({
+            totalSuccessfulAmount: Number(totalSuccess[0].total),
+            count: rows.length,
+            donations: rows
+        });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
 // --- DATABASE HEALTH CHECK ---
 // Runs an actual query against Neon so you can verify the connection is
 // genuinely working, without needing to trigger a full M-Pesa transaction.
@@ -535,7 +575,9 @@ app.get('/api/db-health', async (req, res) => {
     if (!sql) {
         return res.status(500).json({
             ok: false,
-            reason: 'DATABASE_URL not set or @neondatabase/serverless not installed'
+            neonPackageLoaded,
+            neonPackageError,
+            databaseUrlSet: Boolean(process.env.DATABASE_URL)
         });
     }
     try {
