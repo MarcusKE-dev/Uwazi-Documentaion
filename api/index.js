@@ -60,6 +60,17 @@ const SAFARICOM_BASE_URL = process.env.MPESA_ENV === 'production'
     ? 'https://api.safaricom.co.ke'
     : 'https://sandbox.safaricom.co.ke';
 
+// Bump this string any time you deploy a new version of this file, so you
+// can confirm via GET /health that Vercel is actually running what you think
+// it's running, instead of guessing from behavior.
+const DEPLOYED_VERSION = 'v3-callback-diagnostics-2026-07-20';
+console.log(`[boot] DEPLOYED_VERSION=${DEPLOYED_VERSION}`);
+console.log(`[boot] CALLBACK_URL=${CALLBACK_URL}`);
+console.log(`[boot] MPESA_ENV=${process.env.MPESA_ENV || 'sandbox (default)'}  SAFARICOM_BASE_URL=${SAFARICOM_BASE_URL}`);
+if (!process.env.CALLBACK_URL) {
+    console.warn('[boot] ⚠️  CALLBACK_URL env var is NOT set — falling back to the old ngrok default. Safaricom cannot reach that. Set CALLBACK_URL in Vercel to https://uwazi-doc.vercel.app/api/callback');
+}
+
 function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -407,6 +418,7 @@ app.post('/api/donate', generateToken, async (req, res) => {
         });
 
         console.log(`📱 STK Push initiated: ${checkoutRequestId} for phone ${phone}, amount ${amount}`);
+        console.log(`📱 CallBackURL sent to Safaricom for this push: ${stkPayload.CallBackURL}`);
 
         res.status(200).json({
             ...response.data,
@@ -469,7 +481,15 @@ app.get('/api/payment-status/:checkoutRequestId', async (req, res) => {
 
 // --- HEALTH CHECK ---
 app.get('/health', (req, res) => {
-    res.status(200).json({ status: 'ok', storageBackend: redis ? 'redis' : 'in-memory (local-dev fallback)' });
+    res.status(200).json({
+        status: 'ok',
+        deployedVersion: DEPLOYED_VERSION,
+        storageBackend: redis ? 'redis' : 'in-memory (local-dev fallback)',
+        callbackUrlConfigured: Boolean(process.env.CALLBACK_URL),
+        callbackUrl: CALLBACK_URL,
+        mpesaEnv: process.env.MPESA_ENV || 'sandbox (default)',
+        safaricomBaseUrl: SAFARICOM_BASE_URL
+    });
 });
 
 // --- CALLBACK WEBHOOK ROUTER ---
