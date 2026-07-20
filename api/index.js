@@ -2,9 +2,14 @@ const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const axios = require('axios');
+const fs = require('fs');
 
 const RETRY_DELAY_MS = 1000;
 const MAX_RETRIES = 2;
+
+// Calculate the project root path (works both locally and on Vercel)
+const PROJECT_ROOT = path.resolve(path.join(__dirname, '..'));
+console.log(`🚀 PROJECT_ROOT: ${PROJECT_ROOT}`);
 
 // Load environment variables locally
 // Only require and load dotenv when running locally
@@ -42,10 +47,16 @@ app.use(cors({
 
 app.use(express.json({ limit: '1mb' }));
 
+// Log paths for debugging
+console.log(`📁 __dirname: ${__dirname}`);
+console.log(`📁 PROJECT_ROOT: ${PROJECT_ROOT}`);
+console.log(`📁 NODE_ENV: ${process.env.NODE_ENV || 'production'}`);
+console.log(`📁 style.css exists: ${fs.existsSync(path.join(PROJECT_ROOT, 'style.css'))}`);
+console.log(`📁 Ahadi/Ahadi.html exists: ${fs.existsSync(path.join(PROJECT_ROOT, 'Ahadi', 'Ahadi.html'))}`);
+console.log(`📁 index.html exists: ${fs.existsSync(path.join(PROJECT_ROOT, 'index.html'))}`);
+
 // Serve static files from the project root
-const rootPath = process.cwd();
-console.log(`📁 Serving static files from: ${rootPath}`);
-app.use(express.static(rootPath));
+app.use(express.static(PROJECT_ROOT));
 
 const PORT = process.env.PORT || 3000;
 const CALLBACK_URL = process.env.CALLBACK_URL || 'https://coping-jockey-portly.ngrok-free.dev/api/callback';
@@ -361,17 +372,24 @@ app.use((req, res, next) => {
     }
     
     // For routes without extensions (SPA routes), serve index.html from the project root
-    const indexPath = path.join(process.cwd(), 'index.html');
+    const indexPath = path.join(PROJECT_ROOT, 'index.html');
+    console.log(`📄 Serving SPA fallback for: ${req.path}`);
     res.sendFile(indexPath, (err) => {
         if (err) {
-            console.error('Error sending index.html:', err);
-            res.status(404).json({ error: 'Not found', path: req.path });
+            console.error(`❌ Error serving index.html from ${indexPath}: ${err.message}`);
+            res.status(500).json({ error: 'Error serving page', path: req.path });
         }
     });
 });
 
 // --- GLOBAL 404 HANDLER ---
 app.use((req, res) => {
+    const filePath = path.join(PROJECT_ROOT, req.path);
+    const fileExists = fs.existsSync(filePath);
+    console.log(`❌ 404: ${req.method} ${req.path}`);
+    console.log(`   Looking in: ${filePath}`);
+    console.log(`   File exists: ${fileExists}`);
+    
     res.status(404).json({ 
         error: 'Not found', 
         path: req.path,
