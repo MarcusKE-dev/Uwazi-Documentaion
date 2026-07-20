@@ -6,39 +6,41 @@ const axios = require('axios');
 const RETRY_DELAY_MS = 1000;
 const MAX_RETRIES = 2;
 
-for (const envPath of [
-    path.join(__dirname, '.env'),
-    path.join(__dirname, 'mpesa-donation-backend', '.env')
-]) {
-    require('dotenv').config({ path: envPath });
+// Load environment variables locally
+if (process.env.NODE_ENV !== 'production') {
+    for (const envPath of [
+        path.join(__dirname, '.env'),
+        path.join(__dirname, 'mpesa-donation-backend', '.env')
+    ]) {
+        require('dotenv').config({ path: envPath });
+    }
 }
 
 const app = express();
-app.use(express.static(__dirname));
-const allowedOrigins = (process.env.ALLOWED_ORIGINS || 'http://localhost:3000,http://127.0.0.1:3000,http://localhost:5500,http://127.0.0.1:5500').split(',').map((origin) => origin.trim()).filter(Boolean);
+
+const allowedOrigins = (process.env.ALLOWED_ORIGINS || '*')
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean);
 
 app.use(cors({
     origin(origin, callback) {
-        if (!origin) return callback(null, true);
-        if (allowedOrigins.includes(origin)) return callback(null, true);
+        if (!origin || allowedOrigins.includes('*') || allowedOrigins.includes(origin)) {
+            return callback(null, true);
+        }
         return callback(new Error('Origin not allowed by CORS'));
     }
 }));
+
 app.use(express.json({ limit: '1mb' }));
 
 const PORT = process.env.PORT || 3000;
 const CALLBACK_URL = process.env.CALLBACK_URL || 'https://coping-jockey-portly.ngrok-free.dev/api/callback';
-const paymentStatuses = new Map();
 
-function savePaymentStatus(checkoutRequestId, status, extra = {}) {
-    const current = paymentStatuses.get(checkoutRequestId) || {};
-    paymentStatuses.set(checkoutRequestId, {
-        ...current,
-        status,
-        lastUpdatedAt: new Date().toISOString(),
-        ...extra
-    });
-}
+// Set Safaricom Base URL (sandbox vs production)
+const SAFARICOM_BASE_URL = process.env.MPESA_ENV === 'production' 
+    ? 'https://api.safaricom.co.ke' 
+    : 'https://sandbox.safaricom.co.ke';
 
 function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
@@ -46,7 +48,6 @@ function sleep(ms) {
 
 function normalizePhone(phone) {
     if (typeof phone !== 'string') return null;
-
     const cleaned = phone.replace(/\s+/g, '').trim();
     if (!cleaned) return null;
 
@@ -156,68 +157,11 @@ async function getAccessToken() {
     const auth = Buffer.from(secret).toString('base64');
 
     const response = await axios.get(
-        'https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials',
+        `${SAFARICOM_BASE_URL}/oauth/v1/generate?grant_type=client_credentials`,
         { headers: { Authorization: `Basic ${auth}` } }
     );
 
     return response.data.access_token;
-}
-
-async function getAccessTokenWithRetry() {
-    for (let attempt = 0; attempt <= MAX_RETRIES; attempt += 1) {
-        try {
-            return await getAccessToken();
-        } catch (error) {
-            if (attempt === MAX_RETRIES) throw error;
-            await sleep(RETRY_DELAY_MS * (attempt + 1));
-        }
-    }
-}
-
-const tokenCache = { token: null, expiresAt: 0 };
-
-async function getCachedAccessToken() {
-    const now = Date.now();
-    if (tokenCache.token && now < tokenCache.expiresAt) {
-        return tokenCache.token;
-    }
-
-    const token = await getAccessTokenWithRetry();
-    tokenCache.token = token;
-    tokenCache.expiresAt = now + 50 * 60 * 1000;
-    return token;
-}
-
-// --- OAUTH ACCESSTOKEN GENERATOR ROUTE ---
-async function generateToken(req, res, next) {
-    try {
-        req.token = await getCachedAccessToken();
-        next();
-    } catch (error) {
-        console.error("Token Generation Error:", error.response ? error.response.data : error.message);
-        res.status(500).json({
-            error: "Failed to generate access token",
-            details: error.response ? error.response.data : error.message
-        });
-    }
-}
-
-function friendlyPaymentMessage(message) {
-    const text = String(message || '').toLowerCase();
-
-    if (text.includes('incorrect pin') || text.includes('wrong pin') || text.includes('pin') && text.includes('incorrect')) {
-        return 'Incorrect M-Pesa PIN. Please try again.';
-    }
-    if (text.includes('cancel') || text.includes('user cancelled') || text.includes('user canceled')) {
-        return 'Payment was cancelled. No charge was made.';
-    }
-    if (text.includes('system is busy') || text.includes('busy') || text.includes('try again in few minutes') || text.includes('try again later')) {
-        return 'M-Pesa is busy right now. Please try again in a few minutes.';
-    }
-    if (text.includes('mmi') || text.includes('connection problem') || text.includes('timeout') || text.includes('expired') || text.includes('timed out')) {
-        return 'The payment request timed out or the connection was interrupted. Please try again.';
-    }
-    return message || 'Payment was not completed.';
 }
 
 async function queryStkStatus(checkoutRequestId, accessToken) {
@@ -241,7 +185,7 @@ async function queryStkStatus(checkoutRequestId, accessToken) {
     };
 
     const response = await axios.post(
-        'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/query',
+        `${SAFARICOM_BASE_URL}/mpesa/stkpush/v1/query`,
         payload,
         { headers: { Authorization: `Bearer ${accessToken}` } }
     );
@@ -253,7 +197,7 @@ async function initiateStkPush(stkPayload, token) {
     for (let attempt = 0; attempt <= MAX_RETRIES; attempt += 1) {
         try {
             return await axios.post(
-                'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest',
+                `${SAFARICOM_BASE_URL}/mpesa/stkpush/v1/processrequest`,
                 stkPayload,
                 { headers: { Authorization: `Bearer ${token}` }, timeout: 15000 }
             );
@@ -272,6 +216,20 @@ async function initiateStkPush(stkPayload, token) {
     }
 }
 
+// --- OAUTH MIDDLEWARE ---
+async function generateToken(req, res, next) {
+    try {
+        req.token = await getAccessToken();
+        next();
+    } catch (error) {
+        console.error("Token Generation Error:", error.response ? error.response.data : error.message);
+        res.status(500).json({
+            error: "Failed to generate access token",
+            details: error.response ? error.response.data : error.message
+        });
+    }
+}
+
 // --- INITIATE STK PUSH ENDPOINT ---
 app.post('/api/donate', generateToken, async (req, res) => {
     const validation = validateDonationPayload(req.body);
@@ -281,7 +239,6 @@ app.post('/api/donate', generateToken, async (req, res) => {
 
     const { phone, amount } = validation;
 
-    // Generate accurate Kenyan Timestamp (YYYYMMDDHHMMSS)
     const date = new Date();
     const timestamp = date.getFullYear() +
         ("0" + (date.getMonth() + 1)).slice(-2) +
@@ -290,7 +247,6 @@ app.post('/api/donate', generateToken, async (req, res) => {
         ("0" + date.getMinutes()).slice(-2) +
         ("0" + date.getSeconds()).slice(-2);
 
-    // Create the required Base64 Password string
     const password = Buffer.from(
         process.env.MPESA_SHORTCODE + process.env.MPESA_PASSKEY + timestamp
     ).toString('base64');
@@ -311,13 +267,7 @@ app.post('/api/donate', generateToken, async (req, res) => {
 
     try {
         const response = await initiateStkPush(stkPayload, req.token);
-
         const checkoutRequestId = response.data.CheckoutRequestID;
-        savePaymentStatus(checkoutRequestId, 'pending', {
-            message: 'Payment request sent! Check your phone and enter your M-Pesa PIN to complete.',
-            amount,
-            phone
-        });
 
         res.status(200).json({
             ...response.data,
@@ -338,44 +288,15 @@ app.post('/api/donate', generateToken, async (req, res) => {
 // --- PAYMENT STATUS CHECKER ---
 app.get('/api/payment-status/:checkoutRequestId', async (req, res) => {
     const { checkoutRequestId } = req.params;
-    const existingStatus = paymentStatuses.get(checkoutRequestId);
-
-    if (existingStatus && ['success', 'failed'].includes(existingStatus.status)) {
-        return res.json(existingStatus);
-    }
 
     try {
-        const accessToken = await getCachedAccessToken();
+        const accessToken = await getAccessToken();
         const queryResult = await queryStkStatus(checkoutRequestId, accessToken);
-        console.log('STK status response:', JSON.stringify(queryResult));
-
         const outcome = classifyStkStatus(queryResult);
 
-        if (outcome.status === 'success') {
-            savePaymentStatus(checkoutRequestId, 'success', {
-                message: outcome.userMessage,
-                receiptNumber: outcome.receiptNumber,
-                amount: outcome.amount
-            });
-            return res.json(paymentStatuses.get(checkoutRequestId));
-        }
-
-        if (outcome.status === 'pending') {
-            savePaymentStatus(checkoutRequestId, 'pending', {
-                message: outcome.userMessage
-            });
-            return res.json(paymentStatuses.get(checkoutRequestId));
-        }
-
-        savePaymentStatus(checkoutRequestId, 'failed', {
-            message: outcome.userMessage
-        });
-        return res.json(paymentStatuses.get(checkoutRequestId));
+        return res.json(outcome);
     } catch (error) {
         console.error('Payment query error:', error.response ? error.response.data : error.message);
-        if (existingStatus) {
-            return res.json(existingStatus);
-        }
         return res.status(500).json({ status: 'unknown', message: 'Unable to verify payment status' });
     }
 });
@@ -387,41 +308,9 @@ app.get('/health', (req, res) => {
 
 // --- CALLBACK WEBHOOK ROUTER ---
 app.post('/api/callback', (req, res) => {
-    const expectedSecret = process.env.CALLBACK_SECRET;
-    if (expectedSecret && req.get('x-callback-secret') !== expectedSecret) {
-        return res.status(401).json({ ResultCode: 1, ResultDesc: 'Unauthorized callback' });
-    }
     const callbackData = req.body;
     console.log("=== Incoming M-Pesa Transaction Webhook Callback ===");
     console.log(JSON.stringify(callbackData, null, 2));
-
-    const callback = callbackData.Body && callbackData.Body.stkCallback;
-    const checkoutRequestId = callback && callback.CheckoutRequestID;
-    const resultCode = callback && callback.ResultCode;
-    const resultDesc = callback && callback.ResultDesc;
-
-    if (!checkoutRequestId) {
-        return res.status(400).json({ ResultCode: 1, ResultDesc: "Missing checkout request ID" });
-    }
-
-    if (resultCode === 0) {
-        const items = (callback.CallbackMetadata && callback.CallbackMetadata.Item) || [];
-        const receiptNumber = items.find(i => i.Name === 'MpesaReceiptNumber')?.Value;
-        const transAmount = items.find(i => i.Name === 'Amount')?.Value;
-
-        savePaymentStatus(checkoutRequestId, 'success', {
-            message: 'Donation received. Thank you!',
-            receiptNumber,
-            amount: transAmount
-        });
-
-        console.log(`✅ Success! Received KES ${transAmount}. Receipt No: ${receiptNumber}`);
-    } else {
-        savePaymentStatus(checkoutRequestId, 'failed', {
-            message: resultDesc || 'Payment was cancelled or failed.'
-        });
-        console.log(`❌ Cancelled or Failed. Result Code: ${resultCode}`);
-    }
 
     res.status(200).json({ ResultCode: 0, ResultDesc: "Accepted" });
 });
