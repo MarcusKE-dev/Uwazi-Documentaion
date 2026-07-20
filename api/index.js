@@ -528,6 +528,27 @@ app.get('/api/payment-status/:checkoutRequestId', async (req, res) => {
     }
 });
 
+// --- DATABASE HEALTH CHECK ---
+// Runs an actual query against Neon so you can verify the connection is
+// genuinely working, without needing to trigger a full M-Pesa transaction.
+app.get('/api/db-health', async (req, res) => {
+    if (!sql) {
+        return res.status(500).json({
+            ok: false,
+            reason: 'DATABASE_URL not set or @neondatabase/serverless not installed'
+        });
+    }
+    try {
+        const result = await sql`select count(*) as donation_count from donations`;
+        res.json({
+            ok: true,
+            donationCount: Number(result[0].donation_count)
+        });
+    } catch (e) {
+        res.status(500).json({ ok: false, reason: e.message });
+    }
+});
+
 // --- HEALTH CHECK ---
 app.get('/health', (req, res) => {
     res.status(200).json({
