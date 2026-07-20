@@ -89,15 +89,7 @@ table{border-collapse:collapse;width:100%;}
   align-items: center;
   gap: 6px;
 }
-.cta-label::after{
-  content: "";
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--gold-500);
-  animation: ctaPulse 1.8s ease-in-out infinite;
-}
+
 @keyframes ctaPulse{
   0%, 100%{opacity:1;transform:scale(1);}
   50%{opacity:.4;transform:scale(1.8);}
@@ -153,7 +145,6 @@ table{border-collapse:collapse;width:100%;}
   border-color: var(--gold-500);
   color: var(--navy-950);
   font-weight: 700;
-  animation: ctaGlow 2.4s ease-in-out infinite;
 }
 .cta-link-card.featured::before{
   display: none;

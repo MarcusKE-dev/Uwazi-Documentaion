@@ -6,7 +6,6 @@ const axios = require('axios');
 const RETRY_DELAY_MS = 1000;
 const MAX_RETRIES = 2;
 
-// Load environment variables locally
 if (process.env.NODE_ENV !== 'production') {
     try {
         const dotenv = require('dotenv');
@@ -59,7 +58,6 @@ function normalizePhone(phone) {
     if (normalized.startsWith('+')) normalized = normalized.slice(1);
     if (normalized.startsWith('0')) normalized = `254${normalized.slice(1)}`;
 
-    // 07xx and 01xx are the valid Safaricom / general mobile ranges
     if (!/^254(7|1)\d{8}$/.test(normalized)) return null;
     return normalized;
 }
@@ -108,29 +106,59 @@ function normalizeResultCode(value) {
 }
 
 // ---------------------------------------------------------------------------
-// IN-MEMORY TRANSACTION STORE
-// The M-Pesa callback is the *authoritative* source of truth. We store the
-// outcome as soon as Safaricom tells us via the webhook, and the status
-// endpoint reads from here first. This avoids hammering Safaricom's flaky
-// query endpoint and avoids ever showing a false "failed" while a payment
-// is still genuinely pending.
-// In production, swap this Map for Redis or a database table so state
-// survives server restarts and works across multiple server instances.
+// SHARED STORAGE (Upstash Redis)
+// Vercel runs this app as serverless functions. Every request can land on a
+// DIFFERENT, isolated instance with its own memory — an in-memory Map (or
+// module-level variable) does NOT persist between requests in production,
+// even though it works fine when you run `node server.js` locally as one
+// long-running process. Redis is the shared source of truth every instance
+// can read and write.
+//
+// Set up once: Vercel dashboard -> Storage -> Create Database -> "Upstash
+// for Redis" -> connect to this project. That injects KV_REST_API_URL and
+// KV_REST_API_TOKEN automatically. Then `npm install @upstash/redis`.
+//
+// Locally (no Redis configured) this falls back to an in-memory Map so you
+// can still run `node server.js` on your laptop without setting anything
+// up — but that fallback ONLY works for local single-process testing, not
+// on Vercel.
 // ---------------------------------------------------------------------------
-const transactions = new Map();
-
-function setTransaction(checkoutRequestId, data) {
-    if (!checkoutRequestId) return;
-    transactions.set(checkoutRequestId, { ...data, updatedAt: Date.now() });
+let redis = null;
+try {
+    const { Redis } = require('@upstash/redis');
+    const url = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
+    const token = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
+    if (url && token) {
+        redis = new Redis({ url, token });
+        console.log('[storage] Using Upstash Redis for shared state.');
+    } else {
+        console.warn('[storage] KV_REST_API_URL / KV_REST_API_TOKEN not set — falling back to in-memory store. This is fine for local testing but WILL NOT WORK on Vercel.');
+    }
+} catch (e) {
+    console.warn('[storage] @upstash/redis not installed — falling back to in-memory store. Run `npm install @upstash/redis` before deploying to Vercel.');
 }
 
-// Periodically clear out old entries so the Map doesn't grow forever
-setInterval(() => {
-    const cutoff = Date.now() - 60 * 60 * 1000; // 1 hour
-    for (const [id, record] of transactions.entries()) {
-        if (record.updatedAt < cutoff) transactions.delete(id);
+const memoryStore = new Map(); // local-dev-only fallback
+
+async function setTransaction(checkoutRequestId, data) {
+    if (!checkoutRequestId) return;
+    const record = { ...data, updatedAt: Date.now() };
+
+    if (redis) {
+        await redis.set(`txn:${checkoutRequestId}`, JSON.stringify(record), { ex: 3600 }); // expires in 1 hour
+    } else {
+        memoryStore.set(checkoutRequestId, record);
     }
-}, 15 * 60 * 1000).unref();
+}
+
+async function getTransaction(checkoutRequestId) {
+    if (redis) {
+        const raw = await redis.get(`txn:${checkoutRequestId}`);
+        if (!raw) return null;
+        return typeof raw === 'string' ? JSON.parse(raw) : raw;
+    }
+    return memoryStore.get(checkoutRequestId) || null;
+}
 
 function classifyStkStatus(queryResult) {
     const resultCode = normalizeResultCode(queryResult.ResultCode || queryResult.ResponseCode);
@@ -177,10 +205,11 @@ function classifyStkStatus(queryResult) {
 }
 
 // ---------------------------------------------------------------------------
-// ACCESS TOKEN — cached, not fetched on every request.
-// Calling Safaricom's OAuth endpoint on every donate click AND every poll
-// quickly hits their rate limit and returns 403. Tokens last ~1 hour, so we
-// reuse one until shortly before it expires.
+// ACCESS TOKEN — also cached in Redis for the same reason as above: a
+// module-level variable resets on every cold start on Vercel, which means
+// every request could end up minting a brand-new token and hitting
+// Safaricom's rate limit (this is very likely part of what caused the 403
+// you saw earlier).
 // ---------------------------------------------------------------------------
 let cachedToken = null;
 let tokenExpiresAt = 0;
@@ -193,7 +222,10 @@ async function getAccessToken() {
         throw new Error(`Missing MPesa environment variables: ${missingEnv.join(', ')}`);
     }
 
-    if (cachedToken && Date.now() < tokenExpiresAt) {
+    if (redis) {
+        const cached = await redis.get('mpesa:access_token');
+        if (cached) return cached;
+    } else if (cachedToken && Date.now() < tokenExpiresAt) {
         return cachedToken;
     }
 
@@ -205,11 +237,17 @@ async function getAccessToken() {
         { headers: { Authorization: `Basic ${auth}` } }
     );
 
-    cachedToken = response.data.access_token;
+    const token = response.data.access_token;
     const expiresInSec = Number(response.data.expires_in) || 3599;
-    tokenExpiresAt = Date.now() + (expiresInSec - 60) * 1000; // refresh 60s early
 
-    return cachedToken;
+    if (redis) {
+        await redis.set('mpesa:access_token', token, { ex: expiresInSec - 60 });
+    } else {
+        cachedToken = token;
+        tokenExpiresAt = Date.now() + (expiresInSec - 60) * 1000;
+    }
+
+    return token;
 }
 
 async function queryStkStatus(checkoutRequestId, accessToken) {
@@ -278,8 +316,23 @@ async function generateToken(req, res, next) {
     }
 }
 
+// --- DEBUG ENDPOINT ---
+// Inspect exactly what the server currently has stored for a transaction.
+// Remove this route before going fully live.
+app.get('/api/debug/:checkoutRequestId', async (req, res) => {
+    const record = await getTransaction(req.params.checkoutRequestId);
+    res.json({
+        checkoutRequestId: req.params.checkoutRequestId,
+        found: Boolean(record),
+        record: record || null,
+        storageBackend: redis ? 'redis' : 'in-memory (local-dev fallback)'
+    });
+});
+
 // --- INITIATE STK PUSH ENDPOINT ---
 app.post('/api/donate', generateToken, async (req, res) => {
+    console.log(`[donate] Incoming request: phone=${req.body?.phone}, amount=${req.body?.amount}`);
+
     const validation = validateDonationPayload(req.body);
     if (!validation.ok) {
         return res.status(400).json({ success: false, error: validation.error, code: 'INVALID_REQUEST' });
@@ -317,12 +370,11 @@ app.post('/api/donate', generateToken, async (req, res) => {
         const response = await initiateStkPush(stkPayload, req.token);
         const checkoutRequestId = response.data.CheckoutRequestID;
 
-        // Seed a pending record right away so the status endpoint has
-        // something to answer with even before Safaricom's callback arrives.
-        setTransaction(checkoutRequestId, {
+        await setTransaction(checkoutRequestId, {
             status: 'pending',
             userMessage: 'Waiting for you to enter your M-Pesa PIN.'
         });
+        console.log(`[donate] STK push accepted. checkoutRequestId=${checkoutRequestId}`);
 
         res.status(200).json({
             ...response.data,
@@ -341,26 +393,27 @@ app.post('/api/donate', generateToken, async (req, res) => {
 });
 
 // --- PAYMENT STATUS CHECKER ---
-// Reads the callback-driven store first (authoritative). Only if the
-// callback hasn't landed yet does it fall back to an active query against
-// Safaricom — and even then, "still processing" is reported as pending,
-// never as an error, since that's an entirely normal state while the user
-// is looking at their phone.
 app.get('/api/payment-status/:checkoutRequestId', async (req, res) => {
     const { checkoutRequestId } = req.params;
-    const stored = transactions.get(checkoutRequestId);
+    const stored = await getTransaction(checkoutRequestId);
 
     if (stored && (stored.status === 'success' || stored.status === 'failed')) {
+        console.log(`[status] ${checkoutRequestId} resolved from callback store: ${stored.status}`);
         return res.json(stored);
     }
+
+    console.log(`[status] ${checkoutRequestId} — no terminal callback yet, falling back to Safaricom query...`);
 
     try {
         const accessToken = await getAccessToken();
         const queryResult = await queryStkStatus(checkoutRequestId, accessToken);
+        console.log(`[status] ${checkoutRequestId} — raw Safaricom query result:`, JSON.stringify(queryResult));
+
         const outcome = classifyStkStatus(queryResult);
+        console.log(`[status] ${checkoutRequestId} — classified as: ${outcome.status}`);
 
         if (outcome.status !== 'pending') {
-            setTransaction(checkoutRequestId, outcome);
+            await setTransaction(checkoutRequestId, outcome);
         }
 
         return res.json(outcome);
@@ -368,61 +421,68 @@ app.get('/api/payment-status/:checkoutRequestId', async (req, res) => {
         const data = error.response ? error.response.data : null;
         const errorCode = data?.errorCode || '';
         const errorMessage = String(data?.errorMessage || error.message || '');
+        console.log(`[status] ${checkoutRequestId} — query threw. errorCode=${errorCode} message=${errorMessage}`);
 
-        // Safaricom returns this while the transaction genuinely hasn't
-        // resolved yet — treat it as pending, not a failure.
         if (errorCode === '500.001.1001' || /processed|pending/i.test(errorMessage)) {
             return res.json({ status: 'pending', userMessage: 'Waiting for you to complete the payment on your phone.' });
         }
 
-        console.error('Payment query error:', data || error.message);
-        // Fall back to whatever we know rather than reporting a hard error
+        console.error('[status] Payment query error (not a recognized "still pending" case):', data || error.message);
         return res.json(stored || { status: 'pending', userMessage: 'Still checking...' });
     }
 });
 
 // --- HEALTH CHECK ---
 app.get('/health', (req, res) => {
-    res.status(200).json({ status: 'ok' });
+    res.status(200).json({ status: 'ok', storageBackend: redis ? 'redis' : 'in-memory (local-dev fallback)' });
 });
 
 // --- CALLBACK WEBHOOK ROUTER ---
-app.post('/api/callback', (req, res) => {
+app.post('/api/callback', async (req, res) => {
     const callbackData = req.body;
     console.log("=== Incoming M-Pesa Transaction Webhook Callback ===");
     console.log(JSON.stringify(callbackData, null, 2));
 
     try {
         const stkCallback = callbackData?.Body?.stkCallback;
-        if (stkCallback) {
+        if (!stkCallback) {
+            console.warn('[callback] Received a POST to /api/callback but it did not contain Body.stkCallback — unexpected shape, nothing stored.');
+        } else {
             const checkoutRequestId = stkCallback.CheckoutRequestID;
             const resultCode = Number(stkCallback.ResultCode);
+            console.log(`[callback] checkoutRequestId=${checkoutRequestId} resultCode=${resultCode} resultDesc=${stkCallback.ResultDesc}`);
 
             if (resultCode === 0) {
                 const items = stkCallback.CallbackMetadata?.Item || [];
-                setTransaction(checkoutRequestId, {
+                await setTransaction(checkoutRequestId, {
                     status: 'success',
                     userMessage: 'Donation received. Thank you!',
                     receiptNumber: items.find((i) => i.Name === 'MpesaReceiptNumber')?.Value,
                     amount: items.find((i) => i.Name === 'Amount')?.Value
                 });
+                console.log(`[callback] Stored SUCCESS for ${checkoutRequestId}`);
             } else {
-                setTransaction(checkoutRequestId, {
+                await setTransaction(checkoutRequestId, {
                     status: 'failed',
                     userMessage: getFriendlyErrorMessage(stkCallback.ResultDesc)
                 });
+                console.log(`[callback] Stored FAILED for ${checkoutRequestId}`);
             }
         }
     } catch (e) {
-        console.error('Callback parse error:', e);
+        console.error('[callback] Parse error:', e);
     }
 
-    // Always acknowledge with 200 so Safaricom doesn't keep retrying
     res.status(200).json({ ResultCode: 0, ResultDesc: "Accepted" });
 });
 
 if (require.main === module) {
-    app.listen(PORT, () => console.log(`🚀 Secure M-Pesa Backend Server listening on port ${PORT}`));
+    app.listen(PORT, () => {
+        console.log(`🚀 Secure M-Pesa Backend Server listening on port ${PORT}`);
+        console.log(`   MPESA_ENV: ${process.env.MPESA_ENV || 'sandbox'}`);
+        console.log(`   CALLBACK_URL: ${CALLBACK_URL}`);
+        console.log(`   Storage backend: ${redis ? 'Redis' : 'in-memory (local-dev fallback — will NOT work on Vercel)'}`);
+    });
 }
 
 module.exports = app;
