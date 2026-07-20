@@ -7,12 +7,18 @@ const RETRY_DELAY_MS = 1000;
 const MAX_RETRIES = 2;
 
 // Load environment variables locally
+// Only require and load dotenv when running locally
 if (process.env.NODE_ENV !== 'production') {
-    for (const envPath of [
-        path.join(__dirname, '.env'),
-        path.join(__dirname, 'mpesa-donation-backend', '.env')
-    ]) {
-        require('dotenv').config({ path: envPath });
+    try {
+        const dotenv = require('dotenv');
+        for (const envPath of [
+            path.join(__dirname, '.env'),
+            path.join(__dirname, 'mpesa-donation-backend', '.env')
+        ]) {
+            dotenv.config({ path: envPath });
+        }
+    } catch (e) {
+        console.log("Dotenv not loaded (running in production/cloud environment)");
     }
 }
 
