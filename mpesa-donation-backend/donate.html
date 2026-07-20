@@ -87,16 +87,18 @@
   <p>Enter your M‑Pesa registered phone number and the amount you wish to donate.</p>
 
   <div class="note">
-    <strong>ℹ️ Testing:</strong> This system is currently in <strong>M-Pesa Sandbox mode</strong>. Use the test phone number <code>254712345678</code> for testing. To switch to live payments, update the <code>MPESA_ENV</code> environment variable to "production".
+    <strong>ℹ️ Testing:</strong> This system is currently in <strong>M-Pesa Sandbox mode</strong>. Use the test phone
+    number <code>254712345678</code> for testing. To switch to live payments, update the <code>MPESA_ENV</code>
+    environment variable to "production".
   </div>
 
   <form id="donateForm">
-    <label for="phone">📱 M‑Pesa Phone Number</label>
+    <label for="phone"> M‑Pesa Phone Number</label>
     <!-- Updated pattern allows optional '+', optional '254' or '0', followed by 1, 7, 0, or 6 and the remaining digits -->
     <input type="tel" id="phone" placeholder="0712345678" required pattern="^(\+?254|0)[1706]\d{8}$"
       title="Enter a valid phone number (e.g., 0712345678, 0112345678, or 254712345678)">
 
-    <label for="amount">💰 Amount (KES)</label>
+    <label for="amount"> Amount (KES)</label>
     <input type="number" id="amount" placeholder="e.g. 100" min="1" required>
 
     <button type="submit">Donate Now</button>
@@ -239,7 +241,7 @@
             '✅ Payment request sent! Check your phone and enter your M-Pesa PIN to complete.',
             'success'
           );
-          
+
           // Start polling if we have a checkout request ID
           if (data.checkoutRequestId) {
             console.log(`Starting poll for checkoutRequestId: ${data.checkoutRequestId}`);

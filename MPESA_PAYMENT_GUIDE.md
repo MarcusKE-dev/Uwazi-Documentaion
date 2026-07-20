@@ -9,11 +9,13 @@ Your UWAZI donation system is currently integrated with **M-Pesa Sandbox Environ
 ## Payment Flow
 
 ### 1. **User Initiates Payment** (Front-end: `donate.html`)
+
 - User enters phone number (validated format: `0712345678` or `254712345678`)
 - User enters donation amount (minimum KSh 1)
 - Form submits to `/api/donate` endpoint
 
 ### 2. **Backend Validates Request** (`api/index.js`)
+
 - Phone number is normalized to Safaricom format: `254XXXXXXXXXX`
 - Amount is validated (must be integer > 0)
 - M-Pesa OAuth token is generated using `MPESA_CONSUMER_KEY` and `MPESA_CONSUMER_SECRET`
@@ -23,6 +25,7 @@ Your UWAZI donation system is currently integrated with **M-Pesa Sandbox Environ
   - Callback URL for M-Pesa to notify of payment result
 
 ### 3. **STK Push Sent to M-Pesa** (`initiateStkPush`)
+
 - Request sent to M-Pesa API:
   - **Sandbox**: `https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest`
   - **Live**: `https://api.safaricom.co.ke/mpesa/stkpush/v1/processrequest`
@@ -31,11 +34,13 @@ Your UWAZI donation system is currently integrated with **M-Pesa Sandbox Environ
   - Maximum 3 attempts before returning error to user
 
 ### 4. **User Receives M-Pesa Prompt**
+
 - Phone receives STK push notification
 - User enters M-Pesa PIN to authorize
 - User cancels (results in failed payment)
 
 ### 5. **Payment Status Polling** (Front-end: `donate.html`)
+
 - After successful STK request, front-end starts polling every 5 seconds
 - Polls `/api/payment-status/:checkoutRequestId` endpoint
 - **Maximum wait time**: 15 minutes (180 attempts × 5 seconds)
@@ -46,6 +51,7 @@ Your UWAZI donation system is currently integrated with **M-Pesa Sandbox Environ
   - `⏰ Payment confirmation took too long`
 
 ### 6. **Backend Queries M-Pesa Status**
+
 - Backend calls `/mpesa/stkpush/v1/query` with the checkout request ID
 - M-Pesa returns payment status:
   - `ResultCode: 0` → Success
@@ -53,6 +59,7 @@ Your UWAZI donation system is currently integrated with **M-Pesa Sandbox Environ
   - Other codes → Pending or failed
 
 ### 7. **Backend Classifies Result** (`classifyStkStatus`)
+
 - **Success**: Extracts receipt number and amount from response
 - **Failed**: Determines failure reason (cancelled, wrong PIN, timeout, etc.)
 - **Pending**: User still entering PIN or M-Pesa processing
@@ -62,17 +69,20 @@ Your UWAZI donation system is currently integrated with **M-Pesa Sandbox Environ
 ## Sandbox Testing
 
 ### Test Phone Number
+
 - **Number**: `254712345678` or `0712345678`
 - **Amount**: Any amount (1 KSh - 150,000 KSh typically)
 - **M-Pesa PIN**: `1234` (in sandbox environment)
 
 ### Test Scenarios
+
 1. **Successful Payment**: Enter PIN correctly → Payment succeeds
 2. **Cancelled**: Don't enter PIN, wait for timeout → "Payment cancelled"
 3. **Wrong PIN**: Enter incorrect PIN → "Incorrect PIN"
 4. **Network Timeout**: Simulate by waiting → Frontend shows timeout message
 
 ### Current Environment Variables
+
 ```
 MPESA_ENV=sandbox                    # Sandbox or production
 MPESA_CONSUMER_KEY=***              # From Safaricom Developer Portal
@@ -88,6 +98,7 @@ ALLOWED_ORIGINS=*                   # Allow all origins (restrict in production)
 ## Transitioning to Live M-Pesa
 
 ### Step 1: Get Live Credentials from Safaricom
+
 1. Contact Safaricom Business Services: [https://developer.safaricom.co.ke](https://developer.safaricom.co.ke)
 2. Complete KYC (Know Your Customer) process
 3. Request production credentials (Consumer Key, Consumer Secret, Passkey)
@@ -97,6 +108,7 @@ ALLOWED_ORIGINS=*                   # Allow all origins (restrict in production)
    - STK Push transactions
 
 ### Step 2: Update Environment Variables in Vercel
+
 In your Vercel project settings → Environment Variables, update:
 
 ```bash
@@ -110,12 +122,14 @@ ALLOWED_ORIGINS=https://uwazi-documentaion.vercel.app
 ```
 
 ### Step 3: Test Live Integration
+
 1. Deploy code to Vercel (this automatically uses new env vars)
 2. Use a **real Kenyan phone number** with M-Pesa account
 3. Enter small amount (e.g., KSh 10) to test
 4. Verify money is received in your organization's M-Pesa account
 
 ### Step 4: Monitor Payments
+
 - Check `/api/callback` webhook logs in Vercel
 - M-Pesa sends real-time payment confirmations here
 - Implement database logging to store donation records
@@ -125,31 +139,37 @@ ALLOWED_ORIGINS=https://uwazi-documentaion.vercel.app
 ## Security Considerations for Live Payments
 
 ### 1. **HTTPS Only**
+
 - ✅ Vercel provides free SSL/TLS certificates
 - All sensitive data (tokens, payloads) transmitted over HTTPS
 
 ### 2. **OAuth Token Management**
+
 - ✅ Tokens generated per-request (short-lived)
 - ✅ Tokens are never stored or logged
 - ✅ Tokens are not sent to client-side code
 
 ### 3. **Callback Security**
+
 - ⚠️ **TODO**: Add callback signature validation
   - M-Pesa includes `signature` in callback
   - Validate signature using your Consumer Secret
   - Prevents spoofed webhook calls
 
 ### 4. **Rate Limiting**
+
 - ⚠️ **TODO**: Add rate limiting on `/api/donate`
   - Prevent same phone from submitting 100 requests/second
   - Use Redis or token bucket algorithm
 
 ### 5. **CORS Restrictions**
+
 - ⚠️ Currently set to `*` (allow all origins)
 - **For production**: Set to your domain only
   - `ALLOWED_ORIGINS=https://uwazi-documentaion.vercel.app`
 
 ### 6. **Audit Logging**
+
 - ⚠️ **TODO**: Log all transactions to database
   - Phone (hashed), amount, timestamp, status, receipt
   - Enables dispute resolution and fraud detection
@@ -177,6 +197,7 @@ ALLOWED_ORIGINS=https://uwazi-documentaion.vercel.app
 ### Recommended Improvements Before Live
 
 1. **Database Integration** (Priority: HIGH)
+
    ```javascript
    // Store each donation attempt
    {
@@ -230,6 +251,7 @@ ALLOWED_ORIGINS=https://uwazi-documentaion.vercel.app
 ## Support & Troubleshooting
 
 ### M-Pesa API Documentation
+
 - [Safaricom Developer Portal](https://developer.safaricom.co.ke/docs)
 - [STK Push Documentation](https://developer.safaricom.co.ke/docs?javascript#stk-push)
 - [Query STK Push Status](https://developer.safaricom.co.ke/docs?javascript#query-stk-push-status)
@@ -281,6 +303,7 @@ vercel.json                      # Deployment config (includes static files)
 ## Questions?
 
 For issues or questions about the payment flow:
+
 1. Check Vercel logs: `vercel logs`
 2. Review M-Pesa error codes in API docs
 3. Test in sandbox first before going live
